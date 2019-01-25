@@ -28,18 +28,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-            ImageView i2 = (ImageView) findViewById(R.id.imageView);
-            BitmapFactory.Options options2 = new BitmapFactory.Options();
-            options2.inMutable = true;
-            Bitmap image2 = BitmapFactory.decodeResource(getResources(), R.drawable.index2, options2);
-
-            ImageView i = (ImageView) findViewById(R.id.imageView5);
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inMutable = true;
-            Bitmap image1 = BitmapFactory.decodeResource(getResources(), R.drawable.index, options);
-            i.setImageBitmap(image1);
-
-        //test//
         /*
         int largeur = options.outWidth;  /// * 2.6
         int hauteur = options.outHeight;   /// *2.6
@@ -55,11 +43,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             myspinner.setAdapter(monadaptater);
             myspinner.setOnItemSelectedListener(this);
 
-            /////
+
 
         }
 
-        // CONFIGURATION MENU ///
+        /// CONFIGURATION MENU DEROULANT ///
 
 
 
@@ -79,13 +67,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Bitmap image2 = BitmapFactory.decodeResource(getResources(), R.drawable.index2, options);
             Long time = System.currentTimeMillis();
 
+            /*
             int [][] matrix = new int[][]{
                     {1,2,3,2,1},
                     {2,6,8,6,2},
                     {3,8,10,8,3},
                     {2,6,8,6,2},
                     {1,2,3,2,1}
-            };
+            }; */
 
             switch (position) {
                 case 0:
