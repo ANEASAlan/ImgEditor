@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Bitmap image1 = BitmapFactory.decodeResource(getResources(), R.drawable.index, options);
             i.setImageBitmap(image1);
 
-
+        //test//
         /*
         int largeur = options.outWidth;  /// * 2.6
         int hauteur = options.outHeight;   /// *2.6
