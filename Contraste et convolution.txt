@@ -1,0 +1,488 @@
+////////////////////////////////////////////
+////////// Contraste et Convolution ////////
+///////////// Brouillon ////////////////////
+////////////////////////////////////////////
+
+
+
+
+private void ContrastePlus(Bitmap bmp){
+
+
+        // Initialise un tableau avec les pixels de l'image //
+
+        int [] pixel = new  int[bmp.getHeight()*bmp.getWidth()];
+        bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+
+
+        // Calcul le niveau de gris de chaque pixel et le place dans un tableau//
+
+        int[] greytab = GreyLevel(pixel,bmp.getHeight(),bmp.getWidth());
+
+
+        int[] hist = new int[256];
+        for (int index = 0; index < greytab.length; index++) {
+
+            // Créer l'histogramme à partir du tableau de niveaux de gris //
+
+
+            hist[greytab[index]]++;
+
+        }
+
+
+        //  Récupère le max et min de l'histogramme //
+
+        int max = 0;
+        int min = 0;
+        int var = 0;
+
+        while (hist[var] == 0){
+            var++;
+        }
+        min = var;
+        var = 255;
+
+        while (hist[var] == 0) {
+            var --;
+        }
+        max = var;
+
+
+        // Contraste dynamique //
+
+        int [] newpixel = new int[bmp.getWidth()*bmp.getHeight()];
+        for (int x = 0; x < pixel.length; x++){
+
+            int greypixel = (255*(greytab[x] - min))/(max - min);
+
+            newpixel[x] = Color.argb(1,greypixel,greypixel,greypixel);
+        }
+        bmp.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+    }
+
+
+
+
+    /// Diminution du Contraste en resserant l'histogramme ///
+
+
+    private void ContrasteMoins(Bitmap bmp) {
+
+
+        // initialise un tableau avec les pixels de l'image //
+
+        int[] pixel = new int[bmp.getHeight() * bmp.getWidth()];
+        bmp.getPixels(pixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+
+
+        // Calcul le niveau de gris de chaque pixel et le place dans un tableau//
+        int[] greytab = GreyLevel(pixel, bmp.getHeight(), bmp.getWidth());
+
+
+        // Ressert l'histogramme  //
+
+
+        for (int x =0; x < greytab.length; x++){
+            if (greytab[x] < 127){
+                greytab[x] = greytab[x] + 20;
+            } else if (greytab[x] > 127) {
+                greytab[x] = greytab[x] - 20;
+            }
+
+        }
+
+
+        //
+        int[] hist = new int[256];
+        for (int index = 0; index < greytab.length; index++) {
+
+            // Créer l'histogramme à partir du tableau de niveaux de gris //
+
+            hist[greytab[index]]++;
+
+        }
+
+
+
+        // Ressert histogramme //
+
+        int[] newpixel = new int[bmp.getWidth() * bmp.getHeight()];
+        for (int x = 0; x < pixel.length; x++) {
+
+            int greypixel = greytab[x];
+
+            newpixel[x] = Color.argb(1, greypixel, greypixel, greypixel);
+        }
+        bmp.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+
+    }
+
+
+    /// CONTRASTE COULEUR ///
+
+    private int[] Couleurlevel(int[] pixels , int height , int width ,char c) {
+        int[] Couleurlevel = new int[width * height];
+        if (c == 'r'){
+            for (int i = 0; i < pixels.length; i++) {
+                Couleurlevel[i] = Color.red(pixels[i]);
+            }
+        }else if(c == 'g'){
+            for (int i =0; i < pixels.length; i++){
+                Couleurlevel[i] = Color.green(pixels[i]);
+            }
+        }else if(c == 'b'){
+            for (int i =0; i< pixels.length; i++){
+                Couleurlevel[i] = Color.blue(pixels[i]);
+            }
+        }
+
+
+        return Couleurlevel;
+
+    }
+
+    /// La variable Changement indique on diminue ( False) ou augmente (True) le Contraste ///
+
+
+    private void ContrasteCouleur(Bitmap bmp, boolean Changement) {
+
+
+        // Initialise un tableau avec les pixels de l'image //
+
+        int[] pixel = new int[bmp.getHeight() * bmp.getWidth()];
+        bmp.getPixels(pixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+
+
+        // calcul le niveau de de rouge, vert et bleue de chaque pixel et le place dans  3 tableaux différents//
+
+        int[] redtab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'r');
+        int[] greentab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'g');
+        int[] bluetab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'b');
+
+
+        if (Changement == false){
+
+
+            // Ressert l'histogramme (diminituion du constraste)  //
+
+
+        for (int x =0; x < redtab.length; x++){
+            if (redtab[x] < 127){
+                redtab[x] = redtab[x] + 15;
+            } else if (redtab[x] > 127) {
+                redtab[x] = redtab[x] - 15;
+            }
+
+        }
+
+        for (int x =0; x < redtab.length; x++){
+            if (greentab[x] < 127){
+                greentab[x] = greentab[x] + 15;
+            } else if (greentab[x] > 127) {
+                greentab[x] = greentab[x] - 15;
+            }
+
+            }
+
+            for (int x =0; x < redtab.length; x++){
+                if (bluetab[x] < 127){
+                    bluetab[x] = bluetab[x] + 15;
+                } else if (bluetab[x] > 127) {
+                    bluetab[x] = bluetab[x] - 15;
+                }
+
+            }
+
+        int[] histred = new int[256];
+        int[] histgreen = new int[256];
+        int[] histblue = new int[256];
+
+            /// Créer 3 histogrammes pour chaque couleurs ///
+
+
+            for (int index = 0; index < redtab.length; index++) {
+                histred[redtab[index]]++;
+            }
+
+            for (int index = 0; index < greentab.length; index++) {
+                histgreen[greentab[index]]++;
+            }
+
+            for (int index = 0; index < bluetab.length; index++) {
+                histblue[bluetab[index]]++;
+            }
+
+
+
+            int[] newpixel = new int[bmp.getWidth() * bmp.getHeight()];
+
+            for (int x = 0; x < pixel.length; x++) {
+
+                int redpixel = redtab[x];
+                int greenpixel = greentab[x];
+                int bluepixel = bluetab[x] ;
+
+                newpixel[x] = Color.argb(1, redpixel, greenpixel, bluepixel);
+            }
+            bmp.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+
+
+
+
+        } else if (Changement == true) {
+
+
+
+
+
+
+            //// Méthode Dynamique ////
+
+
+
+            int[] histred = new int[256];
+            int[] histgreen = new int[256];
+            int[] histblue = new int[256];
+
+            /// Créer 3 histogrammes pour chaque couleur ///
+
+
+            for (int index = 0; index < redtab.length; index++) {
+                histred[redtab[index]]++;
+            }
+
+            for (int index = 0; index < greentab.length; index++) {
+                histgreen[greentab[index]]++;
+            }
+
+            for (int index = 0; index < bluetab.length; index++) {
+                histblue[bluetab[index]]++;
+            }
+
+
+            //Recupère le max et min de chaque histogramme  //
+
+            int maxred = 0;
+            int minred = 0;
+            int var = 0;
+
+            while (histred[var] == 0) {
+                var++;
+            }
+            minred = var;
+            var = 255;
+
+            while (histred
+                    [var] == 0) {
+                var--;
+            }
+            maxred = var;
+
+            //
+
+            int maxgreen = 0;
+            int mingreen = 0;
+            var = 0;
+
+            while (histgreen[var] == 0) {
+                var++;
+            }
+            mingreen = var;
+            var = 255;
+
+            while (histgreen[var] == 0) {
+                var--;
+            }
+            maxgreen = var;
+
+
+            int maxblue = 0;
+            int minblue = 0;
+            var = 0;
+
+            while (histblue[var] == 0) {
+                var++;
+            }
+            minblue = var;
+            var = 255;
+
+            while (histblue[var] == 0) {
+                var--;
+            }
+            maxblue = var;
+
+
+            int[] newpixel = new int[bmp.getWidth() * bmp.getHeight()];
+
+            for (int x = 0; x < pixel.length; x++) {
+
+                int redpixel = 255*(redtab[x] - minred)/(maxred - minred);
+                int greenpixel = 255*(greentab[x] - mingreen)/(maxgreen - mingreen);
+                int bluepixel = 255*(bluetab[x] - minblue)/(maxblue - minblue);
+
+                newpixel[x] = Color.argb(1, redpixel, greenpixel, bluepixel);
+            }
+            bmp.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+        }
+
+    }
+
+
+
+    /// CONTRASTE RENDERSCRIPT ///
+
+
+    private void ContrasteCouleursDRS(Bitmap bmp) {
+        RenderScript rs = RenderScript.create(this);
+
+        Allocation input = Allocation.createFromBitmap(rs, bmp);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptC_contrasteD contraste = new ScriptC_contrasteD(rs);
+
+        contraste.forEach_GetMinMaxColor(input);
+        contraste.invoke_createlutred();
+        contraste.invoke_createlutgreen();
+        contraste.invoke_createlutblue();
+        contraste.forEach_Final(input,output);
+
+
+        output.copyTo(bmp);
+
+        input.destroy();
+        output.destroy();
+        contraste.destroy();
+        rs.destroy();
+
+    }
+
+
+
+
+    /// Flou Lisse ///
+
+
+    /// JAVA VERSION ///
+
+
+
+    private Bitmap Floubasique(Bitmap bmp){
+
+
+        ImageView i = (ImageView) findViewById(R.id.imageView5);
+        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
+        /// taille du masque appliqué ///
+
+
+        int n = 5 ;
+        int div = (2*n +1)*(2*n+1);
+
+
+
+        int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
+        int [] newpixel = new int[bmp.getWidth()*bmp.getHeight()];
+        bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+
+
+
+        for (int x = n; x < newimg.getWidth()-n; x++){
+            for (int y = n; y < newimg.getHeight()-n; y++ ){
+
+                /// va chercher les valeurs r g b des pixels autours //
+
+
+                int a =0;
+                int b = 0;
+                int c = 0;
+                for (int x2 = x -n; x2 <= x+n; x2++) {
+                    for (int y2 = y - n; y2 <= y + n; y2++) {
+                        int e = pixel[x2 + (y2*bmp.getWidth())];
+                        a = a + Color.red(e);
+                        b = b + Color.green(e);
+                        c = c + Color.blue(e);
+
+                    }
+                }
+
+                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,a/div,b/div,c/div);
+
+
+
+            }
+        }
+
+        newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        i.setImageBitmap(newimg);
+        return newimg;
+
+
+    }
+
+
+
+
+    /// Flou gaussien ////
+
+
+    /// Même fonction que la précédente mais on rajoute une matrice défini à l'avance ////
+
+
+    private Bitmap Flougaussien(Bitmap bmp, int [][] matrix){
+        ImageView i = (ImageView) findViewById(R.id.imageView5);
+        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
+        /// taille du masque appliqué ///
+
+
+        int n = matrix.length/2;
+        int div = 0;
+
+        // Parcours la matrice ///
+
+
+        for (int e =0;  e< matrix.length; e++){
+            for (int f =0;  f< matrix.length; f++) {
+                div += matrix[e][f];
+            }
+        }
+
+
+
+        int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
+        int [] newpixel = new int[bmp.getWidth()*bmp.getHeight()];
+        bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+
+
+
+        for (int x = n; x < newimg.getWidth()-n; x++){
+            for (int y = n; y < newimg.getHeight()-n; y++ ){
+
+                /// Va chercher les valeurs r g b des pixels autours //
+
+
+                int a =0;
+                int b = 0;
+                int c = 0;
+                for (int x2 = 0; x2 < matrix.length; x2++) {
+                    for (int y2 = 0; y2 < matrix.length; y2++) {
+                        int e = pixel[(x - matrix.length/2)+x2 + ((y - matrix.length/2)+y2)*bmp.getWidth()];
+                        a = a + Color.red(e) * matrix[x2][y2];
+                        b = b + Color.green(e)  * matrix[x2][y2];
+                        c = c + Color.blue(e)  * matrix[x2][y2];
+
+                    }
+                }
+
+                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,a/div,b/div,c/div);
+
+
+
+            }
+        }
+        newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        i.setImageBitmap(newimg);
+        return newimg;
+
+    }
