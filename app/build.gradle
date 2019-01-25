@@ -4,6 +4,8 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.example.aaneas.imgeditor"
+        renderscriptTargetApi 18
+        renderscriptSupportModeEnabled true
         minSdkVersion 15
         targetSdkVersion 26
         versionCode 1

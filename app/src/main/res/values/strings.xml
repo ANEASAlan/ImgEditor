@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">ImgEditor</string>
+    <string-array name="Monspinner">
+        <item>Aucun filtre</item>
+        <item>Gris1</item>
+        <item>Gris2</item>
+        <item>Gris rs1</item>
+        <item>Gris rs2</item>
+        <item>teinte1</item>
+        <item>teinte2</item>
+        <item>teinte rs1</item>
+        <item>teinte rs2</item>
+        <item>conserve1</item>
+        <item>conserve2</item>
+        <item>conserve rs1</item>
+        <item>conserve rs2</item>
+    </string-array>
+
+
+
 </resources>
