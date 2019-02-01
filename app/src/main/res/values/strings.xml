@@ -14,8 +14,11 @@
         <item>conserve2</item>
         <item>conserve rs1</item>
         <item>conserve rs2</item>
+        <item>contraste dynamique img2</item>
+        <item>contraste eagliseur img2</item>
+        <item>contraste rs img2</item>
     </string-array>
-
+    <string name="title_activity_contraste">Contraste</string>
 
 
 </resources>
