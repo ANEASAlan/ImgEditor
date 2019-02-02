@@ -1,20 +1,19 @@
 package com.example.aaneas.imgeditor;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
-import com.android.rssample.*;
+import com.android.rssample.ScriptC_grey;
 
 
-public class Gris extends AppCompatActivity{
-
-    public Gris( Bitmap map, String type){
+public class Gris extends MainActivity{
+    public Gris( Bitmap map, String type, Context context){
         if (type == "Gris"){
             toGrey(map);
-        }else if (type == "RS"){ /// Ne marche pas
-            toGreyRS(map);
+        }else if (type == "RS"){
+            toGreyRS(map,context);
         }
     }
 
@@ -33,8 +32,8 @@ public class Gris extends AppCompatActivity{
 
     ///RENDERSCRIPT VERSION///
 
-    private void toGreyRS(Bitmap bmp) {
-        RenderScript rs = RenderScript.create(this);
+    private void toGreyRS(Bitmap bmp, Context context) {
+        RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());

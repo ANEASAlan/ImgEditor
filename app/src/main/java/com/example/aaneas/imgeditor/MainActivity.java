@@ -1,5 +1,6 @@
 package com.example.aaneas.imgeditor;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
@@ -15,8 +16,6 @@ import android.widget.TextView;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
-
-
         @Override
         protected void onCreate(Bundle savedInstanceState) {
 
@@ -38,11 +37,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-        
+
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
             boolean swap = true;
+
             TextView tv = (TextView) findViewById(R.id.taille);
             ImageView i = (ImageView) findViewById(R.id.imageView5);
             BitmapFactory.Options options = new BitmapFactory.Options();
@@ -60,100 +60,115 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     tv.setText(" ");
                     break;
                 case 1:
-                    new Gris(image1, "Gris");
+                    new Gris(image1, "Gris", this);
                     long timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Gris image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Gris image1 = " + timeafter + " ms");
 
                     break;
                 case 2:
-                    new Gris(image2, "Gris");
+                    new Gris(image2, "Gris", this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Gris image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Gris image2 = " + timeafter + " ms");
 
                     break;
                 case 3:
-                    new Gris(image1, "RS");
+                    new Gris(image1, "RS", this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Gris RS image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Gris RS image 1= " + timeafter + " ms");
 
                     break;
                 case 4:
-                    new Gris(image2, "RS");
+                    new Gris(image2, "RS",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Gris RS image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Gris RS image 2= " + timeafter + " ms");
 
                     break;
                 case 5:
-                    new Couleurs(image1,"Teinte");
+                    new Couleurs(image1,"Teinte",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Coloriser image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Coloriser image1= " + timeafter + " ms");
                     break;
                 case 6:
-                    new Couleurs(image2,"Teinte");
+                    new Couleurs(image2,"Teinte",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Coloriser image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Coloriser image2= " + timeafter + " ms");
                     break;
                 case 7:
-                    new Couleurs(image1,"TeinteRS");
+                    new Couleurs(image1,"TeinteRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Coloriser RS image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Coloriser RS image1= " + timeafter + " ms");
                     break;
                 case 8:
-                    new Couleurs(image2,"TeinteRS");
+                    new Couleurs(image2,"TeinteRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Coloriser RS image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Coloriser RS image2= " + timeafter + " ms");
                     break;
                 case 9:
-                    new Couleurs(image1,"ConserveRouge");
+                    new Couleurs(image1,"ConserveRouge",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Conserve image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Conserve image1= " + timeafter + " ms");
                     break;
                 case 10:
-                    new Couleurs(image2,"ConserveRouge");
+                    new Couleurs(image2,"ConserveRouge",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Conserve image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Conserve image2= " + timeafter + " ms");
                     break;
                 case 11:
-                    new Couleurs(image1,"ConserveRS");
+                    new Couleurs(image1,"ConserveRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Conserve RS image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Conserve RS image1= " + timeafter + " ms");
                     break;
                 case 12:
-                    new Couleurs(image1,"ConserveRS");
+                    new Couleurs(image2,"ConserveRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Conserve RS image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Conserve RS image2= " + timeafter + " ms");
                     break;
                 case 13:
-                    new Contraste(image2, "Dynamique");
+                    new Contraste(image2, "Dynamique",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Contraste image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
                 case 14:
-                    new Contraste(image2, "Egaliseur");
+                    new Contraste(image2, "Egaliseur",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Contraste image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
                 case 15:
-                    new Contraste(image2, "RS");
+                    new Contraste(image2, "RS",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Contraste image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
-
+                    /* //////////////// Flou ne marche pas encore //////////
+                case 16:
+                    new Flous(image1, "Flou basique",this);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution flou image1 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution flou image1= " + timeafter + " ms");
+                    break;
+                case 17:
+                    new Flous(image2, "Flou basique",this);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution flou image2 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution flou image2= " + timeafter + " ms");
+                    break;
+                case 18:
+                    break;
+                    */
             }
             if(swap ==true) {
                 i.setImageBitmap(image1);

@@ -2,23 +2,24 @@ package com.example.aaneas.imgeditor;
 
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.Bitmap;
+import android.content.Context;
 import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 
 import com.android.rssample.*;
 
-public class Couleurs extends AppCompatActivity {
+public class Couleurs extends MainActivity {
 
-    public Couleurs(Bitmap map, String type){
+    public Couleurs(Bitmap map, String type, Context context){
         if(type == "Teinte"){
             Coloriser(map);
-        }else if(type == "TeinteRS"){ //// MARCHE PAS
-            ColoriserRS(map);
+        }else if(type == "TeinteRS"){
+            ColoriserRS(map,context);
         }else if(type == "ConserveRouge"){
             Conserve(map, "red");
-        }else if(type == "ConserveRS"){ /// MARCHE PAS
-            ConserveRS(map);
+        }else if(type == "ConserveRS"){
+            ConserveRS(map,context);
         }
     }
 
@@ -53,8 +54,8 @@ public class Couleurs extends AppCompatActivity {
 
     /// RENDERSCRIPT COLORISER VERSION///
 
-    private void ColoriserRS(Bitmap bmp) {
-        RenderScript rs = RenderScript.create(this);
+    private void ColoriserRS(Bitmap bmp, Context context) {
+        RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
@@ -135,8 +136,8 @@ public class Couleurs extends AppCompatActivity {
     /// RENDERSCRIPT VERSION ///
 
 
-    private void ConserveRS(Bitmap bmp) {
-        RenderScript rs = RenderScript.create(this);
+    private void ConserveRS(Bitmap bmp, Context context) {
+        RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());

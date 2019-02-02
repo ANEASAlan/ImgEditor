@@ -1,5 +1,6 @@
 package com.example.aaneas.imgeditor;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -10,23 +11,27 @@ import com.android.rssample.*;
 
 
 
-public class Contraste  extends AppCompatActivity {
+public class Contraste  extends MainActivity {
 
-    public Contraste(Bitmap map, String type){
+    public Contraste(Bitmap map, String type, Context context){
 
         if( type == "Dynamique") {
             ContrasteCouleurDynamique(map);
         }else if (type == " Egaliseur"){
+
+
             ContrasteCouleurEgaliseur(map); /// A FAIRE
+
+
         }else if (type == "RS") {
-            ContrasteDynamiqueRS(map); /// NE MARCHE PAS
+            ContrasteDynamiqueRS(map, context);
         }
     }
 
 
 
-    private Bitmap ContrasteDynamiqueRS(Bitmap bmp) {
-        RenderScript rs = RenderScript.create(this);
+    private Bitmap ContrasteDynamiqueRS(Bitmap bmp,Context context) {
+        RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
