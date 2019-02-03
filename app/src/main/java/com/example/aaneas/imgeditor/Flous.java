@@ -3,49 +3,33 @@ package com.example.aaneas.imgeditor;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 
 
 public class Flous extends MainActivity{
-    /*
-    public Flous(Bitmap map ,String type, Context context){
+
+    public Flous(Bitmap map ,String type, Context context, ImageView i, int n, int [][] maxtrix){
         if (type == "Flou basique"){
-            Floubasique(map);
+            Floubasique(map,i,n);
         }else if (type == "Flou gaussien"){
-            //Flougaussien(map,int [][], i);
+            Flougaussien(map,maxtrix, i);
         }
     }
 
 
-    /// Flou Lisse ///
+    /// Flou Lisse (n = taille du masque) ///
 
+    private Bitmap Floubasique(Bitmap bmp, ImageView i, int n  ){
 
-    /// JAVA VERSION ///
-
-
-
-    private Bitmap Floubasique(Bitmap bmp){
-
-        ImageView i = (ImageView) findViewById(R.id.imageView5);
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
-        /// taille du masque appliqué ///
-
-
-        int n = 5 ;
         int div = (2*n +1)*(2*n+1);
-
-
 
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
         int [] newpixel = new int[bmp.getWidth()*bmp.getHeight()];
         bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-
-
 
         for (int x = n; x < newimg.getWidth()-n; x++){
             for (int y = n; y < newimg.getHeight()-n; y++ ){
@@ -72,29 +56,18 @@ public class Flous extends MainActivity{
 
             }
         }
-
         newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
         i.setImageBitmap(newimg);
         return newimg;
 
-
     }
-
-
 
 
     /// Flou gaussien ////
 
+    private Bitmap Flougaussien(Bitmap bmp, int [][] matrix, ImageView i){
 
-    /// Même fonction que la précédente mais on rajoute une matrice défini à l'avance ////
-
-
-    private Bitmap Flougaussien(Bitmap bmp, int [][] matrix){
-        ImageView i = (ImageView) findViewById(R.id.imageView5);
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-
-        /// taille du masque appliqué ///
-
 
         int n = matrix.length/2;
         int div = 0;
@@ -146,6 +119,6 @@ public class Flous extends MainActivity{
         return newimg;
 
     }
-    */
+
 
 }

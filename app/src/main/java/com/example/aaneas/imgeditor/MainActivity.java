@@ -55,6 +55,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Bitmap image2 = BitmapFactory.decodeResource(getResources(), R.drawable.index2, options);
             Long time = System.currentTimeMillis();
 
+
+            // matrice pour flou gaussien
+            int [][] gaussien = new int[][]{
+                    {1,2,3,2,1},
+                    {2,6,8,6,2},
+                    {3,8,10,8,3},
+                    {2,6,8,6,2},
+                    {1,2,3,2,1}
+            };
+
             switch (position) {
                 case 0:
                     tv.setText(" ");
@@ -153,22 +163,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     tv.setText("temps d'execution Contraste image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
-                    /* //////////////// Flou ne marche pas encore //////////
+
                 case 16:
-                    new Flous(image1, "Flou basique",this);
+                    swap = false;
+                    ImageView ia = (ImageView) findViewById(R.id.imageView5);
+                    new Flous(image1, "Flou basique",this, ia, 10,gaussien); // (n taille du masque)
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution flou image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution flou image1= " + timeafter + " ms");
                     break;
                 case 17:
-                    new Flous(image2, "Flou basique",this);
+                    swap = false;
+                    ImageView ib = (ImageView) findViewById(R.id.imageView5);
+                    new Flous(image2, "Flou basique",this, ib, 5,gaussien);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution flou image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution flou image2= " + timeafter + " ms");
                     break;
                 case 18:
+                    swap = false;
+                    ImageView ic = (ImageView) findViewById(R.id.imageView5);
+                    new Flous(image2, "Flou gaussien",this, ic, 0, gaussien);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution flou  gaussien image2 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
-                    */
+
             }
             if(swap ==true) {
                 i.setImageBitmap(image1);

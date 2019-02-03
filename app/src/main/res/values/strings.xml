@@ -17,9 +17,13 @@
         <item>contraste dynamique img2</item>
         <item>contraste egaliseur img2</item>
         <item>contraste rs img2</item>
-        <item>flou basique 1</item>
-        <item>flou basique 2</item>
-        <item>flou gaussien 2</item>
+        <item>flou basique Img1</item>
+        <item>flou basique Img2</item>
+        <item>flou gaussien Img2</item>
+        <item>flou basique RS Img1</item>
+        <item>flou basique RS Img2</item>
+        <item>contours img1</item>
+        <item>contous img2</item>
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
 

@@ -1,6 +1,5 @@
 package com.example.aaneas.imgeditor;
 
-import android.support.v7.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.content.Context;
 import android.graphics.Color;
