@@ -16,7 +16,7 @@ public class Contraste  extends MainActivity {
     public Contraste(Bitmap map, ImageView i, String type, Context context){
 
         if( type == "Dynamique") {
-            ContrasteCouleurDynamique(map);
+            ContrasteCouleurDynamique(map,i);
         }else if (type == "Egaliseur"){
 
             ContrasteCouleurEgaliseur(map);

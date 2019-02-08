@@ -9,12 +9,14 @@
         <item>teinte rs</item>
         <item>conserve</item>
         <item>conserve rs</item>
-        <item>contraste dynamique img</item>
-        <item>contraste egaliseur img</item>
-        <item>contraste rs img</item>
-        <item>flou basique Img</item>
-        <item>flou gaussien Img</item>
-        <item>flou basique RS Img</item>
+        <item>contraste dynamique </item>
+        <item>contraste egaliseur </item>
+        <item>contraste rs </item>
+        <item>flou basique </item>
+        <item>flou gaussien </item>
+        <item>flou basique RS</item>
+        <item>luminosité +</item>
+        <item>flou luminosité + RS</item>
         <item>contours img1</item>
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
