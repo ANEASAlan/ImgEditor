@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
+import android.widget.ImageView;
 
 import com.android.rssample.*;
 
@@ -12,7 +13,7 @@ import com.android.rssample.*;
 
 public class Contraste  extends MainActivity {
 
-    public Contraste(Bitmap map, String type, Context context){
+    public Contraste(Bitmap map, ImageView i, String type, Context context){
 
         if( type == "Dynamique") {
             ContrasteCouleurDynamique(map);
@@ -86,7 +87,9 @@ public class Contraste  extends MainActivity {
 
     /// CONTRASTE DYNAMIQUE EN COULEUR ///
 
-    private void ContrasteCouleurDynamique(Bitmap bmp) {
+    private Bitmap ContrasteCouleurDynamique(Bitmap bmp, ImageView i) {
+
+        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
 
         int[] pixel = new int[bmp.getHeight() * bmp.getWidth()];
@@ -181,10 +184,15 @@ public class Contraste  extends MainActivity {
                 int greenpixel = 255*(greentab[x] - mingreen)/(maxgreen - mingreen);
                 int bluepixel = 255*(bluetab[x] - minblue)/(maxblue - minblue);
 
-                newpixel[x] = Color.argb(1, redpixel, greenpixel, bluepixel);
-            }
-            bmp.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
-        }
+                newpixel[x] = Color.argb(255, redpixel, greenpixel, bluepixel);
+
+
+              }
+            newimg.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+            i.setImageBitmap(newimg);
+            return newimg;
+
+    }
 
 
     /// Faire fonction de contraste en egalisant l'histogramme /////

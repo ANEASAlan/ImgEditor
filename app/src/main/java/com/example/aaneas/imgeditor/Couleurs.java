@@ -4,20 +4,28 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
+
+import android.support.v8.renderscript.RenderScript;
+import android.widget.ImageView;
+
 import com.android.rssample.*;
 import android.support.v8.renderscript.RenderScript;
 
 public class Couleurs extends MainActivity {
 
-    public Couleurs(Bitmap map, String type, Context context){
+    public Couleurs(Bitmap map, ImageView i, String type, Context context){
         if(type == "Teinte"){
-            Coloriser(map);
+            Coloriser(map,i);
+            i.setImageBitmap(map);
         }else if(type == "TeinteRS"){
             ColoriserRS(map,context);
+            i.setImageBitmap(map);
         }else if(type == "ConserveRouge"){
-            Conserve(map, "red");
+            Conserve(map, "red",i);
+            i.setImageBitmap(map);
         }else if(type == "ConserveRS"){
             ConserveRS(map,context);
+            i.setImageBitmap(map);
         }
     }
 
@@ -26,7 +34,10 @@ public class Couleurs extends MainActivity {
 
     /// CHANGER LA TEINTE D'UNE IMAGE ///
 
-    protected void Coloriser(Bitmap bmp) {
+    protected Bitmap Coloriser(Bitmap bmp, ImageView image) {
+
+        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
         float random = (float) (Math.random() * 360);
         float HSV[] = {0, 0, 0};
 
@@ -44,8 +55,9 @@ public class Couleurs extends MainActivity {
             color[i] = Color.HSVToColor(HSV);
             ///
         }
-        bmp.setPixels(color,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-
+        newimg.setPixels(color,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        image.setImageBitmap(newimg);
+        return newimg;
 
 
     }
@@ -81,7 +93,9 @@ public class Couleurs extends MainActivity {
 
     /// CONSERVER UNE COULEUR ///
 
-    private void Conserve(Bitmap bmp, String color) {
+    private Bitmap Conserve(Bitmap bmp, String color,ImageView image) {
+
+        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
         int [] colortab = new int[bmp.getWidth()*bmp.getHeight()];
@@ -97,9 +111,9 @@ public class Couleurs extends MainActivity {
             if ( color == "red"){
                 double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
                 if (Color.green(a)<= 100 && Color.blue(a) <= 100 && Color.red(a)> Color.green(a) && Color.red(a)>Color.blue(a)){
-                    colortab[y] = Color.argb(1,Color.red(a), Color.green(a) ,Color.blue(a) );
+                    colortab[y] = Color.argb(255,Color.red(a), Color.green(a) ,Color.blue(a) );
                 }else{
-                    colortab[y] = Color.argb(1,(int) Grey, (int) Grey, (int) Grey);
+                    colortab[y] = Color.argb(255,(int) Grey, (int) Grey, (int) Grey);
                 }
 
                 /// Conserve uniquement le vert ///
@@ -108,9 +122,9 @@ public class Couleurs extends MainActivity {
             }else if( color == "green"){
                 double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
                 if (Color.blue(a)<= 200 && Color.red(a) <= 200 && Color.green(a)> Color.red(a) && Color.green(a)>Color.blue(a)){
-                    colortab[y] = Color.argb(1,Color.red(a), Color.green(a) ,Color.blue(a) );
+                    colortab[y] = Color.argb(255,Color.red(a), Color.green(a) ,Color.blue(a) );
                 }else{
-                    colortab[y] = Color.argb(1,(int) Grey, (int) Grey, (int) Grey);
+                    colortab[y] = Color.argb(255,(int) Grey, (int) Grey, (int) Grey);
                 }
                 /// Conserve uniquement le bleu ///
 
@@ -118,17 +132,17 @@ public class Couleurs extends MainActivity {
             }else if( color == "blue"){
                 double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
                 if (Color.green(a)<= 200 && Color.red(a) <= 200 && Color.blue(a)> Color.red(a) && Color.blue(a)>Color.green(a)){
-                    colortab[y] = Color.argb(1,Color.red(a), Color.green(a) ,Color.blue(a) );
+                    colortab[y] = Color.argb(255,Color.red(a), Color.green(a) ,Color.blue(a) );
                 }else{
-                    colortab[y] = Color.argb(1,(int) Grey, (int) Grey, (int) Grey);
+                    colortab[y] = Color.argb(255,(int) Grey, (int) Grey, (int) Grey);
                 }
 
             }
 
         }
-        bmp.setPixels(colortab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-
-
+        newimg.setPixels(colortab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        image.setImageBitmap(newimg);
+        return newimg;
     }
 
     /// RENDERSCRIPT VERSION ///

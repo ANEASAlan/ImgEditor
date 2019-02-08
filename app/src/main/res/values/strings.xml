@@ -1,34 +1,21 @@
+
 <resources>
     <string name="app_name">ImgEditor</string>
     <string-array name="Monspinner">
-        /*0 */<item>Aucun filtre</item>
-        /*1 */<item>Gris1</item>
-        /*2 */<item>Gris2</item>
-        /*3 */<item>Gris rs1</item>
-        /*4 */<item>Gris rs2</item>
-        /*5 */<item>teinte1</item>
-        /*6 */<item>teinte2</item>
-        /*7 */<item>teinte rs1</item>
-        /*8 */<item>teinte rs2</item>
-        /*9 */<item>conserve1</item>
-        /*10*/<item>conserve2</item>
-        /*11*/<item>conserve rs1</item>
-        /*12*/<item>conserve rs2</item>
-        /*13*/<item>contraste dynamique img2</item>
-        /*14*/<item>contraste dynamique rs img2</item>
-        /*15*/<item>contraste egaliseur img2</item>
-        /*16*/<item>contraste egaliseur rs img2</item>
-        /*17*/<item>flou moyenneur Img1</item>
-        /*18*/<item>flou moyenneur Img2</item>
-        /*19*/<item>flou gaussien Img2</item>
-        /*20*/<item>flou moyenneur RS Img1</item>
-        /*21*/<item>flou moyenneur RS Img2</item>
-        /*22*/<item>contours img1</item>
-        /*23*/<item>contours img2</item>
-        /*24*/<item>luminosite img1</item>
-        /*25*/<item>luminosite img2</item>
-        /*26*/<item>luminositeRS img1</item>
-        /*27*/<item>luminositeRS img2</item>
+        <item>Aucun filtre</item>
+        <item>Gris</item>
+        <item>Gris rs</item>
+        <item>teinte</item>
+        <item>teinte rs</item>
+        <item>conserve</item>
+        <item>conserve rs</item>
+        <item>contraste dynamique img</item>
+        <item>contraste egaliseur img</item>
+        <item>contraste rs img</item>
+        <item>flou basique Img</item>
+        <item>flou gaussien Img</item>
+        <item>flou basique RS Img</item>
+        <item>contours img1</item>
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
 
