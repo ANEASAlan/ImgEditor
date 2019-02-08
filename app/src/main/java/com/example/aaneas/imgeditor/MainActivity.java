@@ -188,7 +188,30 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     tv.setText("temps d'execution flou  gaussien image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
-
+                case 23:
+                    new Luminosite(image1, "Luminosite", this);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution Luminosite image1 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution Luminosite image1 = " + timeafter + " ms");
+                    break;
+                case 24:
+                    new Luminosite(image2, "Luminosite", this);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution Luminosite image2 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution Luminosite image2 = " + timeafter + " ms");
+                    break;
+                case 25:
+                    new Luminosite(image1, "LuminositeRS", this);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution LuminositeRS image1 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution LuminositeRS image1 = " + timeafter + " ms");
+                    break;
+                case 26:
+                    new Luminosite(image2, "LuminositeRS", this);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution LuminositeRS image2 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution LuminositeRS image2 = " + timeafter + " ms");
+                    break;
             }
             if(swap ==true) {
                 i.setImageBitmap(image1);

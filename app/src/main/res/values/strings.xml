@@ -1,29 +1,33 @@
 <resources>
     <string name="app_name">ImgEditor</string>
     <string-array name="Monspinner">
-        <item>Aucun filtre</item>
-        <item>Gris1</item>
-        <item>Gris2</item>
-        <item>Gris rs1</item>
-        <item>Gris rs2</item>
-        <item>teinte1</item>
-        <item>teinte2</item>
-        <item>teinte rs1</item>
-        <item>teinte rs2</item>
-        <item>conserve1</item>
-        <item>conserve2</item>
-        <item>conserve rs1</item>
-        <item>conserve rs2</item>
-        <item>contraste dynamique img2</item>
-        <item>contraste egaliseur img2</item>
-        <item>contraste rs img2</item>
-        <item>flou basique Img1</item>
-        <item>flou basique Img2</item>
-        <item>flou gaussien Img2</item>
-        <item>flou basique RS Img1</item>
-        <item>flou basique RS Img2</item>
-        <item>contours img1</item>
-        <item>contous img2</item>
+        /*0 */<item>Aucun filtre</item>
+        /*1 */<item>Gris1</item>
+        /*2 */<item>Gris2</item>
+        /*3 */<item>Gris rs1</item>
+        /*4 */<item>Gris rs2</item>
+        /*5 */<item>teinte1</item>
+        /*6 */<item>teinte2</item>
+        /*7 */<item>teinte rs1</item>
+        /*8 */<item>teinte rs2</item>
+        /*9 */<item>conserve1</item>
+        /*10*/<item>conserve2</item>
+        /*11*/<item>conserve rs1</item>
+        /*12*/<item>conserve rs2</item>
+        /*13*/<item>contraste dynamique img2</item>
+        /*14*/<item>contraste egaliseur img2</item>
+        /*15*/<item>contraste rs img2</item>
+        /*16*/<item>flou basique Img1</item>
+        /*17*/<item>flou basique Img2</item>
+        /*18*/<item>flou gaussien Img2</item>
+        /*19*/<item>flou basique RS Img1</item>
+        /*20*/<item>flou basique RS Img2</item>
+        /*21*/<item>contours img1</item>
+        /*22*/<item>contours img2</item>
+        /*23*/<item>luminosite img1</item>
+        /*24*/<item>luminosite img2</item>
+        /*25*/<item>luminositeRS img1</item>
+        /*26*/<item>luminositeRS img2</item>
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
 
