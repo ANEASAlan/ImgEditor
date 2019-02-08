@@ -2,28 +2,19 @@
     <string name="app_name">ImgEditor</string>
     <string-array name="Monspinner">
         <item>Aucun filtre</item>
-        <item>Gris1</item>
-        <item>Gris2</item>
-        <item>Gris rs1</item>
-        <item>Gris rs2</item>
-        <item>teinte1</item>
-        <item>teinte2</item>
-        <item>teinte rs1</item>
-        <item>teinte rs2</item>
-        <item>conserve1</item>
-        <item>conserve2</item>
-        <item>conserve rs1</item>
-        <item>conserve rs2</item>
-        <item>contraste dynamique img2</item>
-        <item>contraste egaliseur img2</item>
-        <item>contraste rs img2</item>
-        <item>flou basique Img1</item>
-        <item>flou basique Img2</item>
-        <item>flou gaussien Img2</item>
-        <item>flou basique RS Img1</item>
-        <item>flou basique RS Img2</item>
+        <item>Gris</item>
+        <item>Gris rs</item>
+        <item>teinte</item>
+        <item>teinte rs</item>
+        <item>conserve</item>
+        <item>conserve rs</item>
+        <item>contraste dynamique img</item>
+        <item>contraste egaliseur img</item>
+        <item>contraste rs img</item>
+        <item>flou basique Img</item>
+        <item>flou gaussien Img</item>
+        <item>flou basique RS Img</item>
         <item>contours img1</item>
-        <item>contous img2</item>
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
 
