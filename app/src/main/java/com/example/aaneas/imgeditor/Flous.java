@@ -37,20 +37,20 @@ public class Flous extends MainActivity{
                 /// va chercher les valeurs r g b des pixels autours //
 
 
-                int a =0;
+                int r =0;
+                int g = 0;
                 int b = 0;
-                int c = 0;
                 for (int x2 = x -n; x2 <= x+n; x2++) {
                     for (int y2 = y - n; y2 <= y + n; y2++) {
                         int e = pixel[x2 + (y2*bmp.getWidth())];
-                        a = a + Color.red(e);
-                        b = b + Color.green(e);
-                        c = c + Color.blue(e);
+                        r = r + Color.red(e);
+                        g = g + Color.green(e);
+                        b = b + Color.blue(e);
 
                     }
                 }
 
-                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,a/div,b/div,c/div);
+                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
 
 
 
@@ -119,6 +119,9 @@ public class Flous extends MainActivity{
         return newimg;
 
     }
+
+
+
 
 
 }

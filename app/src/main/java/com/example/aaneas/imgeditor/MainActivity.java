@@ -152,19 +152,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
                 case 14:
-                    new Contraste(image2, "Egaliseur",this);
+                    new Contraste(image2, "DRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Contraste image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
                 case 15:
-                    new Contraste(image2, "RS",this);
+                    new Contraste(image2, "Egaliseur",this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Contraste image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
-
                 case 16:
+                    new Contraste(image2, "ERS",this);
+                    timeafter = System.currentTimeMillis() - time;
+                    tv.setText("temps d'execution Contraste image2 = " + timeafter + " ms");
+                    System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
+                    break;
+                case 17:
                     swap = false;
                     ImageView ia = (ImageView) findViewById(R.id.imageView5);
                     new Flous(image1, "Flou basique",this, ia, 10,gaussien); // (n taille du masque)
@@ -172,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     tv.setText("temps d'execution flou image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution flou image1= " + timeafter + " ms");
                     break;
-                case 17:
+                case 18:
                     swap = false;
                     ImageView ib = (ImageView) findViewById(R.id.imageView5);
                     new Flous(image2, "Flou basique",this, ib, 5,gaussien);
@@ -180,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     tv.setText("temps d'execution flou image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution flou image2= " + timeafter + " ms");
                     break;
-                case 18:
+                case 19:
                     swap = false;
                     ImageView ic = (ImageView) findViewById(R.id.imageView5);
                     new Flous(image2, "Flou gaussien",this, ic, 0, gaussien);
@@ -188,25 +193,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     tv.setText("temps d'execution flou  gaussien image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
-                case 23:
+                case 24:
                     new Luminosite(image1, "Luminosite", this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Luminosite image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Luminosite image1 = " + timeafter + " ms");
                     break;
-                case 24:
+                case 25:
                     new Luminosite(image2, "Luminosite", this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution Luminosite image2 = " + timeafter + " ms");
                     System.out.println( "temps d'execution Luminosite image2 = " + timeafter + " ms");
                     break;
-                case 25:
+                case 26:
                     new Luminosite(image1, "LuminositeRS", this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution LuminositeRS image1 = " + timeafter + " ms");
                     System.out.println( "temps d'execution LuminositeRS image1 = " + timeafter + " ms");
                     break;
-                case 26:
+                case 27:
                     new Luminosite(image2, "LuminositeRS", this);
                     timeafter = System.currentTimeMillis() - time;
                     tv.setText("temps d'execution LuminositeRS image2 = " + timeafter + " ms");

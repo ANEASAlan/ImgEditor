@@ -15,19 +15,20 @@
         /*11*/<item>conserve rs1</item>
         /*12*/<item>conserve rs2</item>
         /*13*/<item>contraste dynamique img2</item>
-        /*14*/<item>contraste egaliseur img2</item>
-        /*15*/<item>contraste rs img2</item>
-        /*16*/<item>flou basique Img1</item>
-        /*17*/<item>flou basique Img2</item>
-        /*18*/<item>flou gaussien Img2</item>
-        /*19*/<item>flou basique RS Img1</item>
-        /*20*/<item>flou basique RS Img2</item>
-        /*21*/<item>contours img1</item>
-        /*22*/<item>contours img2</item>
-        /*23*/<item>luminosite img1</item>
-        /*24*/<item>luminosite img2</item>
-        /*25*/<item>luminositeRS img1</item>
-        /*26*/<item>luminositeRS img2</item>
+        /*14*/<item>contraste dynamique rs img2</item>
+        /*15*/<item>contraste egaliseur img2</item>
+        /*16*/<item>contraste egaliseur rs img2</item>
+        /*17*/<item>flou moyenneur Img1</item>
+        /*18*/<item>flou moyenneur Img2</item>
+        /*19*/<item>flou gaussien Img2</item>
+        /*20*/<item>flou moyenneur RS Img1</item>
+        /*21*/<item>flou moyenneur RS Img2</item>
+        /*22*/<item>contours img1</item>
+        /*23*/<item>contours img2</item>
+        /*24*/<item>luminosite img1</item>
+        /*25*/<item>luminosite img2</item>
+        /*26*/<item>luminositeRS img1</item>
+        /*27*/<item>luminositeRS img2</item>
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
 

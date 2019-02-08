@@ -16,15 +16,17 @@ public class Contraste  extends MainActivity {
 
         if( type == "Dynamique") {
             ContrasteCouleurDynamique(map);
-        }else if (type == " Egaliseur"){
+        }else if (type == "Egaliseur"){
+
+            ContrasteCouleurEgaliseur(map);
 
 
-            ContrasteCouleurEgaliseur(map); /// A FAIRE
-
-
-        }else if (type == "RS") {
+        }else if (type == "DRS") {
             ContrasteDynamiqueRS(map, context);
         }
+    else if (type == "ERS") {
+            contrastEgaliseurRS(map, context);
+    }
     }
 
 
@@ -189,11 +191,93 @@ public class Contraste  extends MainActivity {
 
 
     private void ContrasteCouleurEgaliseur(Bitmap bmp) {
+            int h = bmp.getHeight();
+            int w = bmp.getWidth();
+            int[] pixels = new int[w * h];
+            int c = 0;
+            int r = 0;
+            int g = 0;
+            int b = 0;
+            bmp.getPixels(pixels, 0, w, 0, 0, w, h);
+            double rmax = 0.0;
+            double rmin = 255.0;
+            double gmax = 0.0;
+            double gmin = 255.0;
+            double bmax = 0.0;
+            double bmin = 255.0;
+            for (int i = 0; i < pixels.length; i++) {
+                if(Color.red(pixels[i]) < rmin) rmin = Color.red(pixels[i]);
+                if(Color.red(pixels[i]) > rmax) rmax = Color.red(pixels[i]);
+                if(Color.green(pixels[i]) < gmin) gmin = Color.green(pixels[i]);
+                if(Color.green(pixels[i]) > gmax) gmax = Color.green(pixels[i]);
+                if(Color.blue(pixels[i]) < bmin) bmin = Color.blue(pixels[i]);
+                if(Color.blue(pixels[i]) > bmax) bmax = Color.blue(pixels[i]);
+            }
+            for (int i = 0; i < pixels.length; i++) {
+                c = pixels[i];
+                r = (int) (255.0 * ((float) (Color.red(c) - rmin)) / (rmax - rmin));
+                /*System.out.println("r\n");
+                System.out.println(Color.red(c));
+                System.out.println(r);*/
+                if(r > 255) r = 255;
+                else if (r < 0) r = 0;
+                g = (int) (255.0 * ((float) (Color.green(c) - gmin)) / (gmax - gmin));
+                if(g > 255) g = 255;
+                else if (g < 0) g = 0;
+                b = (int) (255.0 * ((float) (Color.blue(c) - bmin)) / (bmax - bmin));
+                if(b > 255) b = 255;
+                else if (b < 0) b = 0;
+                pixels[i] = Color.rgb(r,g,b);
+            }
+            bmp.setPixels(pixels, 0, w, 0, 0, w, h);
+        }
 
+
+    private void contrastEgaliseurRS(Bitmap bmp, Context context) {
+//1)  Creer un  contexte  RenderScript
+        RenderScript rs = RenderScript.create(context);
+//2)  Creer  des  Allocations  pour  passer  les  donnees
+        Allocation input = Allocation.createFromBitmap(rs, bmp);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+//3)  Creer le  script
+        ScriptC_contrast contrastScript = new ScriptC_contrast(rs);
+//4)  Copier  les  donnees  dans  les  Allocations
+// ...
+//5)  Initialiser  les  variables  globales  potentielles
+        int h = bmp.getHeight();
+        int w = bmp.getWidth();
+        int[] pixels = new int[w * h];
+        bmp.getPixels(pixels, 0, w, 0, 0, w, h);
+        double rmax = 0.0;
+        double rmin = 255.0;
+        double gmax = 0.0;
+        double gmin = 255.0;
+        double bmax = 0.0;
+        double bmin = 255.0;
+        for (int i = 0; i < pixels.length; i++) {
+            if(Color.red(pixels[i]) < rmin) rmin = Color.red(pixels[i]);
+            if(Color.red(pixels[i]) > rmax) rmax = Color.red(pixels[i]);
+            if(Color.green(pixels[i]) < gmin) gmin = Color.green(pixels[i]);
+            if(Color.green(pixels[i]) > gmax) gmax = Color.green(pixels[i]);
+            if(Color.blue(pixels[i]) < bmin) bmin = Color.blue(pixels[i]);
+            if(Color.blue(pixels[i]) > bmax) bmax = Color.blue(pixels[i]);
+        }
+        contrastScript.set_rmin(rmin/255.0);
+        contrastScript.set_rmax(rmax/255.0);
+        contrastScript.set_gmin(gmin/255.0);
+        contrastScript.set_gmax(gmax/255.0);
+        contrastScript.set_bmin(bmin/255.0);
+        contrastScript.set_bmax(bmax/255.0);
+//6)  Lancer  le noyau
+        contrastScript.forEach_contrast(input, output);
+//7)  Recuperer  les  donnees  des  Allocation(s)
+        output.copyTo(bmp);
+//8)  Detruire  le context , les  Allocation(s) et le  script
+        input.destroy();
+        output.destroy();
+        contrastScript.destroy();
+        rs.destroy();
     }
-
-
-
 
 
 

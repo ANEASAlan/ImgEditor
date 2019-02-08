@@ -1,12 +1,11 @@
 package com.example.aaneas.imgeditor;
 
-import android.graphics.Bitmap;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
-import android.support.v8.renderscript.RenderScript;
-
 import com.android.rssample.*;
+import android.support.v8.renderscript.RenderScript;
 
 public class Couleurs extends MainActivity {
 
