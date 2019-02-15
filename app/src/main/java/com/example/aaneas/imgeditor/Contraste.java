@@ -18,21 +18,20 @@ public class Contraste  extends MainActivity {
         if( type == "Dynamique") {
             ContrasteCouleurDynamique(map,i);
         }else if (type == "Egaliseur"){
-
-            ContrasteCouleurEgaliseur(map);
-
-
+            ContrasteCouleurEgaliseur(map,i);
         }else if (type == "DRS") {
-            ContrasteDynamiqueRS(map, context);
+            ContrasteDynamiqueRS(map, context,i);
+        } else if (type == "ERS") {
+            contrastEgaliseurRS(map, context, i);
         }
-    else if (type == "ERS") {
-            contrastEgaliseurRS(map, context);
-    }
     }
 
 
 
-    private Bitmap ContrasteDynamiqueRS(Bitmap bmp,Context context) {
+    private void ContrasteDynamiqueRS(Bitmap bmp,Context context, ImageView i) {
+
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
         RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
@@ -47,14 +46,14 @@ public class Contraste  extends MainActivity {
         contraste.forEach_Final(input,output);
 
 
-        output.copyTo(bmp);
+        output.copyTo(n);
 
         input.destroy();
         output.destroy();
         contraste.destroy();
         rs.destroy();
 
-        return bmp;
+        i.setImageBitmap(n);
     }
 
 
@@ -198,7 +197,10 @@ public class Contraste  extends MainActivity {
     /// Faire fonction de contraste en egalisant l'histogramme /////
 
 
-    private void ContrasteCouleurEgaliseur(Bitmap bmp) {
+    private void ContrasteCouleurEgaliseur(Bitmap bmp, ImageView img) {
+
+            Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
             int h = bmp.getHeight();
             int w = bmp.getWidth();
             int[] pixels = new int[w * h];
@@ -237,21 +239,21 @@ public class Contraste  extends MainActivity {
                 else if (b < 0) b = 0;
                 pixels[i] = Color.rgb(r,g,b);
             }
-            bmp.setPixels(pixels, 0, w, 0, 0, w, h);
+            n.setPixels(pixels, 0, w, 0, 0, w, h);
+            img.setImageBitmap(n);
         }
 
 
-    private void contrastEgaliseurRS(Bitmap bmp, Context context) {
-//1)  Creer un  contexte  RenderScript
+    private void contrastEgaliseurRS(Bitmap bmp, Context context, ImageView img) {
+
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
+
         RenderScript rs = RenderScript.create(context);
-//2)  Creer  des  Allocations  pour  passer  les  donnees
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
-//3)  Creer le  script
         ScriptC_contrast contrastScript = new ScriptC_contrast(rs);
-//4)  Copier  les  donnees  dans  les  Allocations
-// ...
-//5)  Initialiser  les  variables  globales  potentielles
+
         int h = bmp.getHeight();
         int w = bmp.getWidth();
         int[] pixels = new int[w * h];
@@ -276,15 +278,14 @@ public class Contraste  extends MainActivity {
         contrastScript.set_gmax(gmax/255.0);
         contrastScript.set_bmin(bmin/255.0);
         contrastScript.set_bmax(bmax/255.0);
-//6)  Lancer  le noyau
         contrastScript.forEach_contrast(input, output);
-//7)  Recuperer  les  donnees  des  Allocation(s)
-        output.copyTo(bmp);
-//8)  Detruire  le context , les  Allocation(s) et le  script
+        output.copyTo(img);
         input.destroy();
         output.destroy();
         contrastScript.destroy();
         rs.destroy();
+
+        img.setImageBitmap(n);
     }
 
 

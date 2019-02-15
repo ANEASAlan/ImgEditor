@@ -67,9 +67,9 @@ public class Flous extends MainActivity{
 
     private Bitmap Flougaussien(Bitmap bmp, int [][] matrix, ImageView i){
 
-        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
-        int n = matrix.length/2;
+        int na = matrix.length/2;
         int div = 0;
 
         // Parcours la matrice ///
@@ -89,8 +89,8 @@ public class Flous extends MainActivity{
 
 
 
-        for (int x = n; x < newimg.getWidth()-n; x++){
-            for (int y = n; y < newimg.getHeight()-n; y++ ){
+        for (int x = na; x < n.getWidth()-na; x++){
+            for (int y = na; y < n.getHeight()-na; y++ ){
 
                 /// Va chercher les valeurs r g b des pixels autours //
 
@@ -108,15 +108,15 @@ public class Flous extends MainActivity{
                     }
                 }
 
-                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,a/div,b/div,c/div);
+                newpixel[x + (y*n.getWidth())] = Color.argb(255,a/div,b/div,c/div);
 
 
 
             }
         }
-        newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        i.setImageBitmap(newimg);
-        return newimg;
+        n.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        i.setImageBitmap(n);
+        return n;
 
     }
 

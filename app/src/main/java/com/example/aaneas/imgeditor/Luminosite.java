@@ -6,14 +6,15 @@ import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import com.android.rssample.*;
 import android.support.v8.renderscript.RenderScript;
+import android.widget.ImageView;
 
 public class Luminosite extends MainActivity {
 
-    public Luminosite(Bitmap map, String type, Context context){
+    public Luminosite(Bitmap map, String type, Context context, ImageView i){
         if(type == "Luminosite"){
-            changeBrightness(map);
+            changeBrightness(map,i);
         }else if(type == "LuminositeRS"){
-            changeBrightnessRS(map,context);
+            changeBrightnessRS(map,context,i);
         }
     }
 
@@ -22,7 +23,10 @@ public class Luminosite extends MainActivity {
 
     /// CHANGER LA LUMINOSITE D'UNE IMAGE ///
 
-    void changeBrightness(Bitmap Bmp) {
+    void changeBrightness(Bitmap Bmp, ImageView img) {
+
+        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
+
         int h = Bmp.getHeight();
         int w = Bmp.getWidth();
         int[] pixels = new int[w * h];
@@ -42,12 +46,16 @@ public class Luminosite extends MainActivity {
             if(b > 255) b = 255;
             pixels[i] = Color.rgb(r,g,b);
         }
-        Bmp.setPixels(pixels, 0, w, 0, 0, w, h);
+        n.setPixels(pixels, 0, w, 0, 0, w, h);
+        img.setImageBitmap(n);
     }
 
     /// CHANGEBRIGHTNESS RENDERSCRIPT VERSION///
 
-    private void changeBrightnessRS(Bitmap bmp,Context context) {
+    private void changeBrightnessRS(Bitmap bmp,Context context, ImageView i) {
+
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
 //1)  Creer un  contexte  RenderScript
         RenderScript rs = RenderScript.create(context);
 //2)  Creer  des  Allocations  pour  passer  les  donnees
@@ -63,11 +71,13 @@ public class Luminosite extends MainActivity {
 
         brightnessScript.forEach_changeBrightness(input, output);
 //7)  Recuperer  les  donnees  des  Allocation(s)
-        output.copyTo(bmp);
+        output.copyTo(n);
 //8)  Detruire  le context , les  Allocation(s) et le  script
         input.destroy();
         output.destroy();
         brightnessScript.destroy();
         rs.destroy();
+
+        i.setImageBitmap(n);
     }
 }
