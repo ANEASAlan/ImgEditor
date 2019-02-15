@@ -17,7 +17,7 @@ public class Gris extends MainActivity{
         if (type == "Gris"){
             toGrey(map,i);
         }else if (type == "RS"){
-            toGreyRS(map,context);
+            toGreyRS(map,context,i);
         }
     }
 
@@ -42,7 +42,10 @@ public class Gris extends MainActivity{
 
     ///RENDERSCRIPT VERSION///
 
-    private void toGreyRS(Bitmap bmp, Context context) {
+    private void toGreyRS(Bitmap bmp, Context context, ImageView image) {
+
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
         RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
@@ -51,12 +54,15 @@ public class Gris extends MainActivity{
         ScriptC_grey Grey = new ScriptC_grey(rs);
 
         Grey.forEach_toGrey(input, output);
-        output.copyTo(bmp);
+        output.copyTo(n);
 
         input.destroy();
         output.destroy();
         Grey.destroy();
         rs.destroy();
+
+        image.setImageBitmap(n);
+
 
     }
 

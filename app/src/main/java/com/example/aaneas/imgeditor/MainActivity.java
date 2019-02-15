@@ -23,6 +23,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ImageView Img;
     Button galerie;
     Bitmap MonImg;
+
+
     @Override
         protected void onCreate(Bundle savedInstanceState) {
 
@@ -75,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 String imgPath = cursor.getString(columnIndex);
                 cursor.close();
                 MonImg = BitmapFactory.decodeFile(imgPath);
-
                 Img.setImageBitmap(MonImg);
 
             }
