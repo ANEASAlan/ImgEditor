@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ImageView Img;
     Button galerie;
     Button AppPhoto;
-    String photoPath;
     Bitmap MonImg;
     Spinner myspinner;
 
@@ -72,45 +71,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         AppPhoto.setOnClickListener(new Button.OnClickListener(){
            @Override
            public void onClick(View v) {
-               PrendreUnePhoto();
+               Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+               startActivityForResult(photo,0);
            }
         });
         }
 
 
 
-        private void PrendreUnePhoto(){
-            Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (photo.resolveActivity(getPackageManager())!= null){
-                String time = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                File photoDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-                try {
-                    File photoFile = File.createTempFile("photo"+time, ".jpg",photoDir);
-                    photoPath = photoFile.getAbsolutePath();
-                    Uri photoUri = FileProvider.getUriForFile(MainActivity.this,MainActivity.this.getApplicationContext().getPackageName()+".provider",photoFile);
-                    photo.putExtra(MediaStore.EXTRA_OUTPUT,photoUri);
-                    startActivityForResult(photo,1);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
 
-            }
-        }
-
-
-        private void onActivityResult2(int resquestCode,int resultCode, Intent data  ){
-            super.onActivityResult(resquestCode,resultCode,data);
-            if(resquestCode == 1  && resultCode == RESULT_OK){
-                MonImg = BitmapFactory.decodeFile(photoPath);
-                Img.setImageBitmap(MonImg);
-            }
-        }
 
 
         // ** GALERIE ** //
 
 
         private void createButtonGalerie() {
+
             galerie.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -121,12 +97,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         public void onActivityResult (int requestCode, int resultCode, Intent data){
-            super.onActivityResult(requestCode,resultCode,data);
-
-            if (requestCode == 1 && resultCode == RESULT_OK){
+        super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 0 && resultCode == RESULT_OK) {
+               MonImg= (Bitmap) data.getExtras().get("data");
+               Img.setImageBitmap(MonImg);
+                myspinner.setVisibility(View.VISIBLE);
+                galerie.setVisibility(View.INVISIBLE);
+                AppPhoto.setVisibility(View.INVISIBLE);
+            }else if (requestCode == 1 && resultCode == RESULT_OK) {
                 Uri selectedImg = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = this.getContentResolver().query(selectedImg,filePathColumn,null,null,null);
+                Cursor cursor = this.getContentResolver().query(selectedImg, filePathColumn, null, null, null);
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String imgPath = cursor.getString(columnIndex);
@@ -134,7 +115,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 MonImg = BitmapFactory.decodeFile(imgPath);
                 Img.setImageBitmap(MonImg);
                 myspinner.setVisibility(View.VISIBLE);
-            }
+                galerie.setVisibility(View.INVISIBLE);
+                AppPhoto.setVisibility(View.INVISIBLE);
+
+                }
+
         }
 
 
