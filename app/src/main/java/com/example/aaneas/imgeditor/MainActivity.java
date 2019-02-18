@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,13 +18,20 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     ImageView Img;
     Button galerie;
+    Button AppPhoto;
     Bitmap MonImg;
+    Spinner myspinner;
+
+
     @Override
         protected void onCreate(Bundle savedInstanceState) {
 
@@ -33,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         /// MENU DEROULANT///
             initImg();
-
-            Spinner myspinner = findViewById(R.id.spinner1);
+            myspinner = findViewById(R.id.spinner1);
+            myspinner.setVisibility(View.INVISIBLE);
             ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Monspinner));
             monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             myspinner.setAdapter(monadaptater);
@@ -42,18 +51,42 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
-
         }
 
 
-        /// recherche img dans la galerie //
+
         private void initImg() {
         Img = (ImageView) findViewById(R.id.ImgPhoto);
         galerie = (Button) findViewById(R.id.Galerie);
+        AppPhoto = (Button) findViewById(R.id.Photo);
         createButtonGalerie();
+        createButtonPhoto();
         }
 
+
+        //// PRENDRE PHOTO DEPUIS L'APPAREIL PHOTO ///
+
+
+        private  void createButtonPhoto(){
+        AppPhoto.setOnClickListener(new Button.OnClickListener(){
+           @Override
+           public void onClick(View v) {
+               Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+               startActivityForResult(photo,0);
+           }
+        });
+        }
+
+
+
+
+
+
+        // ** GALERIE ** //
+
+
         private void createButtonGalerie() {
+
             galerie.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -64,31 +97,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         public void onActivityResult (int requestCode, int resultCode, Intent data){
-            super.onActivityResult(requestCode,resultCode,data);
-
-            if (requestCode == 1 && resultCode == RESULT_OK){
+        super.onActivityResult(requestCode, resultCode, data);
+            if (requestCode == 0 && resultCode == RESULT_OK) {
+               MonImg= (Bitmap) data.getExtras().get("data");
+               Img.setImageBitmap(MonImg);
+                myspinner.setVisibility(View.VISIBLE);
+                galerie.setVisibility(View.INVISIBLE);
+                AppPhoto.setVisibility(View.INVISIBLE);
+            }else if (requestCode == 1 && resultCode == RESULT_OK) {
                 Uri selectedImg = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                Cursor cursor = this.getContentResolver().query(selectedImg,filePathColumn,null,null,null);
+                Cursor cursor = this.getContentResolver().query(selectedImg, filePathColumn, null, null, null);
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String imgPath = cursor.getString(columnIndex);
                 cursor.close();
                 MonImg = BitmapFactory.decodeFile(imgPath);
-
                 Img.setImageBitmap(MonImg);
+                myspinner.setVisibility(View.VISIBLE);
+                galerie.setVisibility(View.INVISIBLE);
+                AppPhoto.setVisibility(View.INVISIBLE);
 
-            }
+                }
+
         }
 
 
-
+        ////////
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
             ImageView tempo = findViewById(R.id.ImgPhoto);
-
             Long time = System.currentTimeMillis();
 
 
@@ -102,6 +142,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             };
 
             switch (position) {
+
                 case 0:
                     tempo.setImageBitmap(MonImg);
                     break;
@@ -150,33 +191,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
 
                 case 9:
-                    new Contraste(MonImg,tempo,"RS",this);
+                    new Contraste(MonImg,tempo,"DRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
-
                 case 10:
+                    new Contraste(MonImg,tempo,"ERS",this);
+                    timeafter = System.currentTimeMillis() - time;
+                    System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
+                    break;
+                case 11:
                     new Flous(MonImg, "Flou basique",this, tempo, 10,gaussien); // (n taille du masque)
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution flou image1= " + timeafter + " ms");
                     break;
 
-                case 11:
+                case 12:
                     new Flous(MonImg, "Flou gaussien",this, tempo, 0, gaussien);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
-                case 12:
-                    new Luminosite(MonImg, "Luminosite", this);
+                case 13:
+                    //FLOU RS//
+                    break;
+                case 14:
+                    new Luminosite(MonImg, "Luminosite", this,tempo);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Luminosite image1 = " + timeafter + " ms");
                     break;
-                case 13:
-                    new Luminosite(MonImg, "LuminositeRS", this);
+                case 15:
+                    new Luminosite(MonImg, "LuminositeRS", this,tempo);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution LuminositeRS image1 = " + timeafter + " ms");
                     break;
-
+                case 16:
+                    //CONTOURS//
+                    break;
+                case 17:
+                    //CONTOURS RS//
+                    break;
             }
 
 

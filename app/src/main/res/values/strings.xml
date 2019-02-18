@@ -11,13 +11,16 @@
         <item>conserve rs</item>
         <item>contraste dynamique </item>
         <item>contraste egaliseur </item>
-        <item>contraste rs </item>
+        <item>contraste dynamique rs </item>
+        <item>contraste egaliseur rs </item>
         <item>flou basique </item>
         <item>flou gaussien </item>
         <item>flou basique RS</item>
         <item>luminosité +</item>
-        <item>flou luminosité + RS</item>
-        <item>contours img1</item>
+        <item>luminosité + RS</item>
+        <item>contours </item>
+        <item>contours RS</item>
+
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
 

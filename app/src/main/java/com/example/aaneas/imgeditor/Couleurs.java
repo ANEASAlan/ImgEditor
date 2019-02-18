@@ -16,16 +16,12 @@ public class Couleurs extends MainActivity {
     public Couleurs(Bitmap map, ImageView i, String type, Context context){
         if(type == "Teinte"){
             Coloriser(map,i);
-            i.setImageBitmap(map);
         }else if(type == "TeinteRS"){
-            ColoriserRS(map,context);
-            i.setImageBitmap(map);
+            ColoriserRS(map,context,i);
         }else if(type == "ConserveRouge"){
             Conserve(map, "red",i);
-            i.setImageBitmap(map);
         }else if(type == "ConserveRS"){
-            ConserveRS(map,context);
-            i.setImageBitmap(map);
+            ConserveRS(map,context,i);
         }
     }
 
@@ -34,9 +30,9 @@ public class Couleurs extends MainActivity {
 
     /// CHANGER LA TEINTE D'UNE IMAGE ///
 
-    protected Bitmap Coloriser(Bitmap bmp, ImageView image) {
+    protected void Coloriser(Bitmap bmp, ImageView image) {
 
-        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
         float random = (float) (Math.random() * 360);
         float HSV[] = {0, 0, 0};
@@ -51,20 +47,22 @@ public class Couleurs extends MainActivity {
             /// Je convertis en HSV puis réinsert le pixel en "Color" ///
 
             Color.RGBToHSV(Color.green(a), Color.red(a), Color.blue(a), HSV);
-            HSV[0] = random;
+            HSV[0] = 10;
             color[i] = Color.HSVToColor(HSV);
             ///
         }
-        newimg.setPixels(color,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        image.setImageBitmap(newimg);
-        return newimg;
+        n.setPixels(color,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        image.setImageBitmap(n);
 
 
     }
 
     /// RENDERSCRIPT COLORISER VERSION///
 
-    private void ColoriserRS(Bitmap bmp, Context context) {
+    private void ColoriserRS(Bitmap bmp, Context context, ImageView i) {
+
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
         RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
@@ -82,13 +80,14 @@ public class Couleurs extends MainActivity {
         ///
 
         ColorScript.forEach_toColor(input, output);
-        output.copyTo(bmp);
+        output.copyTo(n);
 
         input.destroy();
         output.destroy();
         ColorScript.destroy();
         rs.destroy();
 
+        i.setImageBitmap(n);
     }
 
     /// CONSERVER UNE COULEUR ///
@@ -148,7 +147,10 @@ public class Couleurs extends MainActivity {
     /// RENDERSCRIPT VERSION ///
 
 
-    private void ConserveRS(Bitmap bmp, Context context) {
+    private void ConserveRS(Bitmap bmp, Context context, ImageView i) {
+
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
         RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
@@ -157,12 +159,13 @@ public class Couleurs extends MainActivity {
         ScriptC_conserve Conserve = new ScriptC_conserve(rs);
 
         Conserve.forEach_toConserve(input, output);
-        output.copyTo(bmp);
+        output.copyTo(n);
 
         input.destroy();
         output.destroy();
         Conserve.destroy();
         rs.destroy();
 
+        i.setImageBitmap(n);
     }
 }
