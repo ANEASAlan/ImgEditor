@@ -47,7 +47,7 @@ public class Contours extends MainActivity{
                 int b = 0;
                 addColor( r,g, b,x-1, y-1, bmp.getWidth(), pixel, -1);
 
-                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
+               /// newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
 
 
 

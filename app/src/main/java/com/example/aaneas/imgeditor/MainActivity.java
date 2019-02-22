@@ -5,9 +5,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,21 +13,23 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Spinner;
-import android.widget.TextView;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+    static int GALERY_REQUEST = 1;
+    static int PHOTO_REQUEST = 0;
+    static SeekBar LumiBar;
+
     ImageView Img;
-    Button galerie;
+    Button Galerie;
     Button AppPhoto;
+    Button Save;
     Bitmap MonImg;
-    Spinner myspinner;
+    Spinner Myspinner;
+
+    boolean render_script = false;
 
 
     @Override
@@ -42,12 +42,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         /// MENU DEROULANT///
             initImg();
-            myspinner = findViewById(R.id.spinner1);
-            myspinner.setVisibility(View.INVISIBLE);
+            LumiBar = (SeekBar) findViewById(R.id.ColorB);
+
+            Myspinner = findViewById(R.id.spinner1);
+            Myspinner.setVisibility(View.INVISIBLE);
+            Save.setVisibility(View.INVISIBLE);
+            LumiBar.setVisibility(View.INVISIBLE);
+
+
             ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Monspinner));
             monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            myspinner.setAdapter(monadaptater);
-            myspinner.setOnItemSelectedListener(this);
+            Myspinner.setAdapter(monadaptater);
+            Myspinner.setOnItemSelectedListener(this);
 
 
 
@@ -57,10 +63,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         private void initImg() {
         Img = (ImageView) findViewById(R.id.ImgPhoto);
-        galerie = (Button) findViewById(R.id.Galerie);
+        Galerie = (Button) findViewById(R.id.Galerie);
         AppPhoto = (Button) findViewById(R.id.Photo);
+        Save = (Button) findViewById(R.id.Save);
         createButtonGalerie();
         createButtonPhoto();
+        createButtonSave();
         }
 
 
@@ -79,6 +87,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
 
+        private void createButtonSave(){
+            Save.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    MediaStore.Images.Media.insertImage(getContentResolver(),MonImg,"nom image","description");
+                }
+            });
+        }
 
 
 
@@ -87,10 +103,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         private void createButtonGalerie() {
 
-            galerie.setOnClickListener(new Button.OnClickListener() {
+            Galerie.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent galerie = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
                     startActivityForResult(galerie,1);
                 }
             });
@@ -98,13 +115,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         public void onActivityResult (int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-            if (requestCode == 0 && resultCode == RESULT_OK) {
+            if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
                MonImg= (Bitmap) data.getExtras().get("data");
-               Img.setImageBitmap(MonImg);
-                myspinner.setVisibility(View.VISIBLE);
-                galerie.setVisibility(View.INVISIBLE);
+                Img.setImageBitmap(MonImg);
+                Myspinner.setVisibility(View.VISIBLE);
+                Galerie.setVisibility(View.INVISIBLE);
                 AppPhoto.setVisibility(View.INVISIBLE);
-            }else if (requestCode == 1 && resultCode == RESULT_OK) {
+                Save.setVisibility(View.VISIBLE);
+            }else if (requestCode == GALERY_REQUEST && resultCode == RESULT_OK) {
                 Uri selectedImg = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = this.getContentResolver().query(selectedImg, filePathColumn, null, null, null);
@@ -114,10 +132,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 cursor.close();
                 MonImg = BitmapFactory.decodeFile(imgPath);
                 Img.setImageBitmap(MonImg);
-                myspinner.setVisibility(View.VISIBLE);
-                galerie.setVisibility(View.INVISIBLE);
+                Myspinner.setVisibility(View.VISIBLE);
+                Galerie.setVisibility(View.INVISIBLE);
                 AppPhoto.setVisibility(View.INVISIBLE);
-
+                Save.setVisibility(View.VISIBLE);
                 }
 
         }
@@ -125,8 +143,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         ////////
 
+
+
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            LumiBar.setVisibility(View.INVISIBLE);
 
             ImageView tempo = findViewById(R.id.ImgPhoto);
             Long time = System.currentTimeMillis();
@@ -159,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     break;
                 case 3:
+
                     new Couleurs(MonImg,tempo,"Teinte",this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Coloriser image1= " + timeafter + " ms");
@@ -174,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     System.out.println( "temps d'execution Conserve image1= " + timeafter + " ms");
                     break;
                 case 6:
-                    new Couleurs(MonImg,tempo,"ConserveRS",this);
+                   // new Couleurs(MonImg,tempo,"ConserveRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Conserve RS image1= " + timeafter + " ms");
                     break;
@@ -215,14 +237,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     //FLOU RS//
                     break;
                 case 14:
-                    new Luminosite(MonImg, "Luminosite", this,tempo);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Luminosite image1 = " + timeafter + " ms");
+                    LumiBar.setVisibility(View.VISIBLE);
+                    render_script = false;
+                    LumiColor();
                     break;
                 case 15:
-                    new Luminosite(MonImg, "LuminositeRS", this,tempo);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution LuminositeRS image1 = " + timeafter + " ms");
+                    LumiBar.setVisibility(View.VISIBLE);
+                    render_script = true;
+                    LumiColor();
                     break;
                 case 16:
                     //CONTOURS//
@@ -237,10 +259,36 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
+
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
 
         }
 
+        public void LumiColor(){
+            LumiBar.setOnSeekBarChangeListener(
+                    new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                            if (render_script == false) {
+                                new Luminosite(MonImg, "Luminosite", MainActivity.this, Img, i);
+                            } else {
+                                new Luminosite(MonImg, "LuminositeRS", MainActivity.this, Img, i);
+
+                            }
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+
+                        }
+                    }
+            );
+        }
 
     }
