@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,30 +33,48 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button AppPhoto;
     Bitmap MonImg;
     Spinner myspinner;
-
+    private ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
+    private float scaleFactor = 1.0f;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
 
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
 
+        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
-        /// MENU DEROULANT///
-            initImg();
-            myspinner = findViewById(R.id.spinner1);
-            myspinner.setVisibility(View.INVISIBLE);
-            ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Monspinner));
-            monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            myspinner.setAdapter(monadaptater);
-            myspinner.setOnItemSelectedListener(this);
+
+        initImg();
+        myspinner = findViewById(R.id.spinner1);
+        myspinner.setVisibility(View.INVISIBLE);
+        ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Monspinner));
+        monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        myspinner.setAdapter(monadaptater);
+        myspinner.setOnItemSelectedListener(this);
+    }
+
+    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        @Override
+        public boolean onScale(ScaleGestureDetector scaleGestureDetector){
+            scaleFactor *= scaleGestureDetector.getScaleFactor();
+            scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5.0f));        //On limite le zoom entre 0.1 fois et 5.0 fois la taille de l'image initiale
+            Img.setScaleX(scaleFactor);
+            Img.setScaleY(scaleFactor);
+            return true;
+        }
+    }
+
+    /*
+         MENU DEROULANT///
+
 
 
 
         }
 
-
+*/
 
         private void initImg() {
         Img = (ImageView) findViewById(R.id.ImgPhoto);
@@ -78,8 +99,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
 
+        ////////////////////////
 
+        @Override
+        public boolean onTouchEvent(MotionEvent motionEvent) {
+            scaleGestureDetector.onTouchEvent(motionEvent);
+            return true;
+        }
 
+        ///////////////////////
+
+    /* DRAG AND DROP (big oof)
+
+        Img.setOnTouchListener(new View.OnTouchListener() {
+            PointF pressPos = new PointF();
+            PointF startPos = new PointF();
+
+            @Override
+            public boolean onTouch (View view, MotionEvent event){
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_MOVE:
+                        Img.setX((int) (startPos.x + event.getX() - pressPos.x));
+                        Img.setY((int) (startPos.y + event.getY() - pressPos.y));
+                        startPos.set(Img.getX(), Img.getY());
+                        break;
+                    case MotionEvent.ACTION_DOWN:
+                        pressPos.set(event.getX(), event.getY());
+                        startPos.set(Img.getX(), Img.getY());
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+
+*/
 
 
         // ** GALERIE ** //
