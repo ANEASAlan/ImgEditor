@@ -33,6 +33,7 @@ public class Contours extends MainActivity{
             for (int y = 1; y < newimg.getHeight()-1; y++ ){
 
                 /// va chercher les valeurs r g b des pixels autours //
+
                 int horiz = 0;
                 int verti = 0;
                 int c = pixel[(x-1) + ((y-1)* (bmp.getWidth()))];
@@ -58,6 +59,9 @@ public class Contours extends MainActivity{
                 double dnewcolor = java.lang.Math.sqrt((double) (verti*verti + horiz*horiz));
                 int newcolor = (int) (255.0 * dnewcolor / 1443.0); //1443 = 4*255*sqrt(2)
                 newpixel[x + (y*newimg.getWidth())] = Color.argb(Color.alpha(pixel[x + (y* (bmp.getWidth()))]),newcolor,newcolor,newcolor);
+
+               /// newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
+
 
 
 
