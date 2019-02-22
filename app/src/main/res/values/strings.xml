@@ -18,8 +18,8 @@
         <item>flou basique RS</item>
         <item>luminosité +</item>
         <item>luminosité + RS</item>
-        <item>contours </item>
-        <item>contours RS</item>
+        <item>contours Sobel</item>
+        <item>contours Laplace</item>
 
     </string-array>
     <string name="title_activity_contraste">Contraste</string>

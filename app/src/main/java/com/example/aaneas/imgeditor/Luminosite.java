@@ -10,11 +10,11 @@ import android.widget.ImageView;
 
 public class Luminosite extends MainActivity {
 
-    public Luminosite(Bitmap map, String type, Context context, ImageView i){
+    public Luminosite(Bitmap map, String type, Context context, ImageView i, int Scale){
         if(type == "Luminosite"){
-            changeBrightness(map,i);
+            changeBrightness(map,i, Scale);
         }else if(type == "LuminositeRS"){
-            changeBrightnessRS(map,context,i);
+            changeBrightnessRS(map,context,i, Scale);
         }
     }
 
@@ -23,7 +23,7 @@ public class Luminosite extends MainActivity {
 
     /// CHANGER LA LUMINOSITE D'UNE IMAGE ///
 
-    void changeBrightness(Bitmap Bmp, ImageView img) {
+    void changeBrightness(Bitmap Bmp, ImageView img, int BrightnessScale) {
 
         Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
 
@@ -34,7 +34,6 @@ public class Luminosite extends MainActivity {
         int r = 0;
         int g = 0;
         int b = 0;
-        int BrightnessScale = 75;
         Bmp.getPixels(pixels, 0, w, 0, 0, w, h);
         for (int i = 0; i < pixels.length; i++) {
             c = pixels[i];
@@ -52,7 +51,7 @@ public class Luminosite extends MainActivity {
 
     /// CHANGEBRIGHTNESS RENDERSCRIPT VERSION///
 
-    private void changeBrightnessRS(Bitmap bmp,Context context, ImageView i) {
+    private void changeBrightnessRS(Bitmap bmp,Context context, ImageView i,float scale) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -66,7 +65,7 @@ public class Luminosite extends MainActivity {
 //4)  Copier  les  donnees  dans  les  Allocations
 // ...
 //5)  Initialiser  les  variables  globales  potentielles
-// ...
+        brightnessScript.set_BrightnessScale(scale/255);
 //6)  Lancer  le noyau
 
         brightnessScript.forEach_changeBrightness(input, output);

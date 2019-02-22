@@ -1,7 +1,8 @@
 #pragma version(1)
 #pragma rs java_package_name(com.android.rssample)
 
-float BrightnessScale = 75.0/255.0;
+
+float BrightnessScale;
 uchar4 RS_KERNEL changeBrightness(uchar4 in){
 
 float4  pixelf = rsUnpackColor8888(in);

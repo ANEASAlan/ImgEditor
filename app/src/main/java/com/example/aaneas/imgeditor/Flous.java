@@ -10,64 +10,40 @@ import android.support.v8.renderscript.RenderScript;
 
 public class Flous extends MainActivity{
 
-    public Flous(Bitmap map ,String type, Context context, ImageView i, int n, int [][] matrix){
-        if (type == "Flou basique"){
-            Floubasique(map,i,n);
-        }else if (type == "Flou gaussien"){
-            Flougaussien(map,matrix, i);
+    public Flous(Bitmap map ,String type, Context context, ImageView i, int n, boolean gauss){
+        if (type == "Flou RS"){
+
+        }else if (type == "Flou"){
+            Flougaussien(map, i, gauss);
         }
-    }
-
-
-    /// Flou Lisse (n = taille du masque) ///
-
-    private Bitmap Floubasique(Bitmap bmp, ImageView i, int n  ){
-
-        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-
-        int div = (2*n +1)*(2*n+1);
-
-        int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
-        int [] newpixel = new int[bmp.getWidth()*bmp.getHeight()];
-        bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-
-        for (int x = n; x < newimg.getWidth()-n; x++){
-            for (int y = n; y < newimg.getHeight()-n; y++ ){
-
-                /// va chercher les valeurs r g b des pixels autours //
-
-
-                int r =0;
-                int g = 0;
-                int b = 0;
-                for (int x2 = x -n; x2 <= x+n; x2++) {
-                    for (int y2 = y - n; y2 <= y + n; y2++) {
-                        int e = pixel[x2 + (y2*bmp.getWidth())];
-                        r = r + Color.red(e);
-                        g = g + Color.green(e);
-                        b = b + Color.blue(e);
-
-                    }
-                }
-
-                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
-
-
-
-            }
-        }
-        newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        i.setImageBitmap(newimg);
-        return newimg;
-
     }
 
 
     /// Flou gaussien ////
 
-    private Bitmap Flougaussien(Bitmap bmp, int [][] matrix, ImageView i){
-
+    private Bitmap Flougaussien(Bitmap bmp, ImageView i, boolean gaussien){
+        int [][] matrix;
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
+        if (gaussien){
+            matrix = new int[][]{
+                    {1,2,3,2,1},
+                    {2,6,8,6,2},
+                    {3,8,10,8,3},
+                    {2,6,8,6,2},
+                    {1,2,3,2,1}
+            };
+        }else{
+
+
+            matrix = new int[][]{
+                    {1,1,1,1,1},
+                    {1,1,1,1,1},
+                    {1,1,1,1,1},
+                    {1,1,1,1,1},
+                    {1,1,1,1,1}
+            };
+        }
 
         int na = matrix.length/2;
         int div = 0;
@@ -98,17 +74,18 @@ public class Flous extends MainActivity{
                 int a =0;
                 int b = 0;
                 int c = 0;
+                int alpha = 0;
                 for (int x2 = 0; x2 < matrix.length; x2++) {
                     for (int y2 = 0; y2 < matrix.length; y2++) {
                         int e = pixel[(x - matrix.length/2)+x2 + ((y - matrix.length/2)+y2)*bmp.getWidth()];
                         a = a + Color.red(e) * matrix[x2][y2];
                         b = b + Color.green(e)  * matrix[x2][y2];
                         c = c + Color.blue(e)  * matrix[x2][y2];
-
+                        alpha = Color.alpha(e);
                     }
                 }
 
-                newpixel[x + (y*n.getWidth())] = Color.argb(255,a/div,b/div,c/div);
+                newpixel[x + (y*n.getWidth())] = Color.argb(alpha,a/div,b/div,c/div);
 
 
 
