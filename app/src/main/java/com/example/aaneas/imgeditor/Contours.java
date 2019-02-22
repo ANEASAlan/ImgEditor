@@ -1,5 +1,6 @@
 package com.example.aaneas.imgeditor;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -8,22 +9,12 @@ import android.widget.ImageView;
 
 public class Contours extends MainActivity{
 
-    public Contours(Bitmap map , String type, Context context, ImageView i, int n, int [][] matrix){
+    public Contours(Bitmap map , String type, ImageView i){
         if (type == "Sobel"){
-            //Floubasique(map,i,n);
+            ContoursSobel(map, i);
         }else if (type == "Laplace"){
-            //Flougaussien(map,matrix, i);
+            ContoursLaplace(map, i);
         }
-        int r = 0;
-        int g = 0;
-        int b = 0;
-    }
-
-    void addColor(int r, int g, int b, int x, int y, double width, int [] pixel, int sobel){
-        int c = pixel[x + (y* ((int)width))];
-        r += Color.red(c) * sobel;
-        g += Color.green(c) * sobel;
-        b += Color.blue(c) * sobel;
     }
 
     /// Flou Lisse (n = taille du masque) ///
@@ -42,12 +33,31 @@ public class Contours extends MainActivity{
             for (int y = 1; y < newimg.getHeight()-1; y++ ){
 
                 /// va chercher les valeurs r g b des pixels autours //
-                int r = 0;
-                int g = 0;
-                int b = 0;
-                addColor( r,g, b,x-1, y-1, bmp.getWidth(), pixel, -1);
-
-                newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
+                int horiz = 0;
+                int verti = 0;
+                int c = pixel[(x-1) + ((y-1)* (bmp.getWidth()))];
+                horiz -= Color.green(c);
+                verti -= Color.green(c);
+                c = pixel[(x) + ((y-1)* (bmp.getWidth()))];
+                verti -= 2*Color.green(c);
+                c = pixel[(x+1) + ((y-1)* (bmp.getWidth()))];
+                horiz += Color.green(c);
+                verti -= Color.green(c);
+                c = pixel[(x-1) + ((y)* (bmp.getWidth()))];
+                horiz -= 2*Color.green(c);
+                c = pixel[(x+1) + ((y)* (bmp.getWidth()))];
+                horiz += 2*Color.green(c);
+                c = pixel[(x-1) + ((y+1)* (bmp.getWidth()))];
+                horiz -= Color.green(c);
+                verti += Color.green(c);
+                c = pixel[(x) + ((y+1)* (bmp.getWidth()))];
+                verti += 2*Color.green(c);
+                c = pixel[(x+1) + ((y+1)* (bmp.getWidth()))];
+                horiz += Color.green(c);
+                verti += Color.green(c);
+                double dnewcolor = java.lang.Math.sqrt((double) (verti*verti + horiz*horiz));
+                int newcolor = (int) (255.0 * dnewcolor / 1443.0); //1443 = 4*255*sqrt(2)
+                newpixel[x + (y*newimg.getWidth())] = Color.argb(Color.alpha(pixel[x + (y* (bmp.getWidth()))]),newcolor,newcolor,newcolor);
 
 
 
@@ -59,61 +69,37 @@ public class Contours extends MainActivity{
 
     }
 
+    private Bitmap ContoursLaplace(Bitmap bmp, ImageView i){
 
-    /// Flou gaussien ////
-
-    private Bitmap Flougaussien(Bitmap bmp, int [][] matrix, ImageView i){
-
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-
-        int na = matrix.length/2;
-        int div = 0;
-
-        // Parcours la matrice ///
-
-
-        for (int e =0;  e< matrix.length; e++){
-            for (int f =0;  f< matrix.length; f++) {
-                div += matrix[e][f];
-            }
-        }
-
-
+        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
         int [] newpixel = new int[bmp.getWidth()*bmp.getHeight()];
         bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
 
+        for (int x = 1; x < newimg.getWidth()-1; x++){
+            for (int y = 1; y < newimg.getHeight()-1; y++ ){
 
-
-        for (int x = na; x < n.getWidth()-na; x++){
-            for (int y = na; y < n.getHeight()-na; y++ ){
-
-                /// Va chercher les valeurs r g b des pixels autours //
-
-
-                int a =0;
-                int b = 0;
-                int c = 0;
-                for (int x2 = 0; x2 < matrix.length; x2++) {
-                    for (int y2 = 0; y2 < matrix.length; y2++) {
-                        int e = pixel[(x - matrix.length/2)+x2 + ((y - matrix.length/2)+y2)*bmp.getWidth()];
-                        a = a + Color.red(e) * matrix[x2][y2];
-                        b = b + Color.green(e)  * matrix[x2][y2];
-                        c = c + Color.blue(e)  * matrix[x2][y2];
-
+                /// va chercher les valeurs r g b des pixels autours //
+                int newcolor = 0;
+                for (int x2 = x-1; x2 < x+2; x2++) {
+                    for (int y2 = y - 1; y2 < y + 2; y2++) {
+                        int c = pixel[x2 + (y2 * (bmp.getWidth()))];
+                        if (x2 != x || y2 != y) newcolor += Color.green(c);
+                        else newcolor -= 8 * Color.green(c);
                     }
                 }
-
-                newpixel[x + (y*n.getWidth())] = Color.argb(255,a/div,b/div,c/div);
+                if(newcolor > 255) newcolor = 255;
+                else if (newcolor < 0) newcolor = 0;
+                newpixel[x + (y*newimg.getWidth())] = Color.argb(Color.alpha(pixel[x + (y* (bmp.getWidth()))]),newcolor,newcolor,newcolor);
 
 
 
             }
         }
-        n.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        i.setImageBitmap(n);
-        return n;
+        newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        i.setImageBitmap(newimg);
+        return newimg;
 
     }
 

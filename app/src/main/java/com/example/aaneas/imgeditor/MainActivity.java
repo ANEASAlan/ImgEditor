@@ -133,13 +133,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
             // matrice pour flou gaussien
-            int [][] gaussien = new int[][]{
-                    {1,2,3,2,1},
-                    {2,6,8,6,2},
-                    {3,8,10,8,3},
-                    {2,6,8,6,2},
-                    {1,2,3,2,1}
-            };
+
 
             switch (position) {
 
@@ -201,13 +195,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
                 case 11:
-                    new Flous(MonImg, "Flou basique",this, tempo, 10,gaussien); // (n taille du masque)
+                    new Flous(MonImg, "Flou",this, tempo, 10,false); // (n taille du masque)
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution flou image1= " + timeafter + " ms");
                     break;
 
                 case 12:
-                    new Flous(MonImg, "Flou gaussien",this, tempo, 0, gaussien);
+                    new Flous(MonImg, "Flou",this, tempo, 0, true);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
@@ -225,10 +219,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     System.out.println( "temps d'execution LuminositeRS image1 = " + timeafter + " ms");
                     break;
                 case 16:
-                    //CONTOURS//
+                    new Gris(MonImg, tempo,"Gris", this);
+                    new Contours(MonImg, "Sobel", tempo);
+                    timeafter = System.currentTimeMillis() - time;
+                    System.out.println( "temps d'execution Contours Sobel image1 = " + timeafter + " ms");
                     break;
                 case 17:
-                    //CONTOURS RS//
+                    new Gris(MonImg, tempo,"Gris", this);
+                    new Contours(MonImg, "Laplace", tempo);
+                    timeafter = System.currentTimeMillis() - time;
+                    System.out.println( "temps d'execution Contours Laplace image1 = " + timeafter + " ms");
                     break;
             }
 
