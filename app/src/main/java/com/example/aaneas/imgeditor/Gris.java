@@ -32,10 +32,9 @@ public class Gris extends MainActivity{
 
         for (int i =0; i < pixel.length ; i++){
             int Grey = (int)( 0.3 * Color.red(pixel[i]) +0.59 *Color.green(pixel[i])+0.11* Color.blue(pixel[i]));
-            greytab[i] = Color.argb(255,Grey,Grey,Grey);
+            greytab[i] = Color.argb(Color.alpha(pixel[i]),Grey,Grey,Grey);
         }
         n.setPixels(greytab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-
         image.setImageBitmap(n);
         return n;
     }
@@ -62,7 +61,6 @@ public class Gris extends MainActivity{
         rs.destroy();
 
         image.setImageBitmap(n);
-
 
     }
 

@@ -13,13 +13,13 @@ import android.support.v8.renderscript.RenderScript;
 
 public class Couleurs extends MainActivity {
 
-    public Couleurs(Bitmap map, ImageView i, String type, Context context){
+    public Couleurs(Bitmap map, ImageView i, String type, Context context, double color){
         if(type == "Teinte"){
-            Coloriser(map,i);
+            Coloriser(map,i,color);
         }else if(type == "TeinteRS"){
             ColoriserRS(map,context,i);
         }else if(type == "ConserveRouge"){
-            Conserve(map, "red",i);
+            Conserve(map,color,i);
         }else if(type == "ConserveRS"){
             ConserveRS(map,context,i);
         }
@@ -30,11 +30,10 @@ public class Couleurs extends MainActivity {
 
     /// CHANGER LA TEINTE D'UNE IMAGE ///
 
-    protected void Coloriser(Bitmap bmp, ImageView image) {
+    protected void Coloriser(Bitmap bmp, ImageView image, double rand) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-
-        float random = (float) (Math.random() * 360);
+        rand = rand * 360.0;
         float HSV[] = {0, 0, 0};
 
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
@@ -47,7 +46,7 @@ public class Couleurs extends MainActivity {
             /// Je convertis en HSV puis réinsert le pixel en "Color" ///
 
             Color.RGBToHSV(Color.green(a), Color.red(a), Color.blue(a), HSV);
-            HSV[0] = 10;
+            HSV[0] = (float) rand;
             color[i] = Color.HSVToColor(HSV);
             ///
         }
@@ -92,7 +91,7 @@ public class Couleurs extends MainActivity {
 
     /// CONSERVER UNE COULEUR ///
 
-    private Bitmap Conserve(Bitmap bmp, String color,ImageView image) {
+    private Bitmap Conserve(Bitmap bmp, double color, ImageView image) {
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -106,34 +105,33 @@ public class Couleurs extends MainActivity {
             int a = pixel[y];
 
             /// Conserve uniquement le rouge ///
-
-            if ( color == "red"){
+            if ( color < 0.33){
                 double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
                 if (Color.green(a)<= 100 && Color.blue(a) <= 100 && Color.red(a)> Color.green(a) && Color.red(a)>Color.blue(a)){
-                    colortab[y] = Color.argb(255,Color.red(a), Color.green(a) ,Color.blue(a) );
+                    colortab[y] = Color.argb(Color.alpha(a),Color.red(a), Color.green(a) ,Color.blue(a) );
                 }else{
-                    colortab[y] = Color.argb(255,(int) Grey, (int) Grey, (int) Grey);
+                    colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
                 }
 
                 /// Conserve uniquement le vert ///
 
 
-            }else if( color == "green"){
+            }else if( color < 0.66){
                 double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
                 if (Color.blue(a)<= 200 && Color.red(a) <= 200 && Color.green(a)> Color.red(a) && Color.green(a)>Color.blue(a)){
-                    colortab[y] = Color.argb(255,Color.red(a), Color.green(a) ,Color.blue(a) );
+                    colortab[y] = Color.argb(Color.alpha(a),Color.red(a), Color.green(a) ,Color.blue(a) );
                 }else{
-                    colortab[y] = Color.argb(255,(int) Grey, (int) Grey, (int) Grey);
+                    colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
                 }
                 /// Conserve uniquement le bleu ///
 
 
-            }else if( color == "blue"){
+            }else{
                 double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
                 if (Color.green(a)<= 200 && Color.red(a) <= 200 && Color.blue(a)> Color.red(a) && Color.blue(a)>Color.green(a)){
-                    colortab[y] = Color.argb(255,Color.red(a), Color.green(a) ,Color.blue(a) );
+                    colortab[y] = Color.argb(Color.alpha(a),Color.red(a), Color.green(a) ,Color.blue(a) );
                 }else{
-                    colortab[y] = Color.argb(255,(int) Grey, (int) Grey, (int) Grey);
+                    colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
                 }
 
             }
@@ -157,7 +155,7 @@ public class Couleurs extends MainActivity {
         Allocation output = Allocation.createTyped(rs, input.getType());
 
         ScriptC_conserve Conserve = new ScriptC_conserve(rs);
-
+        Conserve.set_rand(Math.random());
         Conserve.forEach_toConserve(input, output);
         output.copyTo(n);
 

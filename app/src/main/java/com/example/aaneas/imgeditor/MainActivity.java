@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 @Override
                 public void onClick(View view) {
                     MediaStore.Images.Media.insertImage(getContentResolver(),MonImg,"nom image","description");
+                    //MediaStore.Images.Media.insertImage(getContentResolver(),tempo,"nom image","description");
                 }
             });
         }
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
                MonImg= (Bitmap) data.getExtras().get("data");
                 Img.setImageBitmap(MonImg);
-                Myspinner.setVisibility(View.VISIBLE);
+                myspinner.setVisibility(View.VISIBLE);
                 Galerie.setVisibility(View.INVISIBLE);
                 AppPhoto.setVisibility(View.INVISIBLE);
                 Save.setVisibility(View.VISIBLE);
@@ -189,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 cursor.close();
                 MonImg = BitmapFactory.decodeFile(imgPath);
                 Img.setImageBitmap(MonImg);
-                Myspinner.setVisibility(View.VISIBLE);
+                myspinner.setVisibility(View.VISIBLE);
                 Galerie.setVisibility(View.INVISIBLE);
                 AppPhoto.setVisibility(View.INVISIBLE);
                 Save.setVisibility(View.VISIBLE);
@@ -205,7 +206,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
-
             ImageView tempo = findViewById(R.id.ImgPhoto);
             Long time = System.currentTimeMillis();
 
@@ -222,32 +222,31 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     new Gris(MonImg, tempo,"Gris", this);
                     long timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Gris image1 = " + timeafter + " ms");
-
                     break;
                 case 2:
                     new Gris(MonImg,tempo, "RS", this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Gris RS image 1= " + timeafter + " ms");
-
                     break;
                 case 3:
 
-                    new Couleurs(MonImg,tempo,"Teinte",this);
+                    new Couleurs(MonImg,tempo,"Teinte",this, color);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Coloriser image1= " + timeafter + " ms");
                     break;
                 case 4:
-                    new Couleurs(MonImg,tempo,"TeinteRS",this);
+                    new Couleurs(MonImg,tempo,"TeinteRS",this, 0);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Coloriser RS image1= " + timeafter + " ms");
                     break;
                 case 5:
-                    new Couleurs(MonImg,tempo,"ConserveRouge",this);
+                    double color = Math.random();
+                    new Couleurs(MonImg,tempo,"ConserveRouge",this, color);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Conserve image1= " + timeafter + " ms");
                     break;
                 case 6:
-                   // new Couleurs(MonImg,tempo,"ConserveRS",this);
+                    new Couleurs(MonImg,tempo,"ConserveRS",this, 0);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Conserve RS image1= " + timeafter + " ms");
                     break;

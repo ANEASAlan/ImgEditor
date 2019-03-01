@@ -18,8 +18,7 @@ public class Contours extends MainActivity{
     }
 
     /// Flou Lisse (n = taille du masque) ///
-
-    /*private Bitmap ContoursSobel(Bitmap bmp, ImageView i){
+private Bitmap ContoursSobel(Bitmap bmp, ImageView i){
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -72,10 +71,6 @@ public class Contours extends MainActivity{
         return newimg;
 
     }
-
-
-    */
-
 
     private Bitmap ContoursLaplace(Bitmap bmp, ImageView i){
 
