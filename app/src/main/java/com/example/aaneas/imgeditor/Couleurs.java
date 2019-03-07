@@ -13,7 +13,7 @@ import android.support.v8.renderscript.RenderScript;
 
 public class Couleurs extends MainActivity {
 
-    public Couleurs(Bitmap map, ImageView i, String type, Context context, double color){
+    public Couleurs(Bitmap map, ImageView i, String type, Context context, int color){
         if(type == "Teinte"){
             Coloriser(map,i,color);
         }else if(type == "TeinteRS"){

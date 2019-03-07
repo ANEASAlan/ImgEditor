@@ -230,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
                 case 3:
 
-                    new Couleurs(MonImg,tempo,"Teinte",this, color);
+                    new Couleurs(MonImg,tempo,"Teinte",this, 10);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Coloriser image1= " + timeafter + " ms");
                     break;
@@ -241,7 +241,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
                 case 5:
                     double color = Math.random();
-                    new Couleurs(MonImg,tempo,"ConserveRouge",this, color);
+                    new Couleurs(MonImg,tempo,"ConserveRouge",this, 10);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Conserve image1= " + timeafter + " ms");
                     break;
