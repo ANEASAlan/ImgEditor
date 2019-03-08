@@ -1,5 +1,6 @@
 package com.example.aaneas.imgeditor;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,7 +22,7 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
     static int GALERY_REQUEST = 1;
     static int PHOTO_REQUEST = 0;
     static SeekBar LumiBar;
@@ -82,9 +84,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
 */
-
+        @SuppressLint("ClickableViewAccessibility")
         private void initImg() {
         Img = (ImageView) findViewById(R.id.ImgPhoto);
+        Img.setOnTouchListener(this);
         Galerie = (Button) findViewById(R.id.Galerie);
         AppPhoto = (Button) findViewById(R.id.Photo);
         Save = (Button) findViewById(R.id.Save);
@@ -118,33 +121,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         ///////////////////////
 
-    /* DRAG AND DROP (big oof)
+        ////// DRAG AND DROP //////
 
-        Img.setOnTouchListener(new View.OnTouchListener() {
-            PointF pressPos = new PointF();
-            PointF startPos = new PointF();
+        float x,y = 0.0f;
+        boolean moving = false;
 
-            @Override
-            public boolean onTouch (View view, MotionEvent event){
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_MOVE:
-                        Img.setX((int) (startPos.x + event.getX() - pressPos.x));
-                        Img.setY((int) (startPos.y + event.getY() - pressPos.y));
-                        startPos.set(Img.getX(), Img.getY());
-                        break;
-                    case MotionEvent.ACTION_DOWN:
-                        pressPos.set(event.getX(), event.getY());
-                        startPos.set(Img.getX(), Img.getY());
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        break;
-                    default:
-                        break;
-                }
-                return true;
+        public boolean onTouch (View view, MotionEvent event){
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_MOVE:
+                    if(moving) {
+                        x = event.getRawX() - Img.getWidth() / 2;
+                        y = event.getRawY() - (Img.getHeight() * 3) / 4;
+                        Img.setX(x);
+                        Img.setY(y);
+                    }
+                    break;
+                case MotionEvent.ACTION_DOWN:
+                    moving = true;
+                    break;
+                case MotionEvent.ACTION_UP:
+                    moving = false;
+                    break;
+                default:
+                    break;
             }
-        });
- */
+            return true;
+        }
+
+        //////////////////////////////
+
         private void createButtonSave(){
             Save.setOnClickListener(new Button.OnClickListener() {
                 @Override
