@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PointF;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -18,23 +18,28 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.ToggleButton;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+
     static int GALERY_REQUEST = 1;
     static int PHOTO_REQUEST = 0;
+    static float ScaleFactor = 1.0f;
+
     static SeekBar LumiBar;
+    static boolean rs=false;
 
     ImageView Img;
     Button Galerie;
     Button AppPhoto;
     Button Save;
     Bitmap MonImg;
+    ToggleButton RS_Button;
 
     Spinner myspinner;
 
     private ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
-    private float scaleFactor = 1.0f;
 
 
     boolean render_script = false;
@@ -45,13 +50,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
 
         initImg();
         myspinner = findViewById(R.id.spinner1);
-        LumiBar = (SeekBar) findViewById(R.id.ColorB);
+        LumiBar = findViewById(R.id.ColorB);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
@@ -61,15 +65,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         myspinner.setAdapter(monadaptater);
         myspinner.setOnItemSelectedListener(this);
+
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
-            scaleFactor *= scaleGestureDetector.getScaleFactor();
-            scaleFactor = Math.max(0.1f, Math.min(scaleFactor, 5.0f));        //On limite le zoom entre 0.1 fois et 5.0 fois la taille de l'image initiale
-            Img.setScaleX(scaleFactor);
-            Img.setScaleY(scaleFactor);
+            ScaleFactor *= scaleGestureDetector.getScaleFactor();
+            ScaleFactor = Math.max(0.1f, Math.min(ScaleFactor, 5.0f));        //On limite le zoom entre 0.1 fois et 5.0 fois la taille de l'image initiale
+            Img.setScaleX(ScaleFactor);
+            Img.setScaleY(ScaleFactor);
             return true;
         }
     }
@@ -85,13 +90,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 */
 
         private void initImg() {
-        Img = (ImageView) findViewById(R.id.ImgPhoto);
-        Galerie = (Button) findViewById(R.id.Galerie);
-        AppPhoto = (Button) findViewById(R.id.Photo);
-        Save = (Button) findViewById(R.id.Save);
+        Img = findViewById(R.id.ImgPhoto);
+        Galerie = findViewById(R.id.Galerie);
+        AppPhoto = findViewById(R.id.Photo);
+        Save = findViewById(R.id.Save);
+        RS_Button = findViewById(R.id.RS);
         createButtonGalerie();
         createButtonPhoto();
         createButtonSave();
+        createButtonRS();
         }
 
 
@@ -151,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 @Override
                 public void onClick(View view) {
                     MediaStore.Images.Media.insertImage(getContentResolver(),MonImg,"nom image","description");
-                    //MediaStore.Images.Media.insertImage(getContentResolver(),tempo,"nom image","description");
                 }
             });
         }
@@ -172,14 +178,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
+        private void createButtonRS(){
+            RS_Button.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    rs=!rs;
+                    //Log.i( MainActivity.class.getSimpleName(), Boolean.toString(rs));
+                }
+            });
+        }
+
         public void onActivityResult (int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
                MonImg= (Bitmap) data.getExtras().get("data");
                 Img.setImageBitmap(MonImg);
                 myspinner.setVisibility(View.VISIBLE);
-                Galerie.setVisibility(View.INVISIBLE);
-                AppPhoto.setVisibility(View.INVISIBLE);
                 Save.setVisibility(View.VISIBLE);
             }else if (requestCode == GALERY_REQUEST && resultCode == RESULT_OK) {
                 Uri selectedImg = data.getData();
@@ -192,8 +206,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 MonImg = BitmapFactory.decodeFile(imgPath);
                 Img.setImageBitmap(MonImg);
                 myspinner.setVisibility(View.VISIBLE);
-                Galerie.setVisibility(View.INVISIBLE);
-                AppPhoto.setVisibility(View.INVISIBLE);
                 Save.setVisibility(View.VISIBLE);
                 }
 
@@ -207,8 +219,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
-            ImageView tempo = findViewById(R.id.ImgPhoto);
             Long time = System.currentTimeMillis();
+            String filtre;
+            if(rs){
+                filtre="RS";
+            }else{
+
+            }
 
 
             // matrice pour flou gaussien
@@ -217,75 +234,75 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             switch (position) {
 
                 case 0:
-                    tempo.setImageBitmap(MonImg);
+                    Img.setImageBitmap(MonImg);
                     break;
                 case 1:
-                    new Gris(MonImg, tempo,"Gris", this);
+                    new Gris(MonImg, Img,"Gris", this);
                     long timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Gris image1 = " + timeafter + " ms");
                     break;
                 case 2:
-                    new Gris(MonImg,tempo, "RS", this);
+                    new Gris(MonImg,Img, "RS", this);
                     timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Gris RS image 1= " + timeafter + " ms");
+                    System.out.println( "temps d'execution Gris RS image1= " + timeafter + " ms");
                     break;
                 case 3:
 
-                    new Couleurs(MonImg,tempo,"Teinte",this, 10);
+                    new Couleurs(MonImg,Img,"Teinte",this, 10);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Coloriser image1= " + timeafter + " ms");
                     break;
                 case 4:
-                    new Couleurs(MonImg,tempo,"TeinteRS",this, 0);
+                    new Couleurs(MonImg,Img,"TeinteRS",this, 0);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Coloriser RS image1= " + timeafter + " ms");
                     break;
                 case 5:
                     double color = Math.random();
-                    new Couleurs(MonImg,tempo,"ConserveRouge",this, 10);
+                    new Couleurs(MonImg,Img,"ConserveRouge",this, 10);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Conserve image1= " + timeafter + " ms");
                     break;
                 case 6:
-                    new Couleurs(MonImg,tempo,"ConserveRS",this, 0);
+                    new Couleurs(MonImg,Img,"ConserveRS",this, 0);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Conserve RS image1= " + timeafter + " ms");
                     break;
                 case 7:
-                    new Contraste(MonImg, tempo,"Dynamique",this);
+                    new Contraste(MonImg, Img,"Dynamique",this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
 
                 case 8:
-                    new Contraste(MonImg,tempo, "Egaliseur",this);
+                    new Contraste(MonImg,Img, "Egaliseur",this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
 
                 case 9:
-                    new Contraste(MonImg,tempo,"DRS",this);
+                    new Contraste(MonImg,Img,"DRS",this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
                 case 10:
-                    new Contraste(MonImg,tempo,"ERS",this);
+                    new Contraste(MonImg,Img,"ERS",this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
                     break;
                 case 11:
-                    new Flous(MonImg, "Flou",this, tempo, 10,false); // (n taille du masque)
+                    new Flous(MonImg, "Flou",this, Img, 10,false); // (n taille du masque)
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution flou image1= " + timeafter + " ms");
                     break;
 
                 case 12:
-                    new Flous(MonImg, "Flou",this, tempo, 0, true);
+                    new Flous(MonImg, "Flou",this, Img, 0, true);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
                 case 13:
-                    new Flous(MonImg, "Flou RS",this, tempo, 0, true);
+                    new Flous(MonImg, "Flou RS",this, Img, 0, true);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
@@ -300,14 +317,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     LumiColor();
                     break;
                 case 16:
-                    new Gris(MonImg, tempo,"Gris", this);
-                    new Contours(MonImg, "Sobel", tempo);
+                    new Gris(MonImg, Img,"Gris", this);
+                    new Contours(MonImg, "Sobel", Img);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contours Sobel image1 = " + timeafter + " ms");
                     break;
                 case 17:
-                    new Gris(MonImg, tempo,"Gris", this);
-                    new Contours(MonImg, "Laplace", tempo);
+                    new Gris(MonImg, Img,"Gris", this);
+                    new Contours(MonImg, "Laplace", Img);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contours Laplace image1 = " + timeafter + " ms");
                     break;
