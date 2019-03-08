@@ -28,7 +28,7 @@
     <Spinner
         android:id="@+id/spinner1"
         android:layout_width="348dp"
-        android:layout_height="24dp"
+        android:layout_height="28dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="4dp"
         android:layout_marginRight="4dp"
@@ -94,5 +94,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ImgPhoto"
         app:layout_constraintVertical_bias="0.666" />
+
+    <ToggleButton
+        android:id="@+id/RS"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ToggleButton"
+        tools:layout_editor_absoluteX="307dp"
+        tools:layout_editor_absoluteY="569dp" />
 
 </android.support.constraint.ConstraintLayout>

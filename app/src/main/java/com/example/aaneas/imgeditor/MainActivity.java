@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.PointF;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -18,18 +18,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
+import android.widget.ToggleButton;
 
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     static int GALERY_REQUEST = 1;
     static int PHOTO_REQUEST = 0;
     static SeekBar LumiBar;
+    static boolean rs=false;
 
     ImageView Img;
     Button Galerie;
     Button AppPhoto;
     Button Save;
     Bitmap MonImg;
+    ToggleButton RS_Button;
 
     Spinner myspinner;
     private ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
@@ -44,13 +47,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
 
         initImg();
         myspinner = findViewById(R.id.spinner1);
-        LumiBar = (SeekBar) findViewById(R.id.ColorB);
+        LumiBar = findViewById(R.id.ColorB);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         myspinner.setAdapter(monadaptater);
         myspinner.setOnItemSelectedListener(this);
+
     }
 
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
@@ -84,13 +87,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 */
 
         private void initImg() {
-        Img = (ImageView) findViewById(R.id.ImgPhoto);
-        Galerie = (Button) findViewById(R.id.Galerie);
-        AppPhoto = (Button) findViewById(R.id.Photo);
-        Save = (Button) findViewById(R.id.Save);
+        Img = findViewById(R.id.ImgPhoto);
+        Galerie = findViewById(R.id.Galerie);
+        AppPhoto = findViewById(R.id.Photo);
+        Save = findViewById(R.id.Save);
+        RS_Button = findViewById(R.id.RS);
         createButtonGalerie();
         createButtonPhoto();
         createButtonSave();
+        createButtonRS();
         }
 
 
@@ -171,6 +176,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
+        private void createButtonRS(){
+            RS_Button.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    rs=!rs;
+                    //Log.i( MainActivity.class.getSimpleName(), Boolean.toString(rs));
+                }
+            });
+        }
+
         public void onActivityResult (int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
@@ -208,6 +223,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             LumiBar.setVisibility(View.INVISIBLE);
             ImageView tempo = findViewById(R.id.ImgPhoto);
             Long time = System.currentTimeMillis();
+            String filtre;
+            if(rs){
+                filtre="RS";
+            }else{
+
+            }
 
 
             // matrice pour flou gaussien
@@ -226,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 case 2:
                     new Gris(MonImg,tempo, "RS", this);
                     timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Gris RS image 1= " + timeafter + " ms");
+                    System.out.println( "temps d'execution Gris RS image1= " + timeafter + " ms");
                     break;
                 case 3:
 
