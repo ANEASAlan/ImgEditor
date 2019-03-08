@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 
 import android.support.v8.renderscript.RenderScript;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.android.rssample.*;
@@ -14,6 +15,21 @@ import android.support.v8.renderscript.RenderScript;
 public class Couleurs extends MainActivity {
 
     public Couleurs(Bitmap map, ImageView i, String type, Context context, int color){
+        switch(type){
+            case "Teinte":
+                Coloriser(map,i,color);
+                break;
+            case "TeinteRS":
+                ColoriserRS(map,context,i);
+                break;
+            case "ConserveRouge":
+                Conserve(map,color,i);
+                break;
+            case "ConerveRS":
+                    ConserveRS(map,context,i);
+        }
+
+        /*
         if(type == "Teinte"){
             Coloriser(map,i,color);
         }else if(type == "TeinteRS"){
@@ -23,6 +39,7 @@ public class Couleurs extends MainActivity {
         }else if(type == "ConserveRS"){
             ConserveRS(map,context,i);
         }
+        */
     }
 
 

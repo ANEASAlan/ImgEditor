@@ -11,7 +11,7 @@ import com.android.rssample.*;
 
 
 
-public class Contraste  extends MainActivity {
+public class Contraste extends MainActivity {
 
     public Contraste(Bitmap map, ImageView i, String type, Context context){
 

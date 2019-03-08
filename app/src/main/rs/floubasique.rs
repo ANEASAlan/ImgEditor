@@ -8,11 +8,8 @@ double gmin = 0.0;
 double gmax = 1.0;
 double bmin = 0.0;
 double bmax = 1.0;
+
 uchar4 RS_KERNEL floubasique(uchar4 in){
-
-
-
-
 
 float4  pixelf = rsUnpackColor8888(in);
 pixelf.r = (pixelf.r - rmin) / (rmax - rmin);

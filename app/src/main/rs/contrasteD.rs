@@ -16,7 +16,9 @@ float Lutgreen[256];
 float Lutblue[256];
 
 /// Recupere le MIN et MAX de chaque Couleur R G B ////
-
+///
+// à  changer à cause des calculs en parallèles
+//s'assurer que pendant un calcul il n'y ait pas d'autre affectation
 void  RS_KERNEL  GetMinMaxColor(uchar4  in) {
 
 
