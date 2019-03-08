@@ -56,7 +56,7 @@ private Bitmap ContoursSobel(Bitmap bmp, ImageView i){
                 horiz += Color.green(c);
                 verti += Color.green(c);
                 double dnewcolor = java.lang.Math.sqrt((double) (verti*verti + horiz*horiz));
-                int newcolor = (int) (255.0 * dnewcolor / 1443.0); //1443 = 4*255*sqrt(2)
+                int newcolor = (int) (255.0 * dnewcolor / (java.lang.Math.sqrt((double) ((4*255*4*255*2)))));
                 newpixel[x + (y*newimg.getWidth())] = Color.argb(Color.alpha(pixel[x + (y* (bmp.getWidth()))]),newcolor,newcolor,newcolor);
 
                /// newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);

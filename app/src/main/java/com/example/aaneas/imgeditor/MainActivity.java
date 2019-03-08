@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Bitmap MonImg;
 
     Spinner myspinner;
+
     private ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
     private float scaleFactor = 1.0f;
 
@@ -284,7 +285,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
                 case 13:
-                    //FLOU RS//
+                    new Flous(MonImg, "Flou RS",this, tempo, 0, true);
+                    timeafter = System.currentTimeMillis() - time;
+                    System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
                     break;
                 case 14:
                     LumiBar.setVisibility(View.VISIBLE);
