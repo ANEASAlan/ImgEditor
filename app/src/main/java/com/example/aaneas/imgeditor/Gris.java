@@ -6,18 +6,21 @@ import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.widget.ImageView;
+//import android.util.Log;
 
 import com.android.rssample.ScriptC_grey;
 
 
-public class Gris extends MainActivity{
+public class Gris extends MainActivity {
 
 
-    public Gris(Bitmap map, ImageView i, String type, Context context){
-        if (type == "Gris"){
+    public Gris(Bitmap map, ImageView i, Boolean isRs, Context context){
+        if (!isRs){
+            //Log.i( MainActivity.class.getSimpleName(), "pas RS");
             toGrey(map,i);
-        }else if (type == "RS"){
+        }else{
             toGreyRS(map,context,i);
+            //Log.i( MainActivity.class.getSimpleName(), "RS");
         }
     }
 

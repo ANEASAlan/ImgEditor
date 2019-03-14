@@ -9,11 +9,9 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static float ScaleFactor = 1.0f;
 
     static SeekBar LumiBar;
-    static boolean rs=false;
+    static boolean isRs =false;
 
     ImageView Img;
     Button Galerie;
@@ -61,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
         myspinner.setVisibility(View.INVISIBLE);
+        RS_Button.setVisibility(View.INVISIBLE);
 
         ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Monspinner));
         monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -183,12 +182,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
+        // ** RENDER SCRIPT ** //
         private void createButtonRS(){
             RS_Button.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    rs=!rs;
-                    //Log.i( MainActivity.class.getSimpleName(), Boolean.toString(rs));
+                    isRs =!isRs;
+                    //Log.i( MainActivity.class.getSimpleName(), Boolean.toString(isRs));
                 }
             });
         }
@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Img.setImageBitmap(MonImg);
                 myspinner.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
+                RS_Button.setVisibility(View.VISIBLE);
             }else if (requestCode == GALERY_REQUEST && resultCode == RESULT_OK) {
                 Uri selectedImg = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -212,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Img.setImageBitmap(MonImg);
                 myspinner.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
+                RS_Button.setVisibility(View.VISIBLE);
                 }
 
         }
@@ -225,13 +227,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
             Long time = System.currentTimeMillis();
-            String filtre;
-            if(rs){
-                filtre="RS";
-            }else{
-
-            }
-
 
             // matrice pour flou gaussien
 
@@ -242,15 +237,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Img.setImageBitmap(MonImg);
                     break;
                 case 1:
-                    new Gris(MonImg, Img,"Gris", this);
+                    new Gris(MonImg, Img, isRs, this);
                     long timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Gris image1 = " + timeafter + " ms");
                     break;
-                case 2:
+                /*case 2:
                     new Gris(MonImg,Img, "RS", this);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Gris RS image1= " + timeafter + " ms");
-                    break;
+                    break;*/
                 case 3:
 
                     new Couleurs(MonImg,Img,"Teinte",this, 10);
@@ -313,22 +308,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
                 case 14:
                     LumiBar.setVisibility(View.VISIBLE);
-                    render_script = false;
+                    render_script = isRs;
                     LumiColor();
                     break;
                 case 15:
                     LumiBar.setVisibility(View.VISIBLE);
-                    render_script = true;
+                    render_script = isRs;
                     LumiColor();
                     break;
                 case 16:
-                    new Gris(MonImg, Img,"Gris", this);
+                    new Gris(MonImg, Img,true, this); //?
                     new Contours(MonImg, "Sobel", Img);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contours Sobel image1 = " + timeafter + " ms");
                     break;
                 case 17:
-                    new Gris(MonImg, Img,"Gris", this);
+                    new Gris(MonImg, Img,true, this); //?
                     new Contours(MonImg, "Laplace", Img);
                     timeafter = System.currentTimeMillis() - time;
                     System.out.println( "temps d'execution Contours Laplace image1 = " + timeafter + " ms");
