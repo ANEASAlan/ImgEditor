@@ -1,25 +1,29 @@
 
 <resources>
     <string name="app_name">ImgEditor</string>
-    <string-array name="Monspinner">
+    <string-array name="spinner1">
         <item>Aucun filtre</item>
         <item>Gris</item>
-        <item>Gris rs</item>
         <item>teinte</item>
-        <item>teinte rs</item>
         <item>conserve</item>
-        <item>conserve rs</item>
         <item>contraste dynamique </item>
         <item>contraste egaliseur </item>
-        <item>contraste dynamique rs </item>
-        <item>contraste egaliseur rs </item>
         <item>flou basique </item>
         <item>flou gaussien </item>
-        <item>flou RS</item>
         <item>luminosité +</item>
-        <item>luminosité + RS</item>
         <item>contours Sobel</item>
         <item>contours Laplace</item>
+
+    </string-array>
+    <string-array name="spinner2">
+        <item>Aucun filtre</item>
+        <item>Gris rs</item>
+        <item>teinte rs</item>
+        <item>conserve rs</item>
+        <item>contraste dynamique rs </item>
+        <item>contraste egaliseur rs </item>
+        <item>flou RS</item>
+        <item>luminosité + RS</item>
 
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
