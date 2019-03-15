@@ -92,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
      }
 
-
         @SuppressLint("ClickableViewAccessibility")
         private void initImg() {
 
