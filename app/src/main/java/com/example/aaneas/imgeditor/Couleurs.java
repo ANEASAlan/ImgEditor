@@ -14,43 +14,13 @@ import android.support.v8.renderscript.RenderScript;
 
 public class Couleurs extends MainActivity {
 
-    public Couleurs(Bitmap map, ImageView i, String type, Context context, int color){
-        switch(type){
-            case "Teinte":
-                Coloriser(map,i,color);
-                break;
-            case "TeinteRS":
-                ColoriserRS(map,context,i);
-                break;
-            case "ConserveRouge":
-                Conserve(map,color,i);
-                break;
-            case "ConerveRS":
-                    ConserveRS(map,context,i);
-        }
-
-        /*
-        if(type == "Teinte"){
-            Coloriser(map,i,color);
-        }else if(type == "TeinteRS"){
-            ColoriserRS(map,context,i);
-        }else if(type == "ConserveRouge"){
-            Conserve(map,color,i);
-        }else if(type == "ConserveRS"){
-            ConserveRS(map,context,i);
-        }
-        */
-    }
-
-
-
 
     /// CHANGER LA TEINTE D'UNE IMAGE ///
 
-    protected void Coloriser(Bitmap bmp, ImageView image, double rand) {
+    static protected void Coloriser(Bitmap bmp) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-        rand = rand * 360.0;
+        double rand = 20;
         float HSV[] = {0, 0, 0};
 
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
@@ -68,14 +38,14 @@ public class Couleurs extends MainActivity {
             ///
         }
         n.setPixels(color,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        image.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
 
 
     }
 
     /// RENDERSCRIPT COLORISER VERSION///
 
-    private void ColoriserRS(Bitmap bmp, Context context, ImageView i) {
+    static protected void ColoriserRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -103,12 +73,12 @@ public class Couleurs extends MainActivity {
         ColorScript.destroy();
         rs.destroy();
 
-        i.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
     }
 
     /// CONSERVER UNE COULEUR ///
 
-    private Bitmap Conserve(Bitmap bmp, double color, ImageView image) {
+    static  protected void Conserve(Bitmap bmp) {
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -117,7 +87,7 @@ public class Couleurs extends MainActivity {
         bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
 
 
-
+        double color = 0.2;
         for (int y = 0; y < pixel.length; y++) {
             int a = pixel[y];
 
@@ -155,14 +125,13 @@ public class Couleurs extends MainActivity {
 
         }
         newimg.setPixels(colortab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        image.setImageBitmap(newimg);
-        return newimg;
+        MainActivity.Img.setImageBitmap(newimg);
     }
 
     /// RENDERSCRIPT VERSION ///
 
 
-    private void ConserveRS(Bitmap bmp, Context context, ImageView i) {
+    static  protected void ConserveRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -181,6 +150,6 @@ public class Couleurs extends MainActivity {
         Conserve.destroy();
         rs.destroy();
 
-        i.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
     }
 }

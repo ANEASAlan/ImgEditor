@@ -14,17 +14,8 @@ import com.android.rssample.ScriptC_grey;
 public class Gris extends MainActivity {
 
 
-    public Gris(Bitmap map, ImageView i, Boolean isRs, Context context){
-        if (!isRs){
-            //Log.i( MainActivity.class.getSimpleName(), "pas RS");
-            toGrey(map,i);
-        }else{
-            toGreyRS(map,context,i);
-            //Log.i( MainActivity.class.getSimpleName(), "RS");
-        }
-    }
 
-    protected Bitmap toGrey(Bitmap bmp, ImageView image) {
+    static protected void toGrey(Bitmap bmp) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -38,13 +29,12 @@ public class Gris extends MainActivity {
             greytab[i] = Color.argb(Color.alpha(pixel[i]),Grey,Grey,Grey);
         }
         n.setPixels(greytab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        image.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(n);
     }
 
     ///RENDERSCRIPT VERSION///
 
-    private void toGreyRS(Bitmap bmp, Context context, ImageView image) {
+    static protected void toGreyRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -63,7 +53,7 @@ public class Gris extends MainActivity {
         Grey.destroy();
         rs.destroy();
 
-        image.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
 
     }
 

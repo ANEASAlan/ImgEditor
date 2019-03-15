@@ -13,18 +13,9 @@ import android.support.v8.renderscript.RenderScript;
 
 public class Flous extends MainActivity {
 
-    public Flous(Bitmap map, String type, Context context, ImageView i, int n, boolean gauss) {
-        if (type == "Flou RS") {
-            FlouRS(map, context, i);
-        } else if (type == "Flou") {
-            Flougaussien(map, i, gauss);
-        }
-    }
-
-
     /// Flou gaussien ////
 
-    private Bitmap Flougaussien(Bitmap bmp, ImageView i, boolean gaussien) {
+    static protected void Flougaussien(Bitmap bmp, boolean gaussien) {
         int[][] matrix;
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
@@ -96,8 +87,7 @@ public class Flous extends MainActivity {
             }
         }
         n.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
-        i.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(n);
 
     }
 
@@ -106,7 +96,7 @@ public class Flous extends MainActivity {
     private static final float BITMAP_SCALE = 0.01f;
     private static final float BLUR_RADIUS = 0.01f;
 
-    private Bitmap FlouRS(Bitmap image, Context context, ImageView i) {
+    static protected Bitmap FlouRS(Bitmap image, Context context) {
         int width = Math.round(image.getWidth() * BITMAP_SCALE);
         int height = Math.round(image.getHeight() * BITMAP_SCALE);
 
@@ -129,7 +119,7 @@ public class Flous extends MainActivity {
         output.destroy();
         rs.destroy();
 
-        i.setImageBitmap(outputBitmap);
+        MainActivity.Img.setImageBitmap(outputBitmap);
         return outputBitmap;
     }
 }

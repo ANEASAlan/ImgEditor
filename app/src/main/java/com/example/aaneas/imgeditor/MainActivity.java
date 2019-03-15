@@ -28,8 +28,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     static SeekBar LumiBar;
     static boolean isRs =false;
+    static ImageView Img;
 
-    ImageView Img;
+
     Button Galerie;
     Button AppPhoto;
     Button Save;
@@ -226,112 +227,73 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
-            Long time = System.currentTimeMillis();
-
-            // matrice pour flou gaussien
-
-
             switch (position) {
 
                 case 0:
                     Img.setImageBitmap(MonImg);
                     break;
                 case 1:
-                    new Gris(MonImg, Img, isRs, this);
-                    long timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Gris image1 = " + timeafter + " ms");
+                    Gris.toGrey(MonImg);
                     break;
-                /*case 2:
-                    new Gris(MonImg,Img, "RS", this);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Gris RS image1= " + timeafter + " ms");
-                    break;*/
+                case 2:
+                    Gris.toGreyRS(MonImg,this);
+                    break;
                 case 3:
-
-                    new Couleurs(MonImg,Img,"Teinte",this, 10);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Coloriser image1= " + timeafter + " ms");
+                    Couleurs.Coloriser(MonImg);
                     break;
                 case 4:
-                    new Couleurs(MonImg,Img,"TeinteRS",this, 0);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Coloriser RS image1= " + timeafter + " ms");
+                    Couleurs.ColoriserRS(MonImg,this);
                     break;
                 case 5:
-                    double color = Math.random();
-                    new Couleurs(MonImg,Img,"ConserveRouge",this, 10);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Conserve image1= " + timeafter + " ms");
+                    Couleurs.Conserve(MonImg);
                     break;
                 case 6:
-                    new Couleurs(MonImg,Img,"ConserveRS",this, 0);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Conserve RS image1= " + timeafter + " ms");
+                    Couleurs.ConserveRS(MonImg,this);
                     break;
                 case 7:
-                    new Contraste(MonImg, Img,"Dynamique",this);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
+                    Contraste.ContrasteCouleurDynamique(MonImg);
                     break;
 
                 case 8:
-                    new Contraste(MonImg,Img, "Egaliseur",this);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
+                    Contraste.ContrasteCouleurEgaliseur(MonImg);
                     break;
 
                 case 9:
-                    new Contraste(MonImg,Img,"DRS",this);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
+                    Contraste.ContrasteDynamiqueRS(MonImg,this);
                     break;
                 case 10:
-                    new Contraste(MonImg,Img,"ERS",this);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Contraste image2= " + timeafter + " ms");
+                    Contraste.contrastEgaliseurRS(MonImg,this);
                     break;
                 case 11:
-                    new Flous(MonImg, "Flou",this, Img, 10,false); // (n taille du masque)
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution flou image1= " + timeafter + " ms");
+                    Flous.Flougaussien(MonImg,false);
                     break;
 
                 case 12:
-                    new Flous(MonImg, "Flou",this, Img, 0, true);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
+                    Flous.Flougaussien(MonImg,true);
                     break;
                 case 13:
-                    new Flous(MonImg, "Flou RS",this, Img, 0, true);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution flou gaussien image2= " + timeafter + " ms");
+                    Flous.FlouRS(MonImg,this);
                     break;
                 case 14:
-                    LumiBar.setVisibility(View.VISIBLE);
                     render_script = isRs;
+                    LumiBar.setVisibility(View.VISIBLE);
                     LumiColor();
                     break;
                 case 15:
+                    /// passez isRs à true avec le bouton //
+                    render_script = true;
                     LumiBar.setVisibility(View.VISIBLE);
-                    render_script = isRs;
                     LumiColor();
                     break;
                 case 16:
-                    new Gris(MonImg, Img,true, this); //?
-                    new Contours(MonImg, "Sobel", Img);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Contours Sobel image1 = " + timeafter + " ms");
+                    Gris.toGreyRS(MonImg,this);
+                    Contours.ContoursSobel(MonImg);
                     break;
                 case 17:
-                    new Gris(MonImg, Img,true, this); //?
-                    new Contours(MonImg, "Laplace", Img);
-                    timeafter = System.currentTimeMillis() - time;
-                    System.out.println( "temps d'execution Contours Laplace image1 = " + timeafter + " ms");
+                    Gris.toGreyRS(MonImg,this);
+                    Contours.ContoursLaplace(MonImg);
                     break;
             }
-
-
-
 
         }
 
@@ -345,11 +307,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
                         @Override
-                        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                        public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
                             if (render_script == false) {
-                                new Luminosite(MonImg, "Luminosite", MainActivity.this, Img, i);
+                                Luminosite.changeBrightness(MonImg,scale);
                             } else {
-                                new Luminosite(MonImg, "LuminositeRS", MainActivity.this, Img, i);
+                                Luminosite.changeBrightnessRS(MonImg,MainActivity.this,scale);
 
                             }
                         }

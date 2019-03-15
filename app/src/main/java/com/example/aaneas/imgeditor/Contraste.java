@@ -13,24 +13,9 @@ import com.android.rssample.*;
 
 public class Contraste extends MainActivity {
 
-    public Contraste(Bitmap map, ImageView i, String type, Context context){
+    static protected void ContrasteDynamiqueRS(Bitmap bmp, Context context) {
 
-        if( type == "Dynamique") {
-            ContrasteCouleurDynamique(map,i);
-        }else if (type == "Egaliseur"){
-            ContrasteCouleurEgaliseur(map,i);
-        }else if (type == "DRS") {
-            ContrasteDynamiqueRS(map, context,i);
-        } else if (type == "ERS") {
-            contrastEgaliseurRS(map, context, i);
-        }
-    }
-
-
-
-    private void ContrasteDynamiqueRS(Bitmap bmp,Context context, ImageView i) {
-
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
         RenderScript rs = RenderScript.create(context);
 
@@ -43,7 +28,7 @@ public class Contraste extends MainActivity {
         contraste.invoke_createlutred();
         contraste.invoke_createlutgreen();
         contraste.invoke_createlutblue();
-        contraste.forEach_Final(input,output);
+        contraste.forEach_Final(input, output);
 
 
         output.copyTo(n);
@@ -53,25 +38,24 @@ public class Contraste extends MainActivity {
         contraste.destroy();
         rs.destroy();
 
-        i.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
     }
-
 
 
     /// Fonction intermédiaire pour le contraste ///
 
-    private int[] Couleurlevel(int[] pixels , int height , int width ,char c) {
+    static private int[] Couleurlevel(int[] pixels, int height, int width, char c) {
         int[] Couleurlevel = new int[width * height];
-        if (c == 'r'){
+        if (c == 'r') {
             for (int i = 0; i < pixels.length; i++) {
                 Couleurlevel[i] = Color.red(pixels[i]);
             }
-        }else if(c == 'g'){
-            for (int i =0; i < pixels.length; i++){
+        } else if (c == 'g') {
+            for (int i = 0; i < pixels.length; i++) {
                 Couleurlevel[i] = Color.green(pixels[i]);
             }
-        }else if(c == 'b'){
-            for (int i =0; i< pixels.length; i++){
+        } else if (c == 'b') {
+            for (int i = 0; i < pixels.length; i++) {
                 Couleurlevel[i] = Color.blue(pixels[i]);
             }
         }
@@ -82,13 +66,11 @@ public class Contraste extends MainActivity {
     }
 
 
-
-
     /// CONTRASTE DYNAMIQUE EN COULEUR ///
 
-    private Bitmap ContrasteCouleurDynamique(Bitmap bmp, ImageView i) {
+    static protected void ContrasteCouleurDynamique(Bitmap bmp) {
 
-        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
 
         int[] pixel = new int[bmp.getHeight() * bmp.getWidth()];
@@ -102,94 +84,92 @@ public class Contraste extends MainActivity {
         //// Méthode Dynamique ////
 
 
+        int[] histred = new int[256];
+        int[] histgreen = new int[256];
+        int[] histblue = new int[256];
 
-            int[] histred = new int[256];
-            int[] histgreen = new int[256];
-            int[] histblue = new int[256];
-
-            /// Créer 3 histogrammes pour chaque couleur ///
-
-
-            for (int index = 0; index < redtab.length; index++) {
-                histred[redtab[index]]++;
-            }
-
-            for (int index = 0; index < greentab.length; index++) {
-                histgreen[greentab[index]]++;
-            }
-
-            for (int index = 0; index < bluetab.length; index++) {
-                histblue[bluetab[index]]++;
-            }
+        /// Créer 3 histogrammes pour chaque couleur ///
 
 
-            //Recupère le max et min de chaque histogramme  //
+        for (int index = 0; index < redtab.length; index++) {
+            histred[redtab[index]]++;
+        }
 
-            int maxred = 0;
-            int minred = 0;
-            int var = 0;
+        for (int index = 0; index < greentab.length; index++) {
+            histgreen[greentab[index]]++;
+        }
 
-            while (histred[var] == 0) {
-                var++;
-            }
-            minred = var;
-            var = 255;
-
-            while (histred
-                    [var] == 0) {
-                var--;
-            }
-            maxred = var;
-
-            //
-
-            int maxgreen = 0;
-            int mingreen = 0;
-            var = 0;
-
-            while (histgreen[var] == 0) {
-                var++;
-            }
-            mingreen = var;
-            var = 255;
-
-            while (histgreen[var] == 0) {
-                var--;
-            }
-            maxgreen = var;
+        for (int index = 0; index < bluetab.length; index++) {
+            histblue[bluetab[index]]++;
+        }
 
 
-            int maxblue = 0;
-            int minblue = 0;
-            var = 0;
+        //Recupère le max et min de chaque histogramme  //
 
-            while (histblue[var] == 0) {
-                var++;
-            }
-            minblue = var;
-            var = 255;
+        int maxred = 0;
+        int minred = 0;
+        int var = 0;
 
-            while (histblue[var] == 0) {
-                var--;
-            }
-            maxblue = var;
+        while (histred[var] == 0) {
+            var++;
+        }
+        minred = var;
+        var = 255;
+
+        while (histred
+                [var] == 0) {
+            var--;
+        }
+        maxred = var;
+
+        //
+
+        int maxgreen = 0;
+        int mingreen = 0;
+        var = 0;
+
+        while (histgreen[var] == 0) {
+            var++;
+        }
+        mingreen = var;
+        var = 255;
+
+        while (histgreen[var] == 0) {
+            var--;
+        }
+        maxgreen = var;
 
 
-            int[] newpixel = new int[bmp.getWidth() * bmp.getHeight()];
+        int maxblue = 0;
+        int minblue = 0;
+        var = 0;
 
-            for (int x = 0; x < pixel.length; x++) {
+        while (histblue[var] == 0) {
+            var++;
+        }
+        minblue = var;
+        var = 255;
 
-                int redpixel = 255*(redtab[x] - minred)/(maxred - minred);
-                int greenpixel = 255*(greentab[x] - mingreen)/(maxgreen - mingreen);
-                int bluepixel = 255*(bluetab[x] - minblue)/(maxblue - minblue);
+        while (histblue[var] == 0) {
+            var--;
+        }
+        maxblue = var;
 
-                newpixel[x] = Color.argb(255, redpixel, greenpixel, bluepixel);
+
+        int[] newpixel = new int[bmp.getWidth() * bmp.getHeight()];
+
+        for (int x = 0; x < pixel.length; x++) {
+
+            int redpixel = 255 * (redtab[x] - minred) / (maxred - minred);
+            int greenpixel = 255 * (greentab[x] - mingreen) / (maxgreen - mingreen);
+            int bluepixel = 255 * (bluetab[x] - minblue) / (maxblue - minblue);
+
+            newpixel[x] = Color.argb(255, redpixel, greenpixel, bluepixel);
 
 
-              }
-            newimg.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
-            i.setImageBitmap(newimg);
-            return newimg;
+        }
+        newimg.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+        MainActivity.Img.setImageBitmap(newimg);
 
     }
 
@@ -197,68 +177,68 @@ public class Contraste extends MainActivity {
     /// Faire fonction de contraste en egalisant l'histogramme /////
 
 
-    private void ContrasteCouleurEgaliseur(Bitmap bmp, ImageView img) {
+    static protected void ContrasteCouleurEgaliseur(Bitmap bmp) {
 
-            Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
-            int h = bmp.getHeight();
-            int w = bmp.getWidth();
-            int[] pixels = new int[w * h];
-            int c = 0;
-            int r = 0;
-            int g = 0;
-            int b = 0;
-            bmp.getPixels(pixels, 0, w, 0, 0, w, h);
-            double rmax = 0.0;
-            double rmin = 255.0;
-            double gmax = 0.0;
-            double gmin = 255.0;
-            double bmax = 0.0;
-            double bmin = 255.0;
-            for (int i = 0; i < pixels.length; i++) {
-                if(Color.red(pixels[i]) < rmin) rmin = Color.red(pixels[i]);
-                if(Color.red(pixels[i]) > rmax) rmax = Color.red(pixels[i]);
-                if(Color.green(pixels[i]) < gmin) gmin = Color.green(pixels[i]);
-                if(Color.green(pixels[i]) > gmax) gmax = Color.green(pixels[i]);
-                if(Color.blue(pixels[i]) < bmin) bmin = Color.blue(pixels[i]);
-                if(Color.blue(pixels[i]) > bmax) bmax = Color.blue(pixels[i]);
-            }
-            if(rmax - rmin == 0) {
-                if (rmin == 255.0) rmin--;
-                if (rmax == 0.0) rmax++;
-            }
-            if(gmax - gmin == 0) {
-                if (gmin == 255.0) gmin--;
-                if (gmax == 0.0) gmax++;
-            }
-            if(bmax - bmin == 0) {
-                if (bmin == 255.0) bmin--;
-                if (bmax == 0.0) bmax++;
-            }
-            for (int i = 0; i < pixels.length; i++) {
-                c = pixels[i];
-                r = (int) (255.0 * ((float) (Color.red(c) - rmin)) / (rmax - rmin));
+        int h = bmp.getHeight();
+        int w = bmp.getWidth();
+        int[] pixels = new int[w * h];
+        int c = 0;
+        int r = 0;
+        int g = 0;
+        int b = 0;
+        bmp.getPixels(pixels, 0, w, 0, 0, w, h);
+        double rmax = 0.0;
+        double rmin = 255.0;
+        double gmax = 0.0;
+        double gmin = 255.0;
+        double bmax = 0.0;
+        double bmin = 255.0;
+        for (int i = 0; i < pixels.length; i++) {
+            if (Color.red(pixels[i]) < rmin) rmin = Color.red(pixels[i]);
+            if (Color.red(pixels[i]) > rmax) rmax = Color.red(pixels[i]);
+            if (Color.green(pixels[i]) < gmin) gmin = Color.green(pixels[i]);
+            if (Color.green(pixels[i]) > gmax) gmax = Color.green(pixels[i]);
+            if (Color.blue(pixels[i]) < bmin) bmin = Color.blue(pixels[i]);
+            if (Color.blue(pixels[i]) > bmax) bmax = Color.blue(pixels[i]);
+        }
+        if (rmax - rmin == 0) {
+            if (rmin == 255.0) rmin--;
+            if (rmax == 0.0) rmax++;
+        }
+        if (gmax - gmin == 0) {
+            if (gmin == 255.0) gmin--;
+            if (gmax == 0.0) gmax++;
+        }
+        if (bmax - bmin == 0) {
+            if (bmin == 255.0) bmin--;
+            if (bmax == 0.0) bmax++;
+        }
+        for (int i = 0; i < pixels.length; i++) {
+            c = pixels[i];
+            r = (int) (255.0 * ((float) (Color.red(c) - rmin)) / (rmax - rmin));
                 /*System.out.println("r\n");
                 System.out.println(Color.red(c));
                 System.out.println(r);*/
-                if(r > 255) r = 255;
-                else if (r < 0) r = 0;
-                g = (int) (255.0 * ((float) (Color.green(c) - gmin)) / (gmax - gmin));
-                if(g > 255) g = 255;
-                else if (g < 0) g = 0;
-                b = (int) (255.0 * ((float) (Color.blue(c) - bmin)) / (bmax - bmin));
-                if(b > 255) b = 255;
-                else if (b < 0) b = 0;
-                pixels[i] = Color.rgb(r,g,b);
-            }
-            n.setPixels(pixels, 0, w, 0, 0, w, h);
-            img.setImageBitmap(n);
+            if (r > 255) r = 255;
+            else if (r < 0) r = 0;
+            g = (int) (255.0 * ((float) (Color.green(c) - gmin)) / (gmax - gmin));
+            if (g > 255) g = 255;
+            else if (g < 0) g = 0;
+            b = (int) (255.0 * ((float) (Color.blue(c) - bmin)) / (bmax - bmin));
+            if (b > 255) b = 255;
+            else if (b < 0) b = 0;
+            pixels[i] = Color.rgb(r, g, b);
         }
+        n.setPixels(pixels, 0, w, 0, 0, w, h);
+        MainActivity.Img.setImageBitmap(n);
+    }
 
 
-    private void contrastEgaliseurRS(Bitmap bmp, Context context, ImageView img) {
+    static protected void contrastEgaliseurRS(Bitmap bmp, Context context) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
 
         RenderScript rs = RenderScript.create(context);
@@ -277,31 +257,31 @@ public class Contraste extends MainActivity {
         double bmax = 0.0;
         double bmin = 255.0;
         for (int i = 0; i < pixels.length; i++) {
-            if(Color.red(pixels[i]) < rmin) rmin = Color.red(pixels[i]);
-            if(Color.red(pixels[i]) > rmax) rmax = Color.red(pixels[i]);
-            if(Color.green(pixels[i]) < gmin) gmin = Color.green(pixels[i]);
-            if(Color.green(pixels[i]) > gmax) gmax = Color.green(pixels[i]);
-            if(Color.blue(pixels[i]) < bmin) bmin = Color.blue(pixels[i]);
-            if(Color.blue(pixels[i]) > bmax) bmax = Color.blue(pixels[i]);
+            if (Color.red(pixels[i]) < rmin) rmin = Color.red(pixels[i]);
+            if (Color.red(pixels[i]) > rmax) rmax = Color.red(pixels[i]);
+            if (Color.green(pixels[i]) < gmin) gmin = Color.green(pixels[i]);
+            if (Color.green(pixels[i]) > gmax) gmax = Color.green(pixels[i]);
+            if (Color.blue(pixels[i]) < bmin) bmin = Color.blue(pixels[i]);
+            if (Color.blue(pixels[i]) > bmax) bmax = Color.blue(pixels[i]);
         }
-        if(rmax - rmin == 0) {
+        if (rmax - rmin == 0) {
             if (rmin == 255.0) rmin--;
             if (rmax == 0.0) rmax++;
         }
-        if(gmax - gmin == 0) {
+        if (gmax - gmin == 0) {
             if (gmin == 255.0) gmin--;
             if (gmax == 0.0) gmax++;
         }
-        if(bmax - bmin == 0) {
+        if (bmax - bmin == 0) {
             if (bmin == 255.0) bmin--;
             if (bmax == 0.0) bmax++;
         }
-        contrastScript.set_rmin(rmin/255.0);
-        contrastScript.set_rmax(rmax/255.0);
-        contrastScript.set_gmin(gmin/255.0);
-        contrastScript.set_gmax(gmax/255.0);
-        contrastScript.set_bmin(bmin/255.0);
-        contrastScript.set_bmax(bmax/255.0);
+        contrastScript.set_rmin(rmin / 255.0);
+        contrastScript.set_rmax(rmax / 255.0);
+        contrastScript.set_gmin(gmin / 255.0);
+        contrastScript.set_gmax(gmax / 255.0);
+        contrastScript.set_bmin(bmin / 255.0);
+        contrastScript.set_bmax(bmax / 255.0);
         contrastScript.forEach_contrast(input, output);
         //output.copyTo(bmp);
         output.copyTo(n);
@@ -310,97 +290,7 @@ public class Contraste extends MainActivity {
         contrastScript.destroy();
         rs.destroy();
 
-        img.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
     }
-
-
-    /////// DIMINUE LE CONTRASTE ( NON DEMANDE PAR LES PROFS !!!)  ///// (a voir si enlever ou pas)
-
-
-    /*
-    private void DiminutionContraste(Bitmap bmp) {
-
-
-        // Initialise un tableau avec les pixels de l'image //
-
-        int[] pixel = new int[bmp.getHeight() * bmp.getWidth()];
-        bmp.getPixels(pixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
-
-
-        // calcul le niveau de de rouge, vert et bleue de chaque pixel et le place dans  3 tableaux différents//
-
-        int[] redtab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'r');
-        int[] greentab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'g');
-        int[] bluetab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'b');
-
-
-        // Ressert l'histogramme (diminituion du constraste)  //
-
-
-        for (int x = 0; x < redtab.length; x++) {
-            if (redtab[x] < 127) {
-                redtab[x] = redtab[x] + 15;
-            } else if (redtab[x] > 127) {
-                redtab[x] = redtab[x] - 15;
-            }
-
-        }
-
-        for (int x = 0; x < redtab.length; x++) {
-            if (greentab[x] < 127) {
-                greentab[x] = greentab[x] + 15;
-            } else if (greentab[x] > 127) {
-                greentab[x] = greentab[x] - 15;
-            }
-
-        }
-
-        for (int x = 0; x < redtab.length; x++) {
-            if (bluetab[x] < 127) {
-                bluetab[x] = bluetab[x] + 15;
-            } else if (bluetab[x] > 127) {
-                bluetab[x] = bluetab[x] - 15;
-            }
-
-        }
-
-        int[] histred = new int[256];
-        int[] histgreen = new int[256];
-        int[] histblue = new int[256];
-
-        /// Créer 3 histogrammes pour chaque couleurs ///
-
-
-        for (int index = 0; index < redtab.length; index++) {
-            histred[redtab[index]]++;
-        }
-
-        for (int index = 0; index < greentab.length; index++) {
-            histgreen[greentab[index]]++;
-        }
-
-        for (int index = 0; index < bluetab.length; index++) {
-            histblue[bluetab[index]]++;
-        }
-
-
-        int[] newpixel = new int[bmp.getWidth() * bmp.getHeight()];
-
-        for (int x = 0; x < pixel.length; x++) {
-
-            int redpixel = redtab[x];
-            int greenpixel = greentab[x];
-            int bluepixel = bluetab[x];
-
-            newpixel[x] = Color.argb(1, redpixel, greenpixel, bluepixel);
-        }
-        bmp.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
-
-
-    }
-    */
-
-
-
 
 }

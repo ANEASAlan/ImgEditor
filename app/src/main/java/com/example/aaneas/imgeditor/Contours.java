@@ -9,16 +9,8 @@ import android.widget.ImageView;
 
 public class Contours extends MainActivity{
 
-    public Contours(Bitmap map , String type, ImageView i){
-        if (type == "Sobel"){
-            ContoursSobel(map, i);
-        }else if (type == "Laplace"){
-            ContoursLaplace(map, i);
-        }
-    }
-
     /// Flou Lisse (n = taille du masque) ///
-private Bitmap ContoursSobel(Bitmap bmp, ImageView i){
+    static protected void ContoursSobel(Bitmap bmp){
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -67,12 +59,11 @@ private Bitmap ContoursSobel(Bitmap bmp, ImageView i){
             }
         }
         newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        i.setImageBitmap(newimg);
-        return newimg;
+        MainActivity.Img.setImageBitmap(newimg);
 
     }
 
-    private Bitmap ContoursLaplace(Bitmap bmp, ImageView i){
+    static protected void ContoursLaplace(Bitmap bmp){
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -101,9 +92,7 @@ private Bitmap ContoursSobel(Bitmap bmp, ImageView i){
             }
         }
         newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        i.setImageBitmap(newimg);
-        return newimg;
-
+        MainActivity.Img.setImageBitmap(newimg);
     }
 
 

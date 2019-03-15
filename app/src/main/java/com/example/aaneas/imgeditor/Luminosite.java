@@ -7,23 +7,12 @@ import android.support.v8.renderscript.Allocation;
 import com.android.rssample.*;
 import android.support.v8.renderscript.RenderScript;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 
 public class Luminosite extends MainActivity {
-
-    public Luminosite(Bitmap map, String type, Context context, ImageView i, int Scale){
-        if(type == "Luminosite"){
-            changeBrightness(map,i, Scale);
-        }else if(type == "LuminositeRS"){
-            changeBrightnessRS(map,context,i, Scale);
-        }
-    }
-
-
-
-
     /// CHANGER LA LUMINOSITE D'UNE IMAGE ///
 
-    void changeBrightness(Bitmap Bmp, ImageView img, int BrightnessScale) {
+    static protected void changeBrightness(Bitmap Bmp, int BrightnessScale) {
 
         Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
 
@@ -46,12 +35,12 @@ public class Luminosite extends MainActivity {
             pixels[i] = Color.rgb(r,g,b);
         }
         n.setPixels(pixels, 0, w, 0, 0, w, h);
-        img.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
     }
 
     /// CHANGEBRIGHTNESS RENDERSCRIPT VERSION///
 
-    private void changeBrightnessRS(Bitmap bmp,Context context, ImageView i,float scale) {
+    static protected void changeBrightnessRS(Bitmap bmp, Context context, float scale) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -77,6 +66,6 @@ public class Luminosite extends MainActivity {
         brightnessScript.destroy();
         rs.destroy();
 
-        i.setImageBitmap(n);
+        MainActivity.Img.setImageBitmap(n);
     }
 }
