@@ -131,24 +131,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         ////// DRAG AND DROP //////
 
-        float x,y = 0.0f;
-        boolean moving = false;
+        float x,y,x_tmp,y_tmp = 0.0f;
 
         public boolean onTouch (View view, MotionEvent event){
             switch (event.getAction()) {
-                case MotionEvent.ACTION_MOVE:
-                    if(moving) {
-                        x = event.getRawX() - Img.getWidth() / 2;
-                        y = event.getRawY() - (Img.getHeight() * 3) / 4;
-                        Img.setX(x);
-                        Img.setY(y);
-                    }
-                    break;
                 case MotionEvent.ACTION_DOWN:
-                    moving = true;
+                    x = event.getRawX();
+                    y = event.getRawY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    x_tmp = x - event.getRawX();
+                    y_tmp = y - event.getRawY();
+                    x = event.getRawX();
+                    y = event.getRawY();
+                    Img.setX(Img.getX() - x_tmp);
+                    Img.setY(Img.getY() - y_tmp);
                     break;
                 case MotionEvent.ACTION_UP:
-                    moving = false;
                     break;
                 default:
                     break;
