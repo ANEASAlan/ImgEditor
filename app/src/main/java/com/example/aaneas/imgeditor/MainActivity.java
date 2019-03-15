@@ -20,7 +20,6 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
-
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
     static int GALERY_REQUEST = 1;
     static int PHOTO_REQUEST = 0;
@@ -34,7 +33,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button Galerie;
     Button AppPhoto;
     Button Save;
+    Button Undo;
     Bitmap MonImg;
+    Bitmap[] savedImg = new Bitmap[10];
+    int savedImgIndex=0;
     ToggleButton RS_Button;
 
     Spinner myspinner;
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
         myspinner.setVisibility(View.INVISIBLE);
+        Undo.setVisibility(View.INVISIBLE);
         RS_Button.setVisibility(View.INVISIBLE);
 
         ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Monspinner));
@@ -97,10 +100,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Galerie = findViewById(R.id.Galerie);
         AppPhoto = findViewById(R.id.Photo);
         Save = findViewById(R.id.Save);
+        Undo = findViewById(R.id.Undo);
         RS_Button = findViewById(R.id.RS);
         createButtonGalerie();
         createButtonPhoto();
         createButtonSave();
+        createButtonUndo();
         createButtonRS();
         }
 
@@ -183,8 +188,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
+        private void createButtonUndo() {
+            Undo.setOnClickListener(new Button.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(savedImgIndex!=0){
+                        savedImgIndex--;
+                        MonImg=savedImg[savedImgIndex];
+                        MainActivity.Img.setImageBitmap(MonImg);
+                    }
+                }
+            });
+        }
+
         // ** RENDER SCRIPT ** //
-        private void createButtonRS(){
+        private void createButtonRS() {
             RS_Button.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -201,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Img.setImageBitmap(MonImg);
                 myspinner.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
+                Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
             }else if (requestCode == GALERY_REQUEST && resultCode == RESULT_OK) {
                 Uri selectedImg = data.getData();
@@ -214,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Img.setImageBitmap(MonImg);
                 myspinner.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
+                Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
                 }
 
@@ -227,13 +247,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
+            if(position!=0){
+                savedImg[savedImgIndex]=Bitmap.createBitmap(MonImg);
+                savedImgIndex++;
+            }
             switch (position) {
 
                 case 0:
-                    Img.setImageBitmap(MonImg);
+                    Img.setImageBitmap(savedImg[0]);
                     break;
                 case 1:
-                    Gris.toGrey(MonImg);
+                    MonImg=Bitmap.createBitmap(Gris.toGrey(MonImg));
                     break;
                 case 2:
                     Gris.toGreyRS(MonImg,this);

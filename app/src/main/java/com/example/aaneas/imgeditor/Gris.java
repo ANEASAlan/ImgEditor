@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 import android.widget.ImageView;
-//import android.util.Log;
 
 import com.android.rssample.ScriptC_grey;
 
@@ -15,7 +14,7 @@ public class Gris extends MainActivity {
 
 
 
-    static protected void toGrey(Bitmap bmp) {
+    static protected Bitmap toGrey(Bitmap bmp) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -30,6 +29,7 @@ public class Gris extends MainActivity {
         }
         n.setPixels(greytab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 
     ///RENDERSCRIPT VERSION///
