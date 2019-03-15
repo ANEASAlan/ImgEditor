@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -26,7 +27,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static float ScaleFactor = 1.0f;
 
     static SeekBar LumiBar;
-    static boolean isRs =false;
     static ImageView Img;
 
 
@@ -39,12 +39,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     int savedImgIndex=0;
     ToggleButton RS_Button;
 
-    Spinner myspinner;
+    Spinner spinnerJava;
+    Spinner spinnerRS;
 
     private ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
 
 
-    boolean render_script = false;
+    boolean render_script;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -56,23 +57,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         initImg();
-        myspinner = findViewById(R.id.spinner1);
+        spinnerJava = findViewById(R.id.spinner1);
+        spinnerRS = findViewById(R.id.spinner2);
         LumiBar = findViewById(R.id.ColorB);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
-        myspinner.setVisibility(View.INVISIBLE);
+        spinnerJava.setVisibility(View.INVISIBLE);
+        spinnerRS.setVisibility(View.INVISIBLE);
         Undo.setVisibility(View.INVISIBLE);
         RS_Button.setVisibility(View.INVISIBLE);
 
-        ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.Monspinner));
+
+        ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.spinner1));
         monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        myspinner.setAdapter(monadaptater);
-        myspinner.setOnItemSelectedListener(this);
+        spinnerJava.setAdapter(monadaptater);
+        spinnerJava.setOnItemSelectedListener(this);
+
+
+        ArrayAdapter<String> monadaptaterRS = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.spinner2));
+        monadaptaterRS.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRS.setAdapter(monadaptaterRS);
+        spinnerRS.setOnItemSelectedListener(this);
+
+
 
     }
 
-    private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
+        private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
             ScaleFactor *= scaleGestureDetector.getScaleFactor();
@@ -81,21 +93,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Img.setScaleY(ScaleFactor);
             return true;
         }
-    }
+     }
 
-    /*
-         MENU DEROULANT///
-
-
-
-
-        }
-
-*/
         @SuppressLint("ClickableViewAccessibility")
         private void initImg() {
 
         Img = (ImageView) findViewById(R.id.ImgPhoto);
+        RS_Button = findViewById(R.id.RS);
         Img.setOnTouchListener(this);
         Galerie = findViewById(R.id.Galerie);
         AppPhoto = findViewById(R.id.Photo);
@@ -107,21 +111,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         createButtonSave();
         createButtonUndo();
         createButtonRS();
+
         }
 
 
         //// PRENDRE PHOTO DEPUIS L'APPAREIL PHOTO ///
-
-
-        private  void createButtonPhoto(){
-        AppPhoto.setOnClickListener(new Button.OnClickListener(){
-           @Override
-           public void onClick(View v) {
-               Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-               startActivityForResult(photo,0);
-           }
-        });
-        }
 
 
         ////////////////////////
@@ -136,24 +130,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         ////// DRAG AND DROP //////
 
-        float x,y = 0.0f;
-        boolean moving = false;
+        float x,y,x_tmp,y_tmp = 0.0f;
 
         public boolean onTouch (View view, MotionEvent event){
             switch (event.getAction()) {
-                case MotionEvent.ACTION_MOVE:
-                    if(moving) {
-                        x = event.getRawX() - Img.getWidth() / 2;
-                        y = event.getRawY() - (Img.getHeight() * 3) / 4;
-                        Img.setX(x);
-                        Img.setY(y);
-                    }
-                    break;
                 case MotionEvent.ACTION_DOWN:
-                    moving = true;
+                    x = event.getRawX();
+                    y = event.getRawY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    x_tmp = x - event.getRawX();
+                    y_tmp = y - event.getRawY();
+                    x = event.getRawX();
+                    y = event.getRawY();
+                    Img.setX(Img.getX() - x_tmp);
+                    Img.setY(Img.getY() - y_tmp);
                     break;
                 case MotionEvent.ACTION_UP:
-                    moving = false;
                     break;
                 default:
                     break;
@@ -162,6 +155,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         //////////////////////////////
+        private void createButtonRS(){
+            RS_Button.setChecked(false);
+            RS_Button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked){
+                        spinnerRS.setVisibility(View.VISIBLE);
+                        spinnerJava.setVisibility(View.INVISIBLE);
+
+                    }else{
+
+                        spinnerRS.setVisibility(View.INVISIBLE);
+                        spinnerJava.setVisibility(View.VISIBLE);
+
+                    }
+                }
+            });
+        }
 
         private void createButtonSave(){
             Save.setOnClickListener(new Button.OnClickListener() {
@@ -172,8 +183,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
+        private  void createButtonPhoto(){
+            AppPhoto.setOnClickListener(new Button.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(photo,0);
+                }
+            });
+        }
 
-        // ** GALERIE ** //
+
+         // ** GALERIE ** //
 
 
         private void createButtonGalerie() {
@@ -201,23 +222,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
-        // ** RENDER SCRIPT ** //
-        private void createButtonRS() {
-            RS_Button.setOnClickListener(new Button.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    isRs =!isRs;
-                    //Log.i( MainActivity.class.getSimpleName(), Boolean.toString(isRs));
-                }
-            });
-        }
+
 
         public void onActivityResult (int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
                MonImg= (Bitmap) data.getExtras().get("data");
                 Img.setImageBitmap(MonImg);
-                myspinner.setVisibility(View.VISIBLE);
+                spinnerJava.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
                 Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
@@ -231,17 +243,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 cursor.close();
                 MonImg = BitmapFactory.decodeFile(imgPath);
                 Img.setImageBitmap(MonImg);
-                myspinner.setVisibility(View.VISIBLE);
+                spinnerJava.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
                 Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
                 }
 
         }
-
-
-        ////////
-
 
 
         @Override
@@ -251,75 +259,85 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 savedImg[savedImgIndex]=Bitmap.createBitmap(MonImg);
                 savedImgIndex++;
             }
-            switch (position) {
+            if (parent.getId() == R.id.spinner1) {
+                render_script = false;
+                switch (position) {
+                    case 0:
+                        Img.setImageBitmap(savedImg[0]);
+                        break;
+                    case 1:
+                        MonImg=Bitmap.createBitmap(Gris.toGrey(MonImg));
+                        Gris.toGrey(MonImg);
+                        break;
+                    case 2:
+                        Couleurs.Coloriser(MonImg);
+                        break;
+                    case 3:
+                        Couleurs.Conserve(MonImg);
+                        break;
+                    case 4:
+                        Contraste.ContrasteCouleurDynamique(MonImg);
+                        break;
+                    case 5:
+                        Contraste.ContrasteCouleurEgaliseur(MonImg);
+                        break;
+                    case 6:
+                        Flous.Flougaussien(MonImg,false);
+                        break;
+                    case 7:
+                        Flous.Flougaussien(MonImg,true);
+                        break;
+                    case 8:
+                        LumiBar.setVisibility(View.VISIBLE);
+                        LumiColor();
+                        break;
+                    case 9:
+                        Gris.toGreyRS(MonImg,this);
+                        Contours.ContoursSobel(MonImg);
+                        break;
+                    case 10:
+                        Gris.toGreyRS(MonImg,this);
+                        Contours.ContoursLaplace(MonImg);
+                        break;
+                    }
 
-                case 0:
-                    Img.setImageBitmap(savedImg[0]);
-                    break;
-                case 1:
-                    MonImg=Bitmap.createBitmap(Gris.toGrey(MonImg));
-                    break;
-                case 2:
-                    Gris.toGreyRS(MonImg,this);
-                    break;
-                case 3:
-                    Couleurs.Coloriser(MonImg);
-                    break;
-                case 4:
-                    Couleurs.ColoriserRS(MonImg,this);
-                    break;
-                case 5:
-                    Couleurs.Conserve(MonImg);
-                    break;
-                case 6:
-                    Couleurs.ConserveRS(MonImg,this);
-                    break;
-                case 7:
-                    Contraste.ContrasteCouleurDynamique(MonImg);
-                    break;
-
-                case 8:
-                    Contraste.ContrasteCouleurEgaliseur(MonImg);
-                    break;
-
-                case 9:
-                    Contraste.ContrasteDynamiqueRS(MonImg,this);
-                    break;
-                case 10:
-                    Contraste.contrastEgaliseurRS(MonImg,this);
-                    break;
-                case 11:
-                    Flous.Flougaussien(MonImg,false);
-                    break;
-
-                case 12:
-                    Flous.Flougaussien(MonImg,true);
-                    break;
-                case 13:
-                    Flous.FlouRS(MonImg,this);
-                    break;
-                case 14:
-                    render_script = isRs;
-                    LumiBar.setVisibility(View.VISIBLE);
-                    LumiColor();
-                    break;
-                case 15:
-                    /// passez isRs à true avec le bouton //
+                }else if(parent.getId() == R.id.spinner2){
                     render_script = true;
-                    LumiBar.setVisibility(View.VISIBLE);
-                    LumiColor();
-                    break;
-                case 16:
-                    Gris.toGreyRS(MonImg,this);
-                    Contours.ContoursSobel(MonImg);
-                    break;
-                case 17:
-                    Gris.toGreyRS(MonImg,this);
-                    Contours.ContoursLaplace(MonImg);
-                    break;
+                    switch (position){
+                        case 0:
+                            Img.setImageBitmap(MonImg);
+                            break;
+                        case 1:
+                            Gris.toGreyRS(MonImg, this);
+                            break;
+                        case 2:
+                            Couleurs.ColoriserRS(MonImg, this);
+                            break;
+                        case 3:
+                            Couleurs.ConserveRS(MonImg,this);
+                            break;
+                        case 4:
+                            Contraste.ContrasteDynamiqueRS(MonImg,this);
+                            break;
+                        case 5:
+                            Contraste.contrastEgaliseurRS(MonImg,this);
+                            break;
+                        case 6:
+                            Flous.FlouRS(MonImg,this);
+                            break;
+                        case 7:
+                            LumiBar.setVisibility(View.VISIBLE);
+                            LumiColor();
+                            break;
+                    }
+                }
+
+
             }
 
-        }
+
+
+
 
 
         @Override
