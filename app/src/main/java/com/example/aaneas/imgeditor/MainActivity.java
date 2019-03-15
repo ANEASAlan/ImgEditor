@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
             if (parent.getId() == R.id.spinner1) {
+                render_script = false;
                 switch (position) {
                     case 0:
                         Img.setImageBitmap(MonImg);
@@ -283,6 +284,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
 
                 }else if(parent.getId() == R.id.spinner2){
+                    render_script = true;
                     switch (position){
                         case 0:
                             Img.setImageBitmap(MonImg);

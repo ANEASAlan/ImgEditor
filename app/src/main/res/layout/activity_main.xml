@@ -8,17 +8,21 @@
 
     <Button
         android:id="@+id/Save"
-        android:layout_width="52dp"
+        android:layout_width="54dp"
         android:layout_height="58dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
+        android:layout_marginTop="91dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="OK"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout"
-        app:layout_constraintHorizontal_bias="0.466"
+        app:layout_constraintHorizontal_bias="0.363"
         app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteY="665dp" />
+        app:layout_constraintTop_toBottomOf="@+id/ColorB"
+        app:layout_constraintVertical_bias="1.0" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
