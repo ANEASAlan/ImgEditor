@@ -1,11 +1,13 @@
 package com.example.aaneas.imgeditor;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +22,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
     static int GALERY_REQUEST = 1;
@@ -42,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Spinner spinnerJava;
     Spinner spinnerRS;
 
-    private ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
+    public ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
 
 
     boolean render_script;
@@ -198,10 +205,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         private void createButtonGalerie() {
-
+            // Permissions galery //
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(permissions,1);
+            }
             Galerie.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
                     Intent galerie = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
                     startActivityForResult(galerie,1);
@@ -241,6 +253,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String imgPath = cursor.getString(columnIndex);
                 cursor.close();
+
+
                 MonImg = BitmapFactory.decodeFile(imgPath);
                 Img.setImageBitmap(MonImg);
                 spinnerJava.setVisibility(View.VISIBLE);
