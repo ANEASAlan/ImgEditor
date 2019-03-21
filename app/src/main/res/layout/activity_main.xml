@@ -8,40 +8,39 @@
 
     <Button
         android:id="@+id/Save"
-        android:layout_width="54dp"
-        android:layout_height="58dp"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
-        android:layout_marginTop="91dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="OK"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/linearLayout"
-        app:layout_constraintHorizontal_bias="0.363"
-        app:layout_constraintStart_toEndOf="@+id/linearLayout2"
-        app:layout_constraintTop_toBottomOf="@+id/ColorB"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintEnd_toStartOf="@+id/Photo"
+        app:layout_constraintStart_toEndOf="@+id/Galerie" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="175dp"
-        android:layout_height="60dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginRight="13dp"
-        android:layout_marginBottom="6dp"
-        android:orientation="vertical"
+    <Button
+        android:id="@+id/Photo"
+        android:layout_width="125dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Photo"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:id="@+id/Photo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="Photo" />
-
-    </LinearLayout>
+    <Button
+        android:id="@+id/Galerie"
+        android:layout_width="125dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="Galerie"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
         android:id="@+id/spinner1"
@@ -69,25 +68,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="166dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="6dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/Galerie"
-            android:layout_width="175dp"
-            android:layout_height="match_parent"
-            android:text="Galerie" />
-
-    </LinearLayout>
-
 
     <ImageView
         android:id="@+id/ImgPhoto"
@@ -104,44 +84,42 @@
 
     <SeekBar
         android:id="@+id/ColorB"
-        android:layout_width="367dp"
+        android:layout_width="0dp"
         android:layout_height="18dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="556dp"
-        android:layout_marginEnd="6dp"
-        android:layout_marginRight="6dp"
-        app:layout_constraintEnd_toStartOf="@+id/ImgPhoto"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/RS"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ToggleButton
         android:id="@+id/RS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="307dp"
-        android:layout_marginTop="5dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="1dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:checked="false"
         android:text="ToggleButton"
         android:textAppearance="@style/TextAppearance.AppCompat.Button"
         android:textOff="JAVA"
         android:textOn="RS"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ColorB"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="307dp" />
+        app:layout_constraintBottom_toTopOf="@+id/Photo"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/Undo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="8dp"
         android:text="undo"
-        tools:layout_editor_absoluteX="5dp"
-        tools:layout_editor_absoluteY="4dp" />
+        app:layout_constraintBottom_toTopOf="@+id/Galerie"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
