@@ -169,7 +169,7 @@ public class Flous extends MainActivity {
         rs.destroy();
 
         MainActivity.Img.setImageBitmap(n);
-	return outputBitmap
+	    return n;
     }
 
 /* le code suivant est inspiré de https://medium.com/@ssaurel/create-a-blur-effect-on-android-with-renderscript-aa05dae0bd7d

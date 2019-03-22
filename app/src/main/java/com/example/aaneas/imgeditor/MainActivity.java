@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         Uri photoUri;
         private  void createButtonPhoto(){
+
             AppPhoto.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -238,8 +239,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                     "com.example.android.fileprovider",
                                     photoFile);
 
-
-                            startActivityForResult(takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri), PHOTO_REQUEST);
+                            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
+                            startActivityForResult(takePictureIntent, PHOTO_REQUEST);
                         }
                     }
                 }
@@ -400,7 +401,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             MonImg=Bitmap.createBitmap(Contraste.contrastEgaliseurRS(MonImg,this));
                             break;
                         case 6:
-                            MonImg=Bitmap.createBitmap(Flous.FlouRS(MonImg,this));
+                            MonImg=Bitmap.createBitmap(Flous.FlouRS(MonImg,this,false));
                             break;
                         case 7:
                             LumiBar.setVisibility(View.VISIBLE);
