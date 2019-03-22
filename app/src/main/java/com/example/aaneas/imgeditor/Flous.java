@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
 
+import com.android.rssample.ScriptC_floubasique;
+
 
 public class Flous extends MainActivity {
 
@@ -31,16 +33,16 @@ public class Flous extends MainActivity {
 
 
             matrix = new int[][]{
-                    {1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1}
-                    /*{1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}*/
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+                    {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
             };
         }
 
@@ -88,11 +90,89 @@ public class Flous extends MainActivity {
         }
         n.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         MainActivity.Img.setImageBitmap(n);
-        return n;
+	return n;
 
     }
 
-// le code suivant est inspiré de https://medium.com/@ssaurel/create-a-blur-effect-on-android-with-renderscript-aa05dae0bd7d
+    static protected Bitmap FlouRS(Bitmap image, Context context, boolean gaussian) {
+        Bitmap n = Bitmap.createBitmap(image.getWidth(),image.getHeight(), image.getConfig() );
+
+        RenderScript rs = RenderScript.create(context);
+
+        Allocation input = Allocation.createFromBitmap(rs, image);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptC_floubasique BlurScript = new ScriptC_floubasique(rs);
+        int matrixLength;
+        int[] matrix;
+        if (gaussian) {
+            matrix = new int[]
+                    {1, 2, 3, 2, 1,
+                    2, 6, 8, 6, 2,
+                    3, 8, 10, 8,3,
+                    2, 6, 8, 6, 2,
+                    1, 2, 3, 2, 1};
+            matrixLength = 5;
+        } else {
+            matrix = new int[]{
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+            };
+            matrixLength = 10;
+        }
+        int div = 0;
+
+        for (int e = 0; e < matrixLength; e++) {
+            for (int f = 0; f < matrixLength; f++) {
+                div += matrix[e+matrixLength*f];
+            }
+        }
+
+        int[] pixel = new int[image.getWidth() * image.getHeight()];
+        image.getPixels(pixel, 0, image.getWidth(), 0, 0, image.getWidth(), image.getHeight());
+
+        int[] reds = new int[image.getWidth() * image.getHeight()];
+        int[] blues = new int[image.getWidth() * image.getHeight()];
+        int[] greens = new int[image.getWidth() * image.getHeight()];
+
+        for(int i = 0; i < image.getWidth() * image.getHeight(); i++){
+            reds[i] = Color.red(pixel[i]);
+            greens[i] = Color.green(pixel[i]);
+            blues[i] = Color.blue(pixel[i]);
+        }
+
+        BlurScript.set_gaussian(gaussian);
+        BlurScript.set_div((double) div);
+        Allocation matrix2 = Allocation.createSized(rs, Element.I32(rs),matrix.length);
+        matrix2.copyFrom(matrix);
+        BlurScript.bind_matrix(matrix2);
+        BlurScript.set_matrixLength(matrixLength);
+       // BlurScript.set_reds(reds);
+        //BlurScript.set_greens(greens);
+        //BlurScript.set_blues(blues);
+        BlurScript.set_width(image.getWidth());
+        BlurScript.set_height(image.getHeight());
+
+        BlurScript.forEach_floubasique(input, output);
+        output.copyTo(n);
+
+        input.destroy();
+        output.destroy();
+        rs.destroy();
+
+        MainActivity.Img.setImageBitmap(n);
+	return outputBitmap
+    }
+
+/* le code suivant est inspiré de https://medium.com/@ssaurel/create-a-blur-effect-on-android-with-renderscript-aa05dae0bd7d
 
     private static final float BITMAP_SCALE = 0.01f;
     private static final float BLUR_RADIUS = 0.01f;
@@ -122,5 +202,5 @@ public class Flous extends MainActivity {
 
         MainActivity.Img.setImageBitmap(outputBitmap);
         return outputBitmap;
-    }
+    }*/
 }
