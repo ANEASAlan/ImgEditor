@@ -8,7 +8,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -22,6 +24,11 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
     static int GALERY_REQUEST = 1;
@@ -194,12 +201,47 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
+        String currentPhotoPath;
+
+        private File createImageFile() throws IOException {
+            // Create an image file name
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File image = File.createTempFile(
+                    imageFileName,  /* prefix */
+                    ".jpg",         /* suffix */
+                    storageDir      /* directory */
+            );
+
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = image.getAbsolutePath();
+            return image;
+        }
+        Uri photoUri;
         private  void createButtonPhoto(){
             AppPhoto.setOnClickListener(new Button.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    Intent photo = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(photo,0);
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    // Ensure that there's a camera activity to handle the intent
+                    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                        // Create the File where the photo should go
+                        File photoFile = null;
+                        try {
+                            photoFile = createImageFile();
+                        } catch (IOException ex) {
+                                   }
+                        // Continue only if the File was successfully created
+                        if (photoFile != null) {
+                            photoUri = (Uri) FileProvider.getUriForFile(MainActivity.this,
+                                    "com.example.android.fileprovider",
+                                    photoFile);
+
+
+                            startActivityForResult(takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri), PHOTO_REQUEST);
+                        }
+                    }
                 }
             });
         }
@@ -212,7 +254,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             // Permissions galery //
             String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(permissions,1);
+                requestPermissions(permissions,GALERY_REQUEST);
             }
             Galerie.setOnClickListener(new Button.OnClickListener() {
                 @Override
@@ -242,10 +284,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         public void onActivityResult (int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
+
             if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
-                MonImg = (Bitmap) data.getExtras().get("data");
-                BasicImg = Bitmap.createBitmap(MonImg);
-                Img.setImageBitmap(MonImg);
+                try {
+                    MonImg = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                    BasicImg = Bitmap.createBitmap(MonImg);
+                    Img.setImageBitmap(MonImg);
+                    Img.setRotation(-90);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 spinnerJava.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
                 Undo.setVisibility(View.VISIBLE);
