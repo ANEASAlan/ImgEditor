@@ -17,7 +17,7 @@ public class Couleurs extends MainActivity {
 
     /// CHANGER LA TEINTE D'UNE IMAGE ///
 
-    static protected void Coloriser(Bitmap bmp) {
+    static protected Bitmap Coloriser(Bitmap bmp) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
         double rand = 20;
@@ -39,13 +39,14 @@ public class Couleurs extends MainActivity {
         }
         n.setPixels(color,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
         MainActivity.Img.setImageBitmap(n);
+        return n;
 
 
     }
 
     /// RENDERSCRIPT COLORISER VERSION///
 
-    static protected void ColoriserRS(Bitmap bmp, Context context) {
+    static protected Bitmap ColoriserRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -74,11 +75,12 @@ public class Couleurs extends MainActivity {
         rs.destroy();
 
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 
     /// CONSERVER UNE COULEUR ///
 
-    static  protected void Conserve(Bitmap bmp) {
+    static  protected Bitmap Conserve(Bitmap bmp) {
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -126,12 +128,13 @@ public class Couleurs extends MainActivity {
         }
         newimg.setPixels(colortab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
         MainActivity.Img.setImageBitmap(newimg);
+        return newimg;
     }
 
     /// RENDERSCRIPT VERSION ///
 
 
-    static  protected void ConserveRS(Bitmap bmp, Context context) {
+    static  protected Bitmap ConserveRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -151,5 +154,6 @@ public class Couleurs extends MainActivity {
         rs.destroy();
 
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 }

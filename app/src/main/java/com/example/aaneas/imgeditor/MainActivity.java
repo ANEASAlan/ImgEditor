@@ -23,11 +23,6 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
     static int GALERY_REQUEST = 1;
     static int PHOTO_REQUEST = 0;
@@ -42,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button Save;
     Button Undo;
     Bitmap MonImg;
-    Bitmap[] savedImg = new Bitmap[10];
+    Bitmap BasicImg;
+    int savedImgLength = 3;
+    Bitmap[] savedImg = new Bitmap[savedImgLength];
     int savedImgIndex=0;
     ToggleButton RS_Button;
 
@@ -52,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
 
 
-    boolean render_script;
+    boolean render_script = false;
 
     @Override
         protected void onCreate(Bundle savedInstanceState) {
@@ -167,15 +164,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             RS_Button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    render_script = !render_script;
                     if (isChecked){
                         spinnerRS.setVisibility(View.VISIBLE);
                         spinnerJava.setVisibility(View.INVISIBLE);
+                        //spinnerJava.setSelection(0);
 
                     }else{
 
                         spinnerRS.setVisibility(View.INVISIBLE);
                         spinnerJava.setVisibility(View.VISIBLE);
+                        //spinnerRS.setSelection(0);
 
+                    }
+
+                    if(LumiBar.getVisibility()==View.VISIBLE){
+                        LumiBar.setVisibility(View.INVISIBLE);
                     }
                 }
             });
@@ -228,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     if(savedImgIndex!=0){
                         savedImgIndex--;
                         MonImg=savedImg[savedImgIndex];
-                        MainActivity.Img.setImageBitmap(MonImg);
+                        Img.setImageBitmap(MonImg);
                     }
                 }
             });
@@ -239,7 +243,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void onActivityResult (int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
             if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
-               MonImg= (Bitmap) data.getExtras().get("data");
+                MonImg = (Bitmap) data.getExtras().get("data");
+                BasicImg = Bitmap.createBitmap(MonImg);
                 Img.setImageBitmap(MonImg);
                 spinnerJava.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
@@ -256,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
                 MonImg = BitmapFactory.decodeFile(imgPath);
+                BasicImg=Bitmap.createBitmap(MonImg);
                 Img.setImageBitmap(MonImg);
                 spinnerJava.setVisibility(View.VISIBLE);
                 Save.setVisibility(View.VISIBLE);
@@ -271,73 +277,81 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             LumiBar.setVisibility(View.INVISIBLE);
             if(position!=0){
                 savedImg[savedImgIndex]=Bitmap.createBitmap(MonImg);
-                savedImgIndex++;
+                if(savedImgIndex == savedImgLength){
+                    for(int i=0; i<savedImgLength;i++){
+                        savedImg[i]=Bitmap.createBitmap(savedImg[i+1]);
+                    }
+                }else{
+                    savedImgIndex++;
+                }
             }
             if (parent.getId() == R.id.spinner1) {
-                render_script = false;
                 switch (position) {
                     case 0:
-                        Img.setImageBitmap(savedImg[0]);
+                        savedImgIndex=0;
+                        //MonImg=Bitmap.createBitmap(BasicImg);
+                        Img.setImageBitmap(MonImg);
                         break;
                     case 1:
                         MonImg=Bitmap.createBitmap(Gris.toGrey(MonImg));
-                        Gris.toGrey(MonImg);
+                        //Gris.toGrey(MonImg);
                         break;
                     case 2:
-                        Couleurs.Coloriser(MonImg);
+                        MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
                         break;
                     case 3:
-                        Couleurs.Conserve(MonImg);
+                        MonImg=Bitmap.createBitmap(Couleurs.Conserve(MonImg));
                         break;
                     case 4:
-                        Contraste.ContrasteCouleurDynamique(MonImg);
+                        MonImg=Bitmap.createBitmap(Contraste.ContrasteCouleurDynamique(MonImg));
                         break;
                     case 5:
-                        Contraste.ContrasteCouleurEgaliseur(MonImg);
+                        MonImg=Bitmap.createBitmap(Contraste.ContrasteCouleurEgaliseur(MonImg));
                         break;
                     case 6:
-                        Flous.Flougaussien(MonImg,false);
+                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,false));
                         break;
                     case 7:
-                        Flous.Flougaussien(MonImg,true);
+                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,true));
                         break;
                     case 8:
                         LumiBar.setVisibility(View.VISIBLE);
                         LumiColor();
                         break;
                     case 9:
-                        Gris.toGreyRS(MonImg,this);
-                        Contours.ContoursSobel(MonImg);
+                        //Gris.toGreyRS(MonImg,this);
+                        MonImg=Bitmap.createBitmap(Contours.ContoursSobel(MonImg));
                         break;
                     case 10:
-                        Gris.toGreyRS(MonImg,this);
-                        Contours.ContoursLaplace(MonImg);
+                        //Gris.toGreyRS(MonImg,this);
+                        MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
                         break;
                     }
 
                 }else if(parent.getId() == R.id.spinner2){
-                    render_script = true;
                     switch (position){
                         case 0:
+                            savedImgIndex=0;
+                            //MonImg=Bitmap.createBitmap(BasicImg);
                             Img.setImageBitmap(MonImg);
                             break;
                         case 1:
-                            Gris.toGreyRS(MonImg, this);
+                            MonImg=Bitmap.createBitmap(Gris.toGreyRS(MonImg, this));
                             break;
                         case 2:
-                            Couleurs.ColoriserRS(MonImg, this);
+                            MonImg=Bitmap.createBitmap(Couleurs.ColoriserRS(MonImg, this));
                             break;
                         case 3:
-                            Couleurs.ConserveRS(MonImg,this);
+                            MonImg=Bitmap.createBitmap(Couleurs.ConserveRS(MonImg,this));
                             break;
                         case 4:
-                            Contraste.ContrasteDynamiqueRS(MonImg,this);
+                            MonImg=Bitmap.createBitmap(Contraste.ContrasteDynamiqueRS(MonImg,this));
                             break;
                         case 5:
-                            Contraste.contrastEgaliseurRS(MonImg,this);
+                            MonImg=Bitmap.createBitmap(Contraste.contrastEgaliseurRS(MonImg,this));
                             break;
                         case 6:
-                            Flous.FlouRS(MonImg,this);
+                            MonImg=Bitmap.createBitmap(Flous.FlouRS(MonImg,this));
                             break;
                         case 7:
                             LumiBar.setVisibility(View.VISIBLE);
@@ -362,12 +376,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void LumiColor(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
+                        Bitmap n;
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
-                            if (render_script == false) {
-                                Luminosite.changeBrightness(MonImg,scale);
+                            if (!render_script) {
+                                n=Luminosite.changeBrightness(savedImg[savedImgIndex-1],scale);
                             } else {
-                                Luminosite.changeBrightnessRS(MonImg,MainActivity.this,scale);
+                                n=Luminosite.changeBrightnessRS(savedImg[savedImgIndex-1],MainActivity.this,scale);
 
                             }
                         }
@@ -379,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
-
+                            MonImg=Bitmap.createBitmap(n);
                         }
                     }
             );

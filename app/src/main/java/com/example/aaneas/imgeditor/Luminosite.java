@@ -12,7 +12,7 @@ import android.widget.SeekBar;
 public class Luminosite extends MainActivity {
     /// CHANGER LA LUMINOSITE D'UNE IMAGE ///
 
-    static protected void changeBrightness(Bitmap Bmp, int BrightnessScale) {
+    static protected Bitmap changeBrightness(Bitmap Bmp, int BrightnessScale) {
 
         Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
 
@@ -36,11 +36,12 @@ public class Luminosite extends MainActivity {
         }
         n.setPixels(pixels, 0, w, 0, 0, w, h);
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 
     /// CHANGEBRIGHTNESS RENDERSCRIPT VERSION///
 
-    static protected void changeBrightnessRS(Bitmap bmp, Context context, float scale) {
+    static protected Bitmap changeBrightnessRS(Bitmap bmp, Context context, float scale) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -67,5 +68,6 @@ public class Luminosite extends MainActivity {
         rs.destroy();
 
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 }

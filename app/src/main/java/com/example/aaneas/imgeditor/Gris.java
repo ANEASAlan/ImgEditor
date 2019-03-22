@@ -34,7 +34,7 @@ public class Gris extends MainActivity {
 
     ///RENDERSCRIPT VERSION///
 
-    static protected void toGreyRS(Bitmap bmp, Context context) {
+    static protected Bitmap toGreyRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -54,6 +54,7 @@ public class Gris extends MainActivity {
         rs.destroy();
 
         MainActivity.Img.setImageBitmap(n);
+        return n;
 
     }
 

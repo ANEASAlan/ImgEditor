@@ -15,7 +15,7 @@ public class Flous extends MainActivity {
 
     /// Flou gaussien ////
 
-    static protected void Flougaussien(Bitmap bmp, boolean gaussien) {
+    static protected Bitmap Flougaussien(Bitmap bmp, boolean gaussien) {
         int[][] matrix;
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
@@ -88,6 +88,7 @@ public class Flous extends MainActivity {
         }
         n.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         MainActivity.Img.setImageBitmap(n);
+        return n;
 
     }
 

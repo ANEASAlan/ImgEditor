@@ -13,7 +13,7 @@ import com.android.rssample.*;
 
 public class Contraste extends MainActivity {
 
-    static protected void ContrasteDynamiqueRS(Bitmap bmp, Context context) {
+    static protected Bitmap ContrasteDynamiqueRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
@@ -39,6 +39,7 @@ public class Contraste extends MainActivity {
         rs.destroy();
 
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 
 
@@ -68,7 +69,7 @@ public class Contraste extends MainActivity {
 
     /// CONTRASTE DYNAMIQUE EN COULEUR ///
 
-    static protected void ContrasteCouleurDynamique(Bitmap bmp) {
+    static protected Bitmap ContrasteCouleurDynamique(Bitmap bmp) {
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
@@ -170,6 +171,7 @@ public class Contraste extends MainActivity {
         }
         newimg.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
         MainActivity.Img.setImageBitmap(newimg);
+        return newimg;
 
     }
 
@@ -177,7 +179,7 @@ public class Contraste extends MainActivity {
     /// Faire fonction de contraste en egalisant l'histogramme /////
 
 
-    static protected void ContrasteCouleurEgaliseur(Bitmap bmp) {
+    static protected Bitmap ContrasteCouleurEgaliseur(Bitmap bmp) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
@@ -233,10 +235,11 @@ public class Contraste extends MainActivity {
         }
         n.setPixels(pixels, 0, w, 0, 0, w, h);
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 
 
-    static protected void contrastEgaliseurRS(Bitmap bmp, Context context) {
+    static protected Bitmap contrastEgaliseurRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
@@ -291,6 +294,7 @@ public class Contraste extends MainActivity {
         rs.destroy();
 
         MainActivity.Img.setImageBitmap(n);
+        return n;
     }
 
 }
