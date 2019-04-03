@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static float ScaleFactor = 1.0f;
 
     static SeekBar LumiBar;
-    static RadioButton RadioColor;
+    static RadioGroup RadioColor;
     static ImageView Img;
     static String color="";
 
@@ -345,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     MonImg = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
                     BasicImg = Bitmap.createBitmap(MonImg);
                     Img.setImageBitmap(MonImg);
-                    Img.setRotation(-90);
 
                 } catch (IOException e) {
                     e.printStackTrace();

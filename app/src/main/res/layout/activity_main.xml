@@ -162,13 +162,11 @@
         android:id="@+id/photo_view"
         android:layout_width="339dp"
         android:layout_height="396dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginRight="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner1"
+        app:layout_constraintBottom_toTopOf="@+id/RadioColor"
         app:srcCompat="@mipmap/ic_launcher"/>
 
 </android.support.constraint.ConstraintLayout>
