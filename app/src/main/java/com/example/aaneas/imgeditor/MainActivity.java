@@ -25,12 +25,14 @@ import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
 
+import com.github.chrisbanes.photoview.PhotoView;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     static int GALERY_REQUEST = 1;
     static int PHOTO_REQUEST = 0;
     static float ScaleFactor = 1.0f;
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Spinner spinnerJava;
     Spinner spinnerRS;
 
-    public ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
+    // public ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
 
 
     boolean render_script = false;
@@ -64,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+        // scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
 
         initImg();
@@ -108,10 +110,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @SuppressLint("ClickableViewAccessibility")
         private void initImg() {
-
-        Img = (ImageView) findViewById(R.id.ImgPhoto);
+        Img = (PhotoView) findViewById(R.id.photo_view);
+        // Img = (ImageView) findViewById(R.id.ImgPhoto);
         RS_Button = findViewById(R.id.RS);
-        Img.setOnTouchListener(this);
+        // Img.setOnTouchListener(this);
         Galerie = findViewById(R.id.Galerie);
         AppPhoto = findViewById(R.id.Photo);
         Save = findViewById(R.id.Save);
@@ -130,17 +132,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         ////////////////////////
-
+        /*
         @Override
         public boolean onTouchEvent(MotionEvent motionEvent) {
             scaleGestureDetector.onTouchEvent(motionEvent);
             return true;
         }
-
+        */
         ///////////////////////
 
         ////// DRAG AND DROP //////
 
+        /*
         float x,y,x_tmp,y_tmp = 0.0f;
 
         public boolean onTouch (View view, MotionEvent event){
@@ -164,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             return true;
         }
-
+        */
         //////////////////////////////
         private void createButtonRS(){
             RS_Button.setChecked(false);
