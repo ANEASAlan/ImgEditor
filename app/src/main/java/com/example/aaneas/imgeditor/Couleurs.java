@@ -156,4 +156,19 @@ public class Couleurs extends MainActivity {
         MainActivity.Img.setImageBitmap(n);
         return n;
     }
+
+    static protected Bitmap invert(Bitmap bmp) {
+        Bitmap newBmp = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        int h = newBmp.getHeight();
+        int w = newBmp.getWidth();
+        int[] pixels = new int[w * h];
+        int c = 0;
+        newBmp.getPixels(pixels, 0, w, 0, 0, w, h);
+        for (int i = 0; i < pixels.length; i++) {
+            c = pixels[i];
+            pixels[i] = Color.rgb(255-Color.red(c), 255-Color.green(c), 255-Color.blue(c));
+        }
+        newBmp.setPixels(pixels, 0, w, 0, 0, w, h);
+        return newBmp;
+    }
 }
