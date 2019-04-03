@@ -346,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     MonImg = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
                     BasicImg = Bitmap.createBitmap(MonImg);
                     Img.setImageBitmap(MonImg);
-                    Img.setRotation(-90);
 
                 } catch (IOException e) {
                     e.printStackTrace();
