@@ -8,18 +8,15 @@ public class Crayon extends MainActivity{
 
     static private int DodgeIntermediary (int color1, int color2){
         if(color2 == 255){
-            //System.out.println("255 color2 ="+color2);
             return color2;
         }else{
             if(255 < ((color1 << 8) / (255 - color2))){
-                //System.out.println("255 color1 = "+color1);
-                //System.out.println("255 color2 = "+color2);
-                //System.out.println("((color1 << 8) / (255 - color2)) = "+((color1 << 8) / (255 - color2)));
                 return 255;
             }else{
-                //System.out.println("color1 = "+color1);
-                //System.out.println("color2 = "+color2);
-                return ((color1 << 8) / (255 - color2));
+                return ((color1 << 9) / (255 - color2));
+                // bien que la logique et les indications trouvables sur Internet nous diraient de marquer
+                // "return ((color1 << 8) / (255 - color2));"
+                // après quelques tests, nous trouvons que cette version donne un résultat plus joli.
             }
         }
     }
@@ -34,10 +31,10 @@ public class Crayon extends MainActivity{
         bmp2.getPixels(pixel2,0,bmp2.getWidth(),0,0,bmp2.getWidth(),bmp2.getHeight());
         //int c = 0;
 
-        int r = 0;
-        int g = 0;
-        int b = 0;
-        for (int i = 0; i < pixel1.length; i++) {
+        int r;
+        int g;
+        int b;
+        for (int i = 0; i < pixel1.length; i++) { //penser à enlever le /3
             r = DodgeIntermediary(Color.red(pixel1[i]), Color.red(pixel2[i]));
             g = DodgeIntermediary(Color.green(pixel1[i]), Color.green(pixel2[i]));
             b = DodgeIntermediary(Color.blue(pixel1[i]), Color.blue(pixel2[i]));

@@ -13,7 +13,8 @@
     /* 8*/    <item>luminosité +</item>
     /* 9*/    <item>contours Sobel</item>
     /*10*/    <item>contours Laplace</item>
-    /*11*/    <item>crayonné</item>
+    /*11*/    <item>crayon</item>
+    /*11*/    <item>feutre</item>
 
     </string-array>
     <string-array name="spinner2">
@@ -25,6 +26,8 @@
     /* 5*/    <item>contraste egaliseur rs </item>
     /* 6*/    <item>flou RS</item>
     /* 7*/    <item>luminosité + RS</item>
+    /* 8*/    <item>crayon</item>
+    /* 9*/    <item>feutre</item>
 
     </string-array>
     <string name="title_activity_contraste">Contraste</string>

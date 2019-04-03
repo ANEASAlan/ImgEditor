@@ -28,6 +28,7 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static float ScaleFactor = 1.0f;
 
     static SeekBar LumiBar;
-    static RadioButton RadioColor;
+    static RadioGroup RadioColor;
     static ImageView Img;
     static String color="";
 
@@ -82,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerJava = findViewById(R.id.spinner1);
         spinnerRS = findViewById(R.id.spinner2);
         LumiBar = findViewById(R.id.ColorB);
-        RadioColor = findViewById(R.id.RadioColor);
+        RadioColor =  findViewById(R.id.RadioColor);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
@@ -432,17 +433,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         LumiColor();
                         break;
                     case 9:
-                        MonImg=Bitmap.createBitmap(Contours.ContoursSobel(MonImg));
+                        MonImg=Bitmap.createBitmap(Contours.ContoursSobel(Bitmap.createBitmap(Gris.toGrey(MonImg))));
                         break;
                     case 10:
-                        MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
+                        MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(Bitmap.createBitmap(Gris.toGrey(MonImg))));
                         break;
                     case 11:
-                        //Gris.toGreyRS(MonImg,this);
                         Bitmap Greyscale = Bitmap.createBitmap(Gris.toGrey(MonImg));
                         Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale));
                         Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true));
                         MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale));
+                        break;
+                    case 12:
+                        MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
+                        MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg));
                         break;
                     }
 
@@ -476,6 +480,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         case 7:
                             LumiBar.setVisibility(View.VISIBLE);
                             LumiColor();
+                            break;
+                        case 8:
+                            Bitmap Greyscale = Bitmap.createBitmap(Gris.toGreyRS(MonImg));
+                            Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale)); //version RS à écrire
+                            Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true)); //version RS à écrire
+                            MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale)); //version RS à écrire
+                            break;
+                        case 9:
+                            MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
+                            MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg)); //version RS à écrire
                             break;
                     }
                 }
