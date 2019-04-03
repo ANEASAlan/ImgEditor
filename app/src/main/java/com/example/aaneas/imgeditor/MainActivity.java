@@ -377,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     savedImgIndex++;
                 }
             }
-            if (parent.getId() == R.id.spinner1) {
+            if (parent.getId() == R.id.spinner1) { //pas RS
                 switch (position) {
                     case 0:
                         savedImgIndex=0;
@@ -401,10 +401,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         MonImg=Bitmap.createBitmap(Contraste.ContrasteCouleurEgaliseur(MonImg));
                         break;
                     case 6:
-                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,false));
+                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,false)); //flou égalisateur / moyenneur
                         break;
                     case 7:
-                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,true));
+                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,true)); // flou gaussien
                         break;
                     case 8:
                         LumiBar.setVisibility(View.VISIBLE);
@@ -418,9 +418,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         //Gris.toGreyRS(MonImg,this);
                         MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
                         break;
+                    case 11:
+                        //Gris.toGreyRS(MonImg,this);
+                        Bitmap Greyscale = Bitmap.createBitmap(Gris.toGrey(MonImg));
+                        Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale));
+                        Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true));
+                        MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale));
+                        break;
                     }
 
-                }else if(parent.getId() == R.id.spinner2){
+                }else if(parent.getId() == R.id.spinner2){ //RS
                     switch (position){
                         case 0:
                             savedImgIndex=0;

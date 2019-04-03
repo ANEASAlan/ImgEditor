@@ -15,9 +15,9 @@ int height;
 
 uchar4 RS_KERNEL floubasique(uchar4 in, uint32_t x, uint32_t y){
 const  float4  pixelf = rsUnpackColor8888(in);
-            double red = pixelf.r;
-            double green = pixelf.g;
-            double blue = pixelf.b;
+            float red = pixelf.r;
+            float green = pixelf.g;
+            float blue = pixelf.b;
     //penser à faire bitmap temporaire ?
     if (div != 0){
 

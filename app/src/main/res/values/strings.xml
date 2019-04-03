@@ -2,28 +2,29 @@
 <resources>
     <string name="app_name">ImgEditor</string>
     <string-array name="spinner1">
-        <item>Aucun filtre</item>
-        <item>Gris</item>
-        <item>teinte</item>
-        <item>conserve</item>
-        <item>contraste dynamique </item>
-        <item>contraste egaliseur </item>
-        <item>flou basique </item>
-        <item>flou gaussien </item>
-        <item>luminosité +</item>
-        <item>contours Sobel</item>
-        <item>contours Laplace</item>
+    /* 0*/    <item>Aucun filtre</item>
+    /* 1*/    <item>Gris</item>
+    /* 2*/    <item>teinte</item>
+    /* 3*/    <item>conserve</item>
+    /* 4*/    <item>contraste dynamique </item>
+    /* 5*/    <item>contraste egaliseur </item>
+    /* 6*/    <item>flou basique </item>
+    /* 7*/    <item>flou gaussien </item>
+    /* 8*/    <item>luminosité +</item>
+    /* 9*/    <item>contours Sobel</item>
+    /*10*/    <item>contours Laplace</item>
+    /*11*/    <item>crayonné</item>
 
     </string-array>
     <string-array name="spinner2">
-        <item>Aucun filtre</item>
-        <item>Gris rs</item>
-        <item>teinte rs</item>
-        <item>conserve rs</item>
-        <item>contraste dynamique rs </item>
-        <item>contraste egaliseur rs </item>
-        <item>flou RS</item>
-        <item>luminosité + RS</item>
+    /* 0*/    <item>Aucun filtre</item>
+    /* 1*/    <item>Gris rs</item>
+    /* 2*/    <item>teinte rs</item>
+    /* 3*/    <item>conserve rs</item>
+    /* 4*/    <item>contraste dynamique rs </item>
+    /* 5*/    <item>contraste egaliseur rs </item>
+    /* 6*/    <item>flou RS</item>
+    /* 7*/    <item>luminosité + RS</item>
 
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
