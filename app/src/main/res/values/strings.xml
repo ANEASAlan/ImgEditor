@@ -13,6 +13,7 @@
         <item>luminosité +</item>
         <item>contours Sobel</item>
         <item>contours Laplace</item>
+        <item>Couleur</item>
 
     </string-array>
     <string-array name="spinner2">
