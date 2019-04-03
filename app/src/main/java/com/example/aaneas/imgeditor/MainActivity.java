@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
-        //RadioColor.setVisibility(View.INVISIBLE);
+        RadioColor.setVisibility(View.INVISIBLE);
         spinnerJava.setVisibility(View.INVISIBLE);
         spinnerRS.setVisibility(View.INVISIBLE);
         Undo.setVisibility(View.INVISIBLE);
@@ -408,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                     case 2:
                         //LumiBar.setVisibility(View.VISIBLE);
-                        //RadioColor.setVisibility(View.VISIBLE);
+                        RadioColor.setVisibility(View.VISIBLE);
                         //Color();
                         MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
                         break;
@@ -481,7 +481,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             LumiColor();
                             break;
                         case 8:
-                            Bitmap Greyscale = Bitmap.createBitmap(Gris.toGreyRS(MonImg));
+                            Bitmap Greyscale = Bitmap.createBitmap(Gris.toGreyRS(MonImg,MainActivity.this));
                             Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale)); //version RS à écrire
                             Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true)); //version RS à écrire
                             MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale)); //version RS à écrire

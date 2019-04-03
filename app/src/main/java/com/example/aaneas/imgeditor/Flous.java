@@ -160,9 +160,6 @@ public class Flous extends MainActivity {
             greens[i] = Color.green(pixel[i]);
             blues[i] = Color.blue(pixel[i]);
         }
-
-        BlurScript.set_gaussian(gaussian);
-        BlurScript.set_div((double) div);
         Allocation matrix2 = Allocation.createSized(rs, Element.I32(rs),matrix.length);
         matrix2.copyFrom(matrix);
         BlurScript.bind_matrix(matrix2);
@@ -173,7 +170,7 @@ public class Flous extends MainActivity {
         BlurScript.set_width(image.getWidth());
         BlurScript.set_height(image.getHeight());
 
-        BlurScript.forEach_floubasique(input, output);
+        BlurScript.forEach_floubasique(input);
         output.copyTo(n);
 
         input.destroy();
