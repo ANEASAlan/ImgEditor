@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -17,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -25,22 +27,27 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
+
+import com.github.chrisbanes.photoview.PhotoView;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnTouchListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
     static int GALERY_REQUEST = 1;
     static int PHOTO_REQUEST = 0;
     static float ScaleFactor = 1.0f;
 
     static SeekBar LumiBar;
+    static RadioButton RadioColor;
     static ImageView Img;
+    static String color="";
 
 
     Button Galerie;
@@ -49,15 +56,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button Undo;
     Bitmap MonImg;
     Bitmap BasicImg;
-    int savedImgLength = 3;
-    Bitmap[] savedImg = new Bitmap[savedImgLength];
+    final int SAVED_LENGTH = 3;
+    Bitmap[] savedImg = new Bitmap[SAVED_LENGTH];
     int savedImgIndex=0;
     ToggleButton RS_Button;
 
     Spinner spinnerJava;
     Spinner spinnerRS;
 
-    public ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
+    // public ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
 
 
     boolean render_script = false;
@@ -68,16 +75,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
+        // scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
 
 
         initImg();
         spinnerJava = findViewById(R.id.spinner1);
         spinnerRS = findViewById(R.id.spinner2);
         LumiBar = findViewById(R.id.ColorB);
+        RadioColor = findViewById(R.id.RadioColor);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
+        //RadioColor.setVisibility(View.INVISIBLE);
         spinnerJava.setVisibility(View.INVISIBLE);
         spinnerRS.setVisibility(View.INVISIBLE);
         Undo.setVisibility(View.INVISIBLE);
@@ -113,9 +122,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @SuppressLint("ClickableViewAccessibility")
         private void initImg() {
         checkPremission();
-        Img = (ImageView) findViewById(R.id.ImgPhoto);
+        Img = (PhotoView) findViewById(R.id.photo_view);
+        // Img = (ImageView) findViewById(R.id.ImgPhoto);
         RS_Button = findViewById(R.id.RS);
-        Img.setOnTouchListener(this);
+        // Img.setOnTouchListener(this);
         Galerie = findViewById(R.id.Galerie);
         AppPhoto = findViewById(R.id.Photo);
         Save = findViewById(R.id.Save);
@@ -134,17 +144,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
 
         ////////////////////////
-
+        /*
         @Override
         public boolean onTouchEvent(MotionEvent motionEvent) {
             scaleGestureDetector.onTouchEvent(motionEvent);
             return true;
         }
-
+        */
         ///////////////////////
 
         ////// DRAG AND DROP //////
 
+        /*
         float x,y,x_tmp,y_tmp = 0.0f;
 
         public boolean onTouch (View view, MotionEvent event){
@@ -168,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             return true;
         }
-
+        */
         //////////////////////////////
         private void createButtonRS(){
             RS_Button.setChecked(false);
@@ -191,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     if(LumiBar.getVisibility()==View.VISIBLE){
                         LumiBar.setVisibility(View.INVISIBLE);
+                        //RadioColor.setVisibility(View.INVISIBLE);
                     }
                 }
             });
@@ -363,32 +375,41 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
+        public void saveImg(Bitmap img){
+            if(savedImgIndex< SAVED_LENGTH){
+                savedImg[savedImgIndex]=Bitmap.createBitmap(img);
+                savedImgIndex++;
+            }else{
+                for(int i = 0; i< SAVED_LENGTH-1; i++){
+                    savedImg[i]=Bitmap.createBitmap(savedImg[i+1]);
+                }
+                savedImg[SAVED_LENGTH-1]=Bitmap.createBitmap(img);
+            }
+        }
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
+            //RadioColor.setVisibility(View.INVISIBLE);
             if(position!=0){
-                savedImg[savedImgIndex]=Bitmap.createBitmap(MonImg);
-                if(savedImgIndex == savedImgLength){
-                    for(int i=0; i<savedImgLength;i++){
-                        savedImg[i]=Bitmap.createBitmap(savedImg[i+1]);
-                    }
-                }else{
-                    savedImgIndex++;
-                }
+                saveImg(MonImg);
             }
             if (parent.getId() == R.id.spinner1) { //pas RS
                 switch (position) {
                     case 0:
                         savedImgIndex=0;
-                        //MonImg=Bitmap.createBitmap(BasicImg);
-                        Img.setImageBitmap(MonImg);
+                        if(MonImg!=null && !MonImg.equals(BasicImg)){
+                            MonImg=Bitmap.createBitmap(BasicImg);
+                            Img.setImageBitmap(MonImg);
+                        }
                         break;
                     case 1:
                         MonImg=Bitmap.createBitmap(Gris.toGrey(MonImg));
-                        //Gris.toGrey(MonImg);
                         break;
                     case 2:
+                        //LumiBar.setVisibility(View.VISIBLE);
+                        //RadioColor.setVisibility(View.VISIBLE);
+                        //Color();
                         MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
                         break;
                     case 3:
@@ -411,11 +432,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         LumiColor();
                         break;
                     case 9:
-                        //Gris.toGreyRS(MonImg,this);
                         MonImg=Bitmap.createBitmap(Contours.ContoursSobel(MonImg));
                         break;
                     case 10:
-                        //Gris.toGreyRS(MonImg,this);
                         MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
                         break;
                     case 11:
@@ -431,8 +450,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     switch (position){
                         case 0:
                             savedImgIndex=0;
-                            //MonImg=Bitmap.createBitmap(BasicImg);
-                            Img.setImageBitmap(MonImg);
+                            if(MonImg!=null && !MonImg.equals(BasicImg)){
+                                MonImg=Bitmap.createBitmap(BasicImg);
+                                Img.setImageBitmap(MonImg);
+                            }
                             break;
                         case 1:
                             MonImg=Bitmap.createBitmap(Gris.toGreyRS(MonImg, this));
@@ -472,16 +493,68 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
+        public void buttonCLicked(View view){
+            saveImg(MonImg);
+            LumiBar.setProgress(0);
+
+            boolean checked = ((RadioButton) view).isChecked();
+            switch (view.getId()){
+                case R.id.radioR:
+                    if(checked){
+                        color="red";
+                    }
+                    break;
+                case R.id.radioG:
+                    if(checked){
+                        color="green";
+                    }
+                    break;
+                case R.id.radioB:
+                    if(checked){
+                        color="blue";
+                    }
+            }
+        }
+
+        public void Color(){
+            LumiBar.setOnSeekBarChangeListener(
+                    new SeekBar.OnSeekBarChangeListener() {
+                        Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
+                        }
+
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+
+                        }
+
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                            if(color!=""){
+                                n=Luminosite.changeColor(n,LumiBar.getProgress(), color);
+                                MonImg=Bitmap.createBitmap(n);
+                            }
+                        }
+                    }
+                );
+        }
+
         public void LumiColor(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
-                        Bitmap n;
+                        Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
+                            if(savedImgIndex==0){
+                                n=Bitmap.createBitmap(BasicImg);
+                            }else{
+                                n=Bitmap.createBitmap(savedImg[savedImgIndex-1]);
+                            }
                             if (!render_script) {
-                                n=Luminosite.changeBrightness(savedImg[savedImgIndex-1],scale);
+                                n=Luminosite.changeBrightness(n,scale);
                             } else {
-                                n=Luminosite.changeBrightnessRS(savedImg[savedImgIndex-1],MainActivity.this,scale);
+                                n=Luminosite.changeBrightnessRS(n,MainActivity.this,scale);
 
                             }
                         }
