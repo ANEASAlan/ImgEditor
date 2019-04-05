@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,8 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static SeekBar LumiBar;
     static RadioGroup RadioColor;
     static ImageView Img;
+    static ImageView colorEx;
     static String color="";
 
 
@@ -55,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button AppPhoto;
     Button Save;
     Button Undo;
+    Button Apply;
     Bitmap MonImg;
     Bitmap BasicImg;
+    Bitmap miniature;
     final int SAVED_LENGTH = 3;
     Bitmap[] savedImg = new Bitmap[SAVED_LENGTH];
     int savedImgIndex=0;
@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerRS = findViewById(R.id.spinner2);
         LumiBar = findViewById(R.id.ColorB);
         RadioColor =  findViewById(R.id.RadioColor);
+        colorEx = findViewById(R.id.ColorEx);
+        colorEx.setImageBitmap(miniature);
+        colorEx.setVisibility(View.INVISIBLE);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerRS.setVisibility(View.INVISIBLE);
         Undo.setVisibility(View.INVISIBLE);
         RS_Button.setVisibility(View.INVISIBLE);
+        Apply.setVisibility(View.INVISIBLE);
 
 
         ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.spinner1));
@@ -132,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Save = findViewById(R.id.Save);
         Undo = findViewById(R.id.Undo);
         RS_Button = findViewById(R.id.RS);
+        Apply = findViewById(R.id.Apply);
         createButtonGalerie();
         createButtonPhoto();
         createButtonSave();
@@ -371,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Save.setVisibility(View.VISIBLE);
                 Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
-                }
+            }
 
         }
 
@@ -385,14 +390,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 savedImg[SAVED_LENGTH-1]=Bitmap.createBitmap(img);
             }
+
+            colorEx.setImageBitmap(img);
         }
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
-            //RadioColor.setVisibility(View.INVISIBLE);
+            RadioColor.setVisibility(View.INVISIBLE);
+            colorEx.setVisibility(View.INVISIBLE);
+            Apply.setVisibility(View.INVISIBLE);
             if(position!=0){
                 saveImg(MonImg);
+            }
+            if(LumiBar.getProgress()!=0){
+                LumiBar.setProgress(0);
             }
             if (parent.getId() == R.id.spinner1) { //pas RS
                 switch (position) {
@@ -407,10 +419,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         MonImg=Bitmap.createBitmap(Gris.toGrey(MonImg));
                         break;
                     case 2:
-                        //LumiBar.setVisibility(View.VISIBLE);
+                        LumiBar.setVisibility(View.VISIBLE);
                         RadioColor.setVisibility(View.VISIBLE);
-                        //Color();
-                        MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
+                        colorEx.setVisibility(View.VISIBLE);
+                        Apply.setVisibility(View.VISIBLE);
+                        Color();
+                        //MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
                         break;
                     case 3:
                         MonImg=Bitmap.createBitmap(Couleurs.Conserve(MonImg));
@@ -529,10 +543,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
+        public void Apply(View view){
+            MonImg=Bitmap.createBitmap(miniature);
+            Img.setImageBitmap(MonImg);
+        }
+
+        public Bitmap derniereImage(){
+            return savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1];
+        }
+
         public void Color(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
-                        Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
                         }
@@ -545,8 +567,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
                             if(color!=""){
-                                n=Luminosite.changeColor(n,LumiBar.getProgress(), color);
-                                MonImg=Bitmap.createBitmap(n);
+                                miniature=Couleurs.changerCouleur(derniereImage(),LumiBar.getProgress(), color);
                             }
                         }
                     }
@@ -556,7 +577,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void LumiColor(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
-                        Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
+                        Bitmap n=Bitmap.createBitmap(derniereImage());
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
                             if(savedImgIndex==0){
