@@ -83,11 +83,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerJava = findViewById(R.id.spinner1);
         spinnerRS = findViewById(R.id.spinner2);
         LumiBar = findViewById(R.id.ColorB);
-        RadioColor = findViewById(R.id.RadioColor);
+        RadioColor =  findViewById(R.id.RadioColor);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
-        //RadioColor.setVisibility(View.INVISIBLE);
+        RadioColor.setVisibility(View.INVISIBLE);
         spinnerJava.setVisibility(View.INVISIBLE);
         spinnerRS.setVisibility(View.INVISIBLE);
         Undo.setVisibility(View.INVISIBLE);
@@ -346,7 +346,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     MonImg = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
                     BasicImg = Bitmap.createBitmap(MonImg);
                     Img.setImageBitmap(MonImg);
-                    Img.setRotation(-90);
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -409,7 +408,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                     case 2:
                         //LumiBar.setVisibility(View.VISIBLE);
-                        //RadioColor.setVisibility(View.VISIBLE);
+                        RadioColor.setVisibility(View.VISIBLE);
                         //Color();
                         MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
                         break;
@@ -433,17 +432,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         LumiColor();
                         break;
                     case 9:
-                        MonImg=Bitmap.createBitmap(Contours.ContoursSobel(MonImg));
+                        MonImg=Bitmap.createBitmap(Contours.ContoursSobel(Bitmap.createBitmap(Gris.toGrey(MonImg))));
                         break;
                     case 10:
-                        MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
+                        MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(Bitmap.createBitmap(Gris.toGrey(MonImg))));
                         break;
                     case 11:
-                        //Gris.toGreyRS(MonImg,this);
                         Bitmap Greyscale = Bitmap.createBitmap(Gris.toGrey(MonImg));
                         Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale));
                         Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true));
                         MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale));
+                        break;
+                    case 12:
+                        MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
+                        MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg));
                         break;
                     }
 
@@ -477,6 +479,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         case 7:
                             LumiBar.setVisibility(View.VISIBLE);
                             LumiColor();
+                            break;
+                        case 8:
+                            Bitmap Greyscale = Bitmap.createBitmap(Gris.toGreyRS(MonImg,MainActivity.this));
+                            Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale)); //version RS à écrire
+                            Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true)); //version RS à écrire
+                            MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale)); //version RS à écrire
+                            break;
+                        case 9:
+                            MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
+                            MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg)); //version RS à écrire
                             break;
                     }
                 }
