@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 public void onClick(View view) {
                     if(savedImgIndex!=0){
                         savedImgIndex--;
-                        MonImg=savedImg[savedImgIndex];
+                        MonImg=savedImg[savedImgIndex-1];
                         Img.setImageBitmap(MonImg);
                     }
                 }
