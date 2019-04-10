@@ -71,37 +71,5 @@ public class Luminosite extends MainActivity {
         return n;
     }
 
-    static protected Bitmap changeColor(Bitmap Bmp, int ColorScale, String color) {
 
-        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
-
-        int h = Bmp.getHeight();
-        int w = Bmp.getWidth();
-        int[] pixels = new int[w * h];
-        int p = 0;
-        int c = 0;
-        Bmp.getPixels(pixels, 0, w, 0, 0, w, h);
-        for (int i = 0; i < pixels.length; i++) {
-            p = pixels[i];
-            switch(color){
-                case "red":
-                    c = ColorScale+Color.red(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(c,Color.green(p),Color.blue(p));
-                    break;
-                case "green":
-                    c = ColorScale+Color.green(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(Color.red(p),c,Color.blue(p));
-                    break;
-                case "blue":
-                    c = ColorScale+Color.blue(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(Color.red(p),Color.green(p),c);
-            }
-        }
-        n.setPixels(pixels, 0, w, 0, 0, w, h);
-        MainActivity.Img.setImageBitmap(n);
-        return n;
-    }
 }
