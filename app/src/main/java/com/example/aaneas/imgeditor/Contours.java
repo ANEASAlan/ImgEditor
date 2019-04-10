@@ -1,10 +1,14 @@
 package com.example.aaneas.imgeditor;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.Element;
+import android.support.v8.renderscript.RenderScript;
 import android.widget.ImageView;
+
+import com.android.rssample.*;
 
 
 public class Contours extends MainActivity{
@@ -97,7 +101,52 @@ public class Contours extends MainActivity{
         return newimg;
     }
 
+    static protected Bitmap contoursRS(Bitmap image, Context context) {
+        Bitmap n = Bitmap.createBitmap(image.getWidth(),image.getHeight(), image.getConfig() );
 
+        RenderScript rs = RenderScript.create(context);
+
+        Allocation input = Allocation.createFromBitmap(rs, image);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptC_contours BlurScript = new ScriptC_contours(rs);
+        int matrixLength = 10;
+        float size = 100.0f;
+        float[] matrix = new float[]{
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+        };
+
+        BlurScript.set_in(input);
+        Allocation matrix2 = Allocation.createSized(rs, Element.F32(rs),matrix.length);
+        matrix2.copyFrom(matrix);
+        BlurScript.bind_matrix(matrix2);
+        BlurScript.set_matrixLength(matrixLength);
+        // BlurScript.set_reds(reds);
+        //BlurScript.set_greens(greens);
+        //BlurScript.set_blues(blues);
+        BlurScript.set_width(image.getWidth());
+        BlurScript.set_height(image.getHeight());
+
+        BlurScript.forEach_contours(output);
+        output.copyTo(n);
+
+        input.destroy();
+        output.destroy();
+        BlurScript.destroy();
+        rs.destroy();
+
+        MainActivity.Img.setImageBitmap(n);
+        return n;
+    }
 
 
 

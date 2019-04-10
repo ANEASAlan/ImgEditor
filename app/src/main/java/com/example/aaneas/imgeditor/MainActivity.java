@@ -416,6 +416,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         MonImg=Bitmap.createBitmap(Couleurs.Conserve(MonImg));
                         break;
                     case 4:
+                        //ContrasteDynamic
                         MonImg=Bitmap.createBitmap(Contraste.ContrasteCouleurDynamique(MonImg));
                         break;
                     case 5:
@@ -474,7 +475,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             MonImg=Bitmap.createBitmap(Contraste.contrastEgaliseurRS(MonImg,this));
                             break;
                         case 6:
-                            MonImg=Bitmap.createBitmap(Flous.FlouRS(MonImg,this,false));
+                            MonImg=Bitmap.createBitmap(Flous.FlouRS(MonImg,this));
                             break;
                         case 7:
                             LumiBar.setVisibility(View.VISIBLE);
@@ -490,6 +491,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
                             MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg)); //version RS à écrire
                             break;
+                        case 10:
+                            MonImg = Bitmap.createBitmap(Contours.contoursRS(MonImg,MainActivity.this));
                     }
                 }
 
@@ -584,5 +587,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
             );
         }
+
+    public void ContrasteDynamic(){
+        LumiBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        n=Luminosite.changeColor(n,LumiBar.getProgress(), color);
+                        MonImg=Bitmap.createBitmap(n);
+
+                    }
+                }
+        );
+    }
 
     }

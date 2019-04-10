@@ -106,7 +106,7 @@ public class Flous extends MainActivity {
 
     }
 
-    static protected Bitmap FlouRS(Bitmap image, Context context, boolean gaussian) {
+    static protected Bitmap FlouRS(Bitmap image, Context context) {
         Bitmap n = Bitmap.createBitmap(image.getWidth(),image.getHeight(), image.getConfig() );
 
         RenderScript rs = RenderScript.create(context);

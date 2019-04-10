@@ -28,6 +28,7 @@
     /* 7*/    <item>luminosité + RS</item>
     /* 8*/    <item>crayon</item>
     /* 9*/    <item>feutre</item>
+              <item>contours</item>
 
     </string-array>
     <string name="title_activity_contraste">Contraste</string>
