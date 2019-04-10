@@ -444,10 +444,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale));
                         break;
                     case 12:
-                        MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
+                        MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(Bitmap.createBitmap(Gris.toGrey(MonImg))));
+                        MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg));
+                        break;
+                    case 13:
+                        MonImg = Bitmap.createBitmap(Contours.ContoursSobel(Bitmap.createBitmap(Gris.toGrey(MonImg))));
+                        MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
+                        break;
+                    case 14:
                         MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg));
                         break;
                     }
+
 
                 }else if(parent.getId() == R.id.spinner2){ //RS
                     switch (position){
@@ -482,13 +490,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             break;
                         case 8:
                             Bitmap Greyscale = Bitmap.createBitmap(Gris.toGreyRS(MonImg,MainActivity.this));
-                            Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale)); //version RS à écrire
-                            Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true)); //version RS à écrire
-                            MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale)); //version RS à écrire
+                            Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invertRS(Greyscale,this));
+                            Bitmap Blurred = Bitmap.createBitmap(Flous.FlouRS(InvertedGrey,this,false));
+                            //MonImg=Bitmap.createBitmap(Crayon.blendRS(Blurred,Greyscale,this));
+                            MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale));
                             break;
                         case 9:
-                            MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(MonImg));
-                            MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg)); //version RS à écrire
+                            MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(Bitmap.createBitmap(Gris.toGreyRS(MonImg, this))));
+                            MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
+                            break;
+                        case 10:
+                            MonImg = Bitmap.createBitmap(Contours.ContoursSobel(Bitmap.createBitmap(Gris.toGreyRS(MonImg, this))));
+                            MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
+                            break;
+                        case 11:
+                            MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
                             break;
                     }
                 }

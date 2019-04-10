@@ -172,4 +172,26 @@ public class Couleurs extends MainActivity {
         MainActivity.Img.setImageBitmap(newBmp);
         return newBmp;
     }
+
+    static  protected Bitmap invertRS(Bitmap bmp, Context context) {
+
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
+        RenderScript rs = RenderScript.create(context);
+
+        Allocation input = Allocation.createFromBitmap(rs, bmp);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptC_invert invert = new ScriptC_invert(rs);
+        invert.forEach_invert(input, output);
+        output.copyTo(n);
+
+        input.destroy();
+        output.destroy();
+        invert.destroy();
+        rs.destroy();
+
+        MainActivity.Img.setImageBitmap(n);
+        return n;
+    }
 }
