@@ -65,9 +65,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Spinner spinnerJava;
     Spinner spinnerRS;
 
-    // public ScaleGestureDetector scaleGestureDetector;      //Outil d'Android permettant d'éviter les calculs de matrices "à la main"
-
-
     boolean render_script = false;
 
     @Override
@@ -76,10 +73,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // scaleGestureDetector = new ScaleGestureDetector(this, new ScaleListener());
-
 
         initImg();
+
+
         spinnerJava = findViewById(R.id.spinner1);
         spinnerRS = findViewById(R.id.spinner2);
         LumiBar = findViewById(R.id.ColorB);
@@ -96,6 +93,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Undo.setVisibility(View.INVISIBLE);
         RS_Button.setVisibility(View.INVISIBLE);
         Apply.setVisibility(View.INVISIBLE);
+
+
+        /*Initialisation des deux menus déroulants*/
 
 
         ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.spinner1));
@@ -117,20 +117,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public boolean onScale(ScaleGestureDetector scaleGestureDetector){
             ScaleFactor *= scaleGestureDetector.getScaleFactor();
-            ScaleFactor = Math.max(0.1f, Math.min(ScaleFactor, 5.0f));        //On limite le zoom entre 0.1 fois et 5.0 fois la taille de l'image initiale
+
+            /*On limite le zoom entre 0.1 fois et 5.0 fois la taille de l'image initiale*/
+            ScaleFactor = Math.max(0.1f, Math.min(ScaleFactor, 5.0f));
             Img.setScaleX(ScaleFactor);
             Img.setScaleY(ScaleFactor);
             return true;
         }
      }
 
+        /*initImg() va initialiser tous les boutons de l'application ainsi que les permissions d'accés à la galerie et appareil photo*/
+
+
         @SuppressLint("ClickableViewAccessibility")
         private void initImg() {
-        checkPremission();
+        checkPermission();
         Img = (PhotoView) findViewById(R.id.photo_view);
-        // Img = (ImageView) findViewById(R.id.ImgPhoto);
         RS_Button = findViewById(R.id.RS);
-        // Img.setOnTouchListener(this);
         Galerie = findViewById(R.id.Galerie);
         AppPhoto = findViewById(R.id.Photo);
         Save = findViewById(R.id.Save);
@@ -146,47 +149,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
 
-        //// PRENDRE PHOTO DEPUIS L'APPAREIL PHOTO ///
+        /*createButtonRS() va créer un bouton RS permettant de changer de menu deroulant,
+          un menu déroulant contenant toutes les fonctions java */
 
 
-        ////////////////////////
-        /*
-        @Override
-        public boolean onTouchEvent(MotionEvent motionEvent) {
-            scaleGestureDetector.onTouchEvent(motionEvent);
-            return true;
-        }
-        */
-        ///////////////////////
-
-        ////// DRAG AND DROP //////
-
-        /*
-        float x,y,x_tmp,y_tmp = 0.0f;
-
-        public boolean onTouch (View view, MotionEvent event){
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    x = event.getRawX();
-                    y = event.getRawY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    x_tmp = x - event.getRawX();
-                    y_tmp = y - event.getRawY();
-                    x = event.getRawX();
-                    y = event.getRawY();
-                    Img.setX(Img.getX() - x_tmp);
-                    Img.setY(Img.getY() - y_tmp);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    break;
-                default:
-                    break;
-            }
-            return true;
-        }
-        */
-        //////////////////////////////
         private void createButtonRS(){
             RS_Button.setChecked(false);
             RS_Button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -214,6 +180,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
+
+
+        /*createButtonSave() va créer le bouton pour sauvegarder l'image dans la galerie*/
+
         private void createButtonSave(){
             Save.setOnClickListener(new Button.OnClickListener() {
                 @Override
@@ -223,31 +193,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
-        String currentPhotoPath;
 
+        /*createImageFile() est une fonction intermédiaire pour l'enregistrement d'un photo, elle créer un fichier image*/
+
+        String currentPhotoPath;
         private File createImageFile() throws IOException {
-            // Create an image file name
             String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
             String imageFileName = "JPEG_" + timeStamp + "_";
             File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
             File image = File.createTempFile(
-                    imageFileName,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
+                    imageFileName,
+                    ".jpg",
+                    storageDir
             );
-
-            // Save a file: path for use with ACTION_VIEW intents
             currentPhotoPath = image.getAbsolutePath();
             return image;
         }
 
-    private static final int REQUEST_RUNTIME_PERMISSION = 1;
 
-        void checkPremission() {
-            //select which permission you want
+        /*checkPermission() verifie les permissions de l'appli */
+
+    private static final int REQUEST_RUNTIME_PERMISSION = 1;
+        void checkPermission() {
             final String permission = Manifest.permission.CAMERA;
-            //final String permission = Manifest.permission.Storage;
-            // if in fragment use getActivity()
             if (ContextCompat.checkSelfPermission(MainActivity.this, permission)
                     != PackageManager.PERMISSION_GRANTED) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, permission)) {
@@ -260,6 +228,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
+
+        /*onRequestPermissionsResult() réagit en fonction de la fonction checkPermissions() ci-dessus*/
+
         @Override
         public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
             switch (requestCode) {
@@ -268,10 +239,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     final boolean isGranted = numOfRequest == 1
                             && PackageManager.PERMISSION_GRANTED == grantResults[numOfRequest - 1];
                     if (isGranted) {
-                        // you have permission go ahead
                         return;
                     } else {
-                        // you dont have permission show toast
                     }
                     break;
                 default:
@@ -279,6 +248,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
 
         }
+
+        /*createButtonPhoto() créer un bouton permettant de prendre une photo et l'enregistrer dans la galerie*/
+
         Uri photoUri;
         private  void createButtonPhoto(){
             AppPhoto.setOnClickListener(new Button.OnClickListener(){
@@ -287,13 +259,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
                     if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                        // Create the File where the photo should go
                         File photoFile = null;
                         try {
                             photoFile = createImageFile();
                         } catch (IOException ex) {
                         }
-                        // Continue only if the File was successfully created
                         if (photoFile != null) {
                             photoUri = (Uri) FileProvider.getUriForFile(MainActivity.this,
                                     "com.example.android.fileprovider",
@@ -307,12 +277,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             });
         }
 
-
-         // ** GALERIE ** //
-
+        /*createButtonGalerie() créer un bouton permettant d'aller chercher une image dans la galerie*/
 
         private void createButtonGalerie() {
-            // Permissions galery //
             String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE,Manifest.permission.READ_EXTERNAL_STORAGE};
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(permissions,GALERY_REQUEST);
@@ -320,13 +287,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Galerie.setOnClickListener(new Button.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     Intent galerie = new Intent(Intent.ACTION_PICK,MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
                     startActivityForResult(galerie,1);
                 }
             });
         }
+
+
+        /*createButtonUnda() est un bouton retour, on peut faire seulement 3 fois retour max*/
 
         private void createButtonUndo() {
             Undo.setOnClickListener(new Button.OnClickListener() {
@@ -342,10 +310,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
 
+        /*onActivityResult() interagit en fonction de si on va dans la galerie ou l'appareil photo en fonction de "requestCode",
+         cette fonction set le Bitmap et met les visibilitées à jour*/
 
         public void onActivityResult (int requestCode, int resultCode, Intent data){
         super.onActivityResult(requestCode, resultCode, data);
-
             if (requestCode == PHOTO_REQUEST && resultCode == RESULT_OK) {
                 try {
                     MonImg = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
@@ -367,8 +336,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                 String imgPath = cursor.getString(columnIndex);
                 cursor.close();
-
-
                 MonImg = BitmapFactory.decodeFile(imgPath);
                 BasicImg=Bitmap.createBitmap(MonImg);
                 Img.setImageBitmap(MonImg);
@@ -377,8 +344,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
             }
-
         }
+
+
+        /*saveImg() permet de stocker les images pour le Undo*/
 
         public void saveImg(Bitmap img){
             if(savedImgIndex< SAVED_LENGTH){
@@ -390,9 +359,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 savedImg[SAVED_LENGTH-1]=Bitmap.createBitmap(img);
             }
-
             colorEx.setImageBitmap(img);
         }
+
+
+        /*onItemSelected() intereagit avec strings.xml (les noms des menus déroulants), il contient un switch pour chacune des deux spinners.
+        Les fonctions sont appélées dans les cases correspondants au nom de leur fonction*/
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -406,7 +378,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if(LumiBar.getProgress()!=0){
                 LumiBar.setProgress(0);
             }
-            if (parent.getId() == R.id.spinner1) { //pas RS
+
+            /* switch JAVA */
+
+            if (parent.getId() == R.id.spinner1) {
                 switch (position) {
                     case 0:
                         savedImgIndex=0;
@@ -469,8 +444,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         MonImg = Bitmap.createBitmap(Colors.invert(MonImg));
                         break;
                     }
-
-
+                /* switch RS */
                 }else if(parent.getId() == R.id.spinner2){ //RS
                     switch (position){
                         case 0:
@@ -520,21 +494,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         case 11:
                             MonImg = Bitmap.createBitmap(Colors.invertRS(MonImg,this));
                             break;
+                        case 12:
+                            MonImg = Bitmap.createBitmap(Contours.contoursRS(Bitmap.createBitmap(Gris.toGreyRS(MonImg,this)),this));
                     }
                 }
-
-
             }
-
-
-
-
 
 
         @Override
         public void onNothingSelected(AdapterView<?> parent) {
-
         }
+
 
         public void buttonCLicked(View view){
             saveImg(MonImg);
@@ -621,5 +591,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     }
             );
         }
+
+    public void ContrasteDynamic(){
+        LumiBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        n=Couleurs.changerCouleur(n,LumiBar.getProgress(), color);
+                        MonImg=Bitmap.createBitmap(n);
+
+                    }
+                }
+        );
+    }
 
     }
