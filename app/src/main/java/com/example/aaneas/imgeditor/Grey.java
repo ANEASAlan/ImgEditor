@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import com.android.rssample.ScriptC_grey;
 
 
-public class Gris extends MainActivity {
+public class Grey extends MainActivity {
 
 
 
@@ -36,7 +36,7 @@ public class Gris extends MainActivity {
 
     static protected Bitmap toGreyRS(Bitmap bmp, Context context) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
         RenderScript rs = RenderScript.create(context);
 
@@ -46,15 +46,15 @@ public class Gris extends MainActivity {
         ScriptC_grey Grey = new ScriptC_grey(rs);
 
         Grey.forEach_toGrey(input, output);
-        output.copyTo(n);
+        output.copyTo(resultBitmap);
 
         input.destroy();
         output.destroy();
         Grey.destroy();
         rs.destroy();
 
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
 
     }
 

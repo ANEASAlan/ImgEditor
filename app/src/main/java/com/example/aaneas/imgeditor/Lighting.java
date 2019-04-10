@@ -9,21 +9,21 @@ import android.support.v8.renderscript.RenderScript;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
-public class Luminosite extends MainActivity {
+public class Lighting extends MainActivity {
     /// CHANGER LA LUMINOSITE D'UNE IMAGE ///
 
-    static protected Bitmap changeBrightness(Bitmap Bmp, int BrightnessScale) {
+    static protected Bitmap changeBrightness(Bitmap bmp, int BrightnessScale) {
 
-        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
+        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(),bmp.getConfig() );
 
-        int h = Bmp.getHeight();
-        int w = Bmp.getWidth();
+        int h = bmp.getHeight();
+        int w = bmp.getWidth();
         int[] pixels = new int[w * h];
         int c = 0;
         int r = 0;
         int g = 0;
         int b = 0;
-        Bmp.getPixels(pixels, 0, w, 0, 0, w, h);
+        bmp.getPixels(pixels, 0, w, 0, 0, w, h);
         for (int i = 0; i < pixels.length; i++) {
             c = pixels[i];
             r = BrightnessScale+Color.red(c);
@@ -43,7 +43,7 @@ public class Luminosite extends MainActivity {
 
     static protected Bitmap changeBrightnessRS(Bitmap bmp, Context context, float scale) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
 //1)  Creer un  contexte  RenderScript
         RenderScript rs = RenderScript.create(context);
@@ -60,48 +60,16 @@ public class Luminosite extends MainActivity {
 
         brightnessScript.forEach_changeBrightness(input, output);
 //7)  Recuperer  les  donnees  des  Allocation(s)
-        output.copyTo(n);
+        output.copyTo(resultBitmap);
 //8)  Detruire  le context , les  Allocation(s) et le  script
         input.destroy();
         output.destroy();
         brightnessScript.destroy();
         rs.destroy();
 
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
     }
 
-    static protected Bitmap changeColor(Bitmap Bmp, int ColorScale, String color) {
 
-        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
-
-        int h = Bmp.getHeight();
-        int w = Bmp.getWidth();
-        int[] pixels = new int[w * h];
-        int p = 0;
-        int c = 0;
-        Bmp.getPixels(pixels, 0, w, 0, 0, w, h);
-        for (int i = 0; i < pixels.length; i++) {
-            p = pixels[i];
-            switch(color){
-                case "red":
-                    c = ColorScale+Color.red(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(c,Color.green(p),Color.blue(p));
-                    break;
-                case "green":
-                    c = ColorScale+Color.green(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(Color.red(p),c,Color.blue(p));
-                    break;
-                case "blue":
-                    c = ColorScale+Color.blue(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(Color.red(p),Color.green(p),c);
-            }
-        }
-        n.setPixels(pixels, 0, w, 0, 0, w, h);
-        MainActivity.Img.setImageBitmap(n);
-        return n;
-    }
 }

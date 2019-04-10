@@ -7,10 +7,10 @@ import android.graphics.Color;
 import android.widget.ImageView;
 
 
-public class Contours extends MainActivity{
+public class Edges extends MainActivity{
 
     /// Flou Lisse (n = taille du masque) ///
-    static protected Bitmap ContoursSobel(Bitmap bmp){
+    static protected Bitmap SobelEdges(Bitmap bmp){
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -53,9 +53,6 @@ public class Contours extends MainActivity{
 
                /// newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
 
-
-
-
             }
         }
         newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
@@ -64,7 +61,7 @@ public class Contours extends MainActivity{
 
     }
 
-    static protected Bitmap ContoursLaplace(Bitmap bmp){
+    static protected Bitmap LaplaceEdges(Bitmap bmp){
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 

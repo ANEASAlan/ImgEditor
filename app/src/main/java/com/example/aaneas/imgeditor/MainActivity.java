@@ -8,7 +8,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -18,8 +17,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.AdapterView;
@@ -48,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static SeekBar LumiBar;
     static RadioGroup RadioColor;
     static ImageView Img;
+    static ImageView colorEx;
     static String color="";
 
 
@@ -55,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button AppPhoto;
     Button Save;
     Button Undo;
+    Button Apply;
     Bitmap MonImg;
     Bitmap BasicImg;
+    Bitmap miniature;
     final int SAVED_LENGTH = 3;
     Bitmap[] savedImg = new Bitmap[SAVED_LENGTH];
     int savedImgIndex=0;
@@ -84,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerRS = findViewById(R.id.spinner2);
         LumiBar = findViewById(R.id.ColorB);
         RadioColor =  findViewById(R.id.RadioColor);
+        colorEx = findViewById(R.id.ColorEx);
+        colorEx.setImageBitmap(miniature);
+        colorEx.setVisibility(View.INVISIBLE);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
@@ -92,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerRS.setVisibility(View.INVISIBLE);
         Undo.setVisibility(View.INVISIBLE);
         RS_Button.setVisibility(View.INVISIBLE);
+        Apply.setVisibility(View.INVISIBLE);
 
 
         ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.spinner1));
@@ -132,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Save = findViewById(R.id.Save);
         Undo = findViewById(R.id.Undo);
         RS_Button = findViewById(R.id.RS);
+        Apply = findViewById(R.id.Apply);
         createButtonGalerie();
         createButtonPhoto();
         createButtonSave();
@@ -329,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 public void onClick(View view) {
                     if(savedImgIndex!=0){
                         savedImgIndex--;
-                        MonImg=savedImg[savedImgIndex];
+                        MonImg=savedImg[savedImgIndex-1];
                         Img.setImageBitmap(MonImg);
                     }
                 }
@@ -371,7 +376,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Save.setVisibility(View.VISIBLE);
                 Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
-                }
+            }
 
         }
 
@@ -385,14 +390,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 savedImg[SAVED_LENGTH-1]=Bitmap.createBitmap(img);
             }
+
+            colorEx.setImageBitmap(img);
         }
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
-            //RadioColor.setVisibility(View.INVISIBLE);
+            RadioColor.setVisibility(View.INVISIBLE);
+            colorEx.setVisibility(View.INVISIBLE);
+            Apply.setVisibility(View.INVISIBLE);
             if(position!=0){
                 saveImg(MonImg);
+            }
+            if(LumiBar.getProgress()!=0){
+                LumiBar.setProgress(0);
             }
             if (parent.getId() == R.id.spinner1) { //pas RS
                 switch (position) {
@@ -404,55 +416,57 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         }
                         break;
                     case 1:
-                        MonImg=Bitmap.createBitmap(Gris.toGrey(MonImg));
+                        MonImg=Bitmap.createBitmap(Grey.toGrey(MonImg));
                         break;
                     case 2:
-                        //LumiBar.setVisibility(View.VISIBLE);
+                        LumiBar.setVisibility(View.VISIBLE);
                         RadioColor.setVisibility(View.VISIBLE);
-                        //Color();
-                        MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
+                        colorEx.setVisibility(View.VISIBLE);
+                        Apply.setVisibility(View.VISIBLE);
+                        Color();
+                        //MonImg=Bitmap.createBitmap(Colors.Colorize(MonImg));
                         break;
                     case 3:
-                        MonImg=Bitmap.createBitmap(Couleurs.Conserve(MonImg));
+                        MonImg=Bitmap.createBitmap(Colors.Conserve(MonImg));
                         break;
                     case 4:
-                        MonImg=Bitmap.createBitmap(Contraste.ContrasteCouleurDynamique(MonImg));
+                        MonImg=Bitmap.createBitmap(Contrast.ContrastDynamic(MonImg));
                         break;
                     case 5:
-                        MonImg=Bitmap.createBitmap(Contraste.ContrasteCouleurEgaliseur(MonImg));
+                        MonImg=Bitmap.createBitmap(Contrast.ContrastAverage(MonImg));
                         break;
                     case 6:
-                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,false)); //flou égalisateur / moyenneur
+                        MonImg=Bitmap.createBitmap(Blur.GaussianBlur(MonImg,false)); //flou égalisateur / moyenneur
                         break;
                     case 7:
-                        MonImg=Bitmap.createBitmap(Flous.Flougaussien(MonImg,true)); // flou gaussien
+                        MonImg=Bitmap.createBitmap(Blur.GaussianBlur(MonImg,true)); // flou gaussien
                         break;
                     case 8:
                         LumiBar.setVisibility(View.VISIBLE);
                         LumiColor();
                         break;
                     case 9:
-                        MonImg=Bitmap.createBitmap(Contours.ContoursSobel(Bitmap.createBitmap(Gris.toGrey(MonImg))));
+                        MonImg=Bitmap.createBitmap(Edges.SobelEdges(Bitmap.createBitmap(Grey.toGrey(MonImg))));
                         break;
                     case 10:
-                        MonImg=Bitmap.createBitmap(Contours.ContoursLaplace(Bitmap.createBitmap(Gris.toGrey(MonImg))));
+                        MonImg=Bitmap.createBitmap(Edges.LaplaceEdges(Bitmap.createBitmap(Grey.toGrey(MonImg))));
                         break;
                     case 11:
-                        Bitmap Greyscale = Bitmap.createBitmap(Gris.toGrey(MonImg));
-                        Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invert(Greyscale));
-                        Bitmap Blurred = Bitmap.createBitmap(Flous.Flougaussien(InvertedGrey,true));
-                        MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale));
+                        Bitmap Greyscale = Bitmap.createBitmap(Grey.toGrey(MonImg));
+                        Bitmap InvertedGrey = Bitmap.createBitmap(Colors.invert(Greyscale));
+                        Bitmap Blurred = Bitmap.createBitmap(Blur.GaussianBlur(InvertedGrey,true));
+                        MonImg=Bitmap.createBitmap(Pencil.BlendColorDodge(Blurred,Greyscale));
                         break;
                     case 12:
-                        MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(Bitmap.createBitmap(Gris.toGrey(MonImg))));
-                        MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg));
+                        MonImg = Bitmap.createBitmap(Edges.LaplaceEdges(Bitmap.createBitmap(Grey.toGrey(MonImg))));
+                        MonImg = Bitmap.createBitmap(Colors.invert(MonImg));
                         break;
                     case 13:
-                        MonImg = Bitmap.createBitmap(Contours.ContoursSobel(Bitmap.createBitmap(Gris.toGrey(MonImg))));
-                        MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
+                        MonImg = Bitmap.createBitmap(Edges.SobelEdges(Bitmap.createBitmap(Grey.toGrey(MonImg))));
+                        MonImg = Bitmap.createBitmap(Colors.invert(MonImg));
                         break;
                     case 14:
-                        MonImg = Bitmap.createBitmap(Couleurs.invert(MonImg));
+                        MonImg = Bitmap.createBitmap(Colors.invert(MonImg));
                         break;
                     }
 
@@ -467,44 +481,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             }
                             break;
                         case 1:
-                            MonImg=Bitmap.createBitmap(Gris.toGreyRS(MonImg, this));
+                            MonImg=Bitmap.createBitmap(Grey.toGreyRS(MonImg, this));
                             break;
                         case 2:
-                            MonImg=Bitmap.createBitmap(Couleurs.ColoriserRS(MonImg, this));
+                            MonImg=Bitmap.createBitmap(Colors.ColoriserRS(MonImg, this));
                             break;
                         case 3:
-                            MonImg=Bitmap.createBitmap(Couleurs.ConserveRS(MonImg,this));
+                            MonImg=Bitmap.createBitmap(Colors.ConserveRS(MonImg,this));
                             break;
                         case 4:
-                            MonImg=Bitmap.createBitmap(Contraste.ContrasteDynamiqueRS(MonImg,this));
+                            MonImg=Bitmap.createBitmap(Contrast.ContrastDynamicRS(MonImg,this));
                             break;
                         case 5:
-                            MonImg=Bitmap.createBitmap(Contraste.contrastEgaliseurRS(MonImg,this));
+                            MonImg=Bitmap.createBitmap(Contrast.contrastEgaliseurRS(MonImg,this));
                             break;
                         case 6:
-                            MonImg=Bitmap.createBitmap(Flous.FlouRS(MonImg,this,false));
+                            MonImg=Bitmap.createBitmap(Blur.BlurRS(MonImg,this ));
                             break;
                         case 7:
                             LumiBar.setVisibility(View.VISIBLE);
                             LumiColor();
                             break;
                         case 8:
-                            Bitmap Greyscale = Bitmap.createBitmap(Gris.toGreyRS(MonImg,MainActivity.this));
-                            Bitmap InvertedGrey = Bitmap.createBitmap(Couleurs.invertRS(Greyscale,this));
-                            Bitmap Blurred = Bitmap.createBitmap(Flous.FlouRS(InvertedGrey,this,false));
-                            //MonImg=Bitmap.createBitmap(Crayon.blendRS(Blurred,Greyscale,this));
-                            MonImg=Bitmap.createBitmap(Crayon.BlendColorDodge(Blurred,Greyscale));
+                            Bitmap Greyscale = Bitmap.createBitmap(Grey.toGreyRS(MonImg,MainActivity.this));
+                            Bitmap InvertedGrey = Bitmap.createBitmap(Colors.invertRS(Greyscale,this));
+                            Bitmap Blurred = Bitmap.createBitmap(Blur.BlurRS(InvertedGrey,this));
+                            MonImg=Bitmap.createBitmap(Pencil.blendRS(Blurred,Greyscale,this));
+                            //MonImg=Bitmap.createBitmap(Pencil.BlendColorDodge(Blurred,Greyscale));
                             break;
                         case 9:
-                            MonImg = Bitmap.createBitmap(Contours.ContoursLaplace(Bitmap.createBitmap(Gris.toGreyRS(MonImg, this))));
-                            MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
+                            MonImg = Bitmap.createBitmap(Edges.LaplaceEdges(Bitmap.createBitmap(Grey.toGreyRS(MonImg, this))));
+                            MonImg = Bitmap.createBitmap(Colors.invertRS(MonImg,this));
                             break;
                         case 10:
-                            MonImg = Bitmap.createBitmap(Contours.ContoursSobel(Bitmap.createBitmap(Gris.toGreyRS(MonImg, this))));
-                            MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
+                            MonImg = Bitmap.createBitmap(Edges.SobelEdges(Bitmap.createBitmap(Grey.toGreyRS(MonImg, this))));
+                            MonImg = Bitmap.createBitmap(Colors.invertRS(MonImg,this));
                             break;
                         case 11:
-                            MonImg = Bitmap.createBitmap(Couleurs.invertRS(MonImg,this));
+                            MonImg = Bitmap.createBitmap(Colors.invertRS(MonImg,this));
                             break;
                     }
                 }
@@ -545,10 +559,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
 
+        public void Apply(View view){
+            MonImg=Bitmap.createBitmap(miniature);
+            Img.setImageBitmap(MonImg);
+        }
+
+        public Bitmap derniereImage(){
+            return savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1];
+        }
+
         public void Color(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
-                        Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
                         }
@@ -561,8 +583,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
                             if(color!=""){
-                                n=Luminosite.changeColor(n,LumiBar.getProgress(), color);
-                                MonImg=Bitmap.createBitmap(n);
+                                miniature= Colors.changerCouleur(derniereImage(),LumiBar.getProgress(), color);
                             }
                         }
                     }
@@ -572,7 +593,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void LumiColor(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
-                        Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
+                        Bitmap n=Bitmap.createBitmap(derniereImage());
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
                             if(savedImgIndex==0){
@@ -581,9 +602,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 n=Bitmap.createBitmap(savedImg[savedImgIndex-1]);
                             }
                             if (!render_script) {
-                                n=Luminosite.changeBrightness(n,scale);
+                                n= Lighting.changeBrightness(n,scale);
                             } else {
-                                n=Luminosite.changeBrightnessRS(n,MainActivity.this,scale);
+                                n= Lighting.changeBrightnessRS(n,MainActivity.this,scale);
 
                             }
                         }

@@ -15,7 +15,7 @@ uchar4  RS_KERNEL  toConserve(uchar4  in) {
 }*/
 
 double rand;
-uchar4 RS_KERNEL toConserve(uchar4 in){
+uchar4 RS_KERNEL colorKeep(uchar4 in){
 float4  pixelf = rsUnpackColor8888(in);
 int r = pixelf.r * 255;
 int g = pixelf.g * 255;
