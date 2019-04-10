@@ -110,19 +110,12 @@ public class Contours extends MainActivity{
         Allocation output = Allocation.createTyped(rs, input.getType());
 
         ScriptC_contours BlurScript = new ScriptC_contours(rs);
-        int matrixLength = 10;
-        float size = 100.0f;
+        int matrixLength = 3;
+
         float[] matrix = new float[]{
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                -1/9.0f,0/9.0f,1/9.0f,
+                -2/9.0f,0/9.0f,2/9.0f,
+                -1/9.0f,0/9.0f,1/9.0f,
         };
 
         BlurScript.set_in(input);
