@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -495,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             MonImg = Bitmap.createBitmap(Colors.invertRS(MonImg,this));
                             break;
                         case 12:
-                            MonImg = Bitmap.createBitmap(Contours.contoursRS(Bitmap.createBitmap(Gris.toGreyRS(MonImg,this)),this));
+                            MonImg = Bitmap.createBitmap(Edges.contoursRS(Bitmap.createBitmap(Grey.toGreyRS(MonImg,this)),this));
                     }
                 }
             }
@@ -607,7 +608,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        n=Couleurs.changerCouleur(n,LumiBar.getProgress(), color);
+                        n= Colors.changerCouleur(n,LumiBar.getProgress(), color);
                         MonImg=Bitmap.createBitmap(n);
 
                     }
