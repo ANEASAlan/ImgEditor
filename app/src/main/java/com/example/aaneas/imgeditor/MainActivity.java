@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -448,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             MonImg=Bitmap.createBitmap(Contrast.ContrastDynamicRS(MonImg,this));
                             break;
                         case 5:
-                            MonImg=Bitmap.createBitmap(Contrast.contrastEgaliseurRS(MonImg,this));
+                            MonImg=Bitmap.createBitmap(Contrast.ContrastAverageRS(MonImg,this));
                             break;
                         case 6:
                             MonImg=Bitmap.createBitmap(Blur.BlurRS(MonImg,this ));
@@ -461,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             Bitmap Greyscale = Bitmap.createBitmap(Grey.toGreyRS(MonImg,MainActivity.this));
                             Bitmap InvertedGrey = Bitmap.createBitmap(Colors.invertRS(Greyscale,this));
                             Bitmap Blurred = Bitmap.createBitmap(Blur.BlurRS(InvertedGrey,this));
-                            MonImg=Bitmap.createBitmap(Pencil.blendRS(Blurred,Greyscale,this));
+                            MonImg=Bitmap.createBitmap(Pencil.BlendRS(Blurred,Greyscale,this));
                             break;
                         case 9:
                             MonImg = Bitmap.createBitmap(Edges.LaplaceEdges(Bitmap.createBitmap(Grey.toGreyRS(MonImg, this))));

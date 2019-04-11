@@ -9,20 +9,26 @@ import android.support.v8.renderscript.RenderScript;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+/*La classe Lighting permet d'appliquer les filtres:
+    -changeBrightness
+    -changeBrightnessRS
+  qui change la luminosité d'une image Bitmap
+ */
+
 public class Lighting extends MainActivity {
-    /// CHANGER LA LUMINOSITE D'UNE IMAGE ///
+
+    /*changeBrightness() applique un filtre qui change la luminosité. Le paramètre BrightnessScale
+    permet de faire varier progressivement l'intensité de la luminosité à l'aide d'une "Seekbar"*/
 
     static protected Bitmap changeBrightness(Bitmap bmp, int BrightnessScale) {
-
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(),bmp.getConfig() );
-
+        Bitmap newbitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(),bmp.getConfig() );
         int h = bmp.getHeight();
         int w = bmp.getWidth();
         int[] pixels = new int[w * h];
-        int c = 0;
-        int r = 0;
-        int g = 0;
-        int b = 0;
+        int c;
+        int r;
+        int g;
+        int b;
         bmp.getPixels(pixels, 0, w, 0, 0, w, h);
         for (int i = 0; i < pixels.length; i++) {
             c = pixels[i];
@@ -34,34 +40,26 @@ public class Lighting extends MainActivity {
             if(b > 255) b = 255;
             pixels[i] = Color.rgb(r,g,b);
         }
-        n.setPixels(pixels, 0, w, 0, 0, w, h);
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        newbitmap.setPixels(pixels, 0, w, 0, 0, w, h);
+        MainActivity.Img.setImageBitmap(newbitmap);
+        return newbitmap;
     }
 
-    /// CHANGEBRIGHTNESS RENDERSCRIPT VERSION///
+    /*changeBrightnessRS() applique l'effet de luminosité à l'aide d'un fichier RenderScript. Le paramètre
+    "scale" à la même utilisation que "BrightnessScale" de la fonction ci-dessus
+     */
 
     static protected Bitmap changeBrightnessRS(Bitmap bmp, Context context, float scale) {
-
         Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-
-//1)  Creer un  contexte  RenderScript
         RenderScript rs = RenderScript.create(context);
-//2)  Creer  des  Allocations  pour  passer  les  donnees
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
-//3)  Creer le  script
-        ScriptC_brightness brightnessScript = new ScriptC_brightness(rs);
-//4)  Copier  les  donnees  dans  les  Allocations
-// ...
-//5)  Initialiser  les  variables  globales  potentielles
-        brightnessScript.set_BrightnessScale(scale/255);
-//6)  Lancer  le noyau
 
+        ScriptC_brightness brightnessScript = new ScriptC_brightness(rs);
+        brightnessScript.set_BrightnessScale(scale/255);
         brightnessScript.forEach_changeBrightness(input, output);
-//7)  Recuperer  les  donnees  des  Allocation(s)
         output.copyTo(resultBitmap);
-//8)  Detruire  le context , les  Allocation(s) et le  script
+
         input.destroy();
         output.destroy();
         brightnessScript.destroy();

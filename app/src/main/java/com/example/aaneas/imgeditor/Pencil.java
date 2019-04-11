@@ -8,7 +8,16 @@ import android.support.v8.renderscript.RenderScript;
 
 import com.android.rssample.*;
 
+/*La class Pencil créer deux fonctions:
+    -BlendColorDodge
+    -BlendRS
+  Ces deux fonctions permettront de terminer le filtre crayon (l'effet crayon est un
+  enchaînement de différents effets)
+ */
+
 public class Pencil extends MainActivity{
+
+    /*DodgeIntermediary() est une fonction intérmdiaire pour la fonction BlendColorDodge*/
 
     static private int DodgeIntermediary (int color1, int color2){
         if(color2 == 255){
@@ -25,6 +34,7 @@ public class Pencil extends MainActivity{
         }
     }
 
+
     static protected Bitmap BlendColorDodge(Bitmap bmp1,Bitmap bmp2){
 
         Bitmap newbmp = Bitmap.createBitmap(bmp1.getWidth(),bmp1.getHeight(), bmp1.getConfig() );
@@ -33,7 +43,6 @@ public class Pencil extends MainActivity{
         int [] pixel2 = new int[newbmp.getWidth()*newbmp.getHeight()];
         bmp1.getPixels(pixel1,0,bmp1.getWidth(),0,0,bmp1.getWidth(),bmp1.getHeight());
         bmp2.getPixels(pixel2,0,bmp2.getWidth(),0,0,bmp2.getWidth(),bmp2.getHeight());
-        //int c = 0;
 
         int r;
         int g;
@@ -51,16 +60,12 @@ public class Pencil extends MainActivity{
 
     }
 
-    static  protected Bitmap blendRS(Bitmap bmp1, Bitmap bmp2, Context context) {
+    static  protected Bitmap BlendRS(Bitmap bmp1, Bitmap bmp2, Context context) {
 
         Bitmap resultBitmap = Bitmap.createBitmap(bmp1.getWidth(),bmp1.getHeight(), bmp1.getConfig() );
-
         RenderScript rs = RenderScript.create(context);
-
         Allocation input2 = Allocation.createFromBitmap(rs, bmp2);
-
         Allocation input = Allocation.createFromBitmap(rs, bmp1);
-
         Allocation output = Allocation.createTyped(rs, input.getType());
 
         ScriptC_blend blend = new ScriptC_blend(rs);
