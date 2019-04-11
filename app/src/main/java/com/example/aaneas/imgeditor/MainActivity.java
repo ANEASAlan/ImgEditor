@@ -24,8 +24,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.ToggleButton;
@@ -43,20 +41,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     static float ScaleFactor = 1.0f;
 
     static SeekBar LumiBar;
-    static RadioGroup RadioColor;
     static ImageView Img;
-    static ImageView colorEx;
-    static String color="";
+    static ImageView Rainbow;
 
 
     Button Galerie;
     Button AppPhoto;
     Button Save;
     Button Undo;
-    Button Apply;
     Bitmap MonImg;
     Bitmap BasicImg;
-    Bitmap miniature;
     final int SAVED_LENGTH = 3;
     Bitmap[] savedImg = new Bitmap[SAVED_LENGTH];
     int savedImgIndex=0;
@@ -82,21 +76,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         initImg();
         spinnerJava = findViewById(R.id.spinner1);
         spinnerRS = findViewById(R.id.spinner2);
-        LumiBar = findViewById(R.id.ColorB);
-        RadioColor =  findViewById(R.id.RadioColor);
-        colorEx = findViewById(R.id.ColorEx);
-        colorEx.setImageBitmap(miniature);
-        colorEx.setVisibility(View.INVISIBLE);
+        LumiBar = findViewById(R.id.ColorR);
+        Rainbow = findViewById(R.id.Rainbow);
 
         Save.setVisibility(View.INVISIBLE);
         LumiBar.setVisibility(View.INVISIBLE);
-        RadioColor.setVisibility(View.INVISIBLE);
+        Rainbow.setVisibility(View.INVISIBLE);
         spinnerJava.setVisibility(View.INVISIBLE);
         spinnerRS.setVisibility(View.INVISIBLE);
         Undo.setVisibility(View.INVISIBLE);
         RS_Button.setVisibility(View.INVISIBLE);
-        Apply.setVisibility(View.INVISIBLE);
-
 
         ArrayAdapter<String> monadaptater = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.spinner1));
         monadaptater.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -136,7 +125,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Save = findViewById(R.id.Save);
         Undo = findViewById(R.id.Undo);
         RS_Button = findViewById(R.id.RS);
-        Apply = findViewById(R.id.Apply);
         createButtonGalerie();
         createButtonPhoto();
         createButtonSave();
@@ -145,48 +133,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
-
-        //// PRENDRE PHOTO DEPUIS L'APPAREIL PHOTO ///
-
-
-        ////////////////////////
-        /*
-        @Override
-        public boolean onTouchEvent(MotionEvent motionEvent) {
-            scaleGestureDetector.onTouchEvent(motionEvent);
-            return true;
-        }
-        */
-        ///////////////////////
-
-        ////// DRAG AND DROP //////
-
-        /*
-        float x,y,x_tmp,y_tmp = 0.0f;
-
-        public boolean onTouch (View view, MotionEvent event){
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    x = event.getRawX();
-                    y = event.getRawY();
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    x_tmp = x - event.getRawX();
-                    y_tmp = y - event.getRawY();
-                    x = event.getRawX();
-                    y = event.getRawY();
-                    Img.setX(Img.getX() - x_tmp);
-                    Img.setY(Img.getY() - y_tmp);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    break;
-                default:
-                    break;
-            }
-            return true;
-        }
-        */
-        //////////////////////////////
         private void createButtonRS(){
             RS_Button.setChecked(false);
             RS_Button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -196,13 +142,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     if (isChecked){
                         spinnerRS.setVisibility(View.VISIBLE);
                         spinnerJava.setVisibility(View.INVISIBLE);
-                        //spinnerJava.setSelection(0);
 
                     }else{
 
                         spinnerRS.setVisibility(View.INVISIBLE);
                         spinnerJava.setVisibility(View.VISIBLE);
-                        //spinnerRS.setSelection(0);
 
                     }
 
@@ -334,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 public void onClick(View view) {
                     if(savedImgIndex!=0){
                         savedImgIndex--;
-                        MonImg=savedImg[savedImgIndex-1];
+                        MonImg=Bitmap.createBitmap(derniereImage());
                         Img.setImageBitmap(MonImg);
                     }
                 }
@@ -390,16 +334,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 savedImg[SAVED_LENGTH-1]=Bitmap.createBitmap(img);
             }
-
-            colorEx.setImageBitmap(img);
         }
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
             LumiBar.setVisibility(View.INVISIBLE);
-            RadioColor.setVisibility(View.INVISIBLE);
-            colorEx.setVisibility(View.INVISIBLE);
-            Apply.setVisibility(View.INVISIBLE);
+            Rainbow.setVisibility(View.INVISIBLE);
             if(position!=0){
                 saveImg(MonImg);
             }
@@ -420,14 +360,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                     case 2:
                         LumiBar.setVisibility(View.VISIBLE);
-                        RadioColor.setVisibility(View.VISIBLE);
-                        colorEx.setVisibility(View.VISIBLE);
-                        Apply.setVisibility(View.VISIBLE);
+                        Rainbow.setVisibility(View.VISIBLE);
                         Color();
-                        //MonImg=Bitmap.createBitmap(Couleurs.Coloriser(MonImg));
                         break;
                     case 3:
-                        MonImg=Bitmap.createBitmap(Couleurs.Conserve(MonImg));
+                        //MonImg=Bitmap.createBitmap(Couleurs.Conserve(MonImg, 0.2));
+                        LumiBar.setVisibility(View.VISIBLE);
+                        Rainbow.setVisibility(View.VISIBLE);
+                        Conserve();
                         break;
                     case 4:
                         //ContrasteDynamic
@@ -523,34 +463,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
-        public void buttonCLicked(View view){
-            saveImg(MonImg);
-            LumiBar.setProgress(0);
-
-            boolean checked = ((RadioButton) view).isChecked();
-            switch (view.getId()){
-                case R.id.radioR:
-                    if(checked){
-                        color="red";
-                    }
-                    break;
-                case R.id.radioG:
-                    if(checked){
-                        color="green";
-                    }
-                    break;
-                case R.id.radioB:
-                    if(checked){
-                        color="blue";
-                    }
-            }
-        }
-
-        public void Apply(View view){
-            MonImg=Bitmap.createBitmap(miniature);
-            Img.setImageBitmap(MonImg);
-        }
-
         public Bitmap derniereImage(){
             return savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1];
         }
@@ -569,9 +481,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
-                            if(color!=""){
-                                miniature=Couleurs.changerCouleur(derniereImage(),LumiBar.getProgress(), color);
-                            }
+                            MonImg=Couleurs.changerCouleur(derniereImage(), LumiBar.getProgress());
                         }
                     }
                 );
@@ -609,10 +519,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             );
         }
 
-    public void ContrasteDynamic(){
+    public void Conserve(){
         LumiBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
-                    Bitmap n=Bitmap.createBitmap(savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1]);
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int scale, boolean b) {
                     }
@@ -624,9 +533,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        n=Luminosite.changeColor(n,LumiBar.getProgress(), color);
-                        MonImg=Bitmap.createBitmap(n);
-
+                        MonImg=Couleurs.Conserve(derniereImage(), LumiBar.getProgress());
                     }
                 }
         );

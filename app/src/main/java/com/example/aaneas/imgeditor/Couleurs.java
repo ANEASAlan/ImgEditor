@@ -7,42 +7,13 @@ import android.support.v8.renderscript.Allocation;
 
 import android.support.v8.renderscript.RenderScript;
 import android.util.Log;
+import android.view.ViewDebug;
 import android.widget.ImageView;
 
 import com.android.rssample.*;
 import android.support.v8.renderscript.RenderScript;
 
 public class Couleurs extends MainActivity {
-
-
-    /// CHANGER LA TEINTE D'UNE IMAGE ///
-
-    static protected Bitmap Coloriser(Bitmap bmp) {
-
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-        double rand = 20;
-        float HSV[] = {0, 0, 0};
-
-        int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
-        int [] color = new int[bmp.getWidth()*bmp.getHeight()];
-        bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-
-        for (int i =0; i < pixel.length ; i++){
-            int a = pixel[i];
-
-            /// Je convertis en HSV puis réinsert le pixel en "Color" ///
-
-            Color.RGBToHSV(Color.green(a), Color.red(a), Color.blue(a), HSV);
-            HSV[0] = (float) rand;
-            color[i] = Color.HSVToColor(HSV);
-            ///
-        }
-        n.setPixels(color,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        MainActivity.Img.setImageBitmap(n);
-        return n;
-
-
-    }
 
     /// RENDERSCRIPT COLORISER VERSION///
 
@@ -80,49 +51,27 @@ public class Couleurs extends MainActivity {
 
     /// CONSERVER UNE COULEUR ///
 
-    static  protected Bitmap Conserve(Bitmap bmp) {
+    static  protected Bitmap Conserve(Bitmap bmp, double colorScale) {
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        double color=colorScale*2.8+40.0;
+        float HSV[] = {0, 0, 0};
 
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
         int [] colortab = new int[bmp.getWidth()*bmp.getHeight()];
         bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
 
 
-        double color = 0.2;
         for (int y = 0; y < pixel.length; y++) {
             int a = pixel[y];
 
-            /// Conserve uniquement le rouge ///
-            if ( color < 0.33){
-                double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
-                if (Color.green(a)<= 100 && Color.blue(a) <= 100 && Color.red(a)> Color.green(a) && Color.red(a)>Color.blue(a)){
-                    colortab[y] = Color.argb(Color.alpha(a),Color.red(a), Color.green(a) ,Color.blue(a) );
-                }else{
-                    colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
-                }
+            Color.RGBToHSV( Color.red(a), Color.green(a),Color.blue(a), HSV);
 
-                /// Conserve uniquement le vert ///
-
-
-            }else if( color < 0.66){
-                double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
-                if (Color.blue(a)<= 200 && Color.red(a) <= 200 && Color.green(a)> Color.red(a) && Color.green(a)>Color.blue(a)){
-                    colortab[y] = Color.argb(Color.alpha(a),Color.red(a), Color.green(a) ,Color.blue(a) );
-                }else{
-                    colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
-                }
-                /// Conserve uniquement le bleu ///
-
-
+            double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
+            if (HSV[0]>=color-40 && HSV[0]<=color+40){ //HSV[0]>color-20 && HSV[0]<color+20
+                colortab[y] = Color.HSVToColor(HSV);
             }else{
-                double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
-                if (Color.green(a)<= 200 && Color.red(a) <= 200 && Color.blue(a)> Color.red(a) && Color.blue(a)>Color.green(a)){
-                    colortab[y] = Color.argb(Color.alpha(a),Color.red(a), Color.green(a) ,Color.blue(a) );
-                }else{
-                    colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
-                }
-
+                colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
             }
 
         }
@@ -172,37 +121,27 @@ public class Couleurs extends MainActivity {
         MainActivity.Img.setImageBitmap(newBmp);
         return newBmp;
     }
-    static protected Bitmap changerCouleur(Bitmap Bmp, int ColorScale, String color) {
+    static protected Bitmap changerCouleur(Bitmap Bmp, double ColorScale) {
 
-        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(),Bmp.getConfig() );
+        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(), Bmp.getConfig() );
+        float HSV[] = {0, 0, 0};
 
-        int h = Bmp.getHeight();
-        int w = Bmp.getWidth();
-        int[] pixels = new int[w * h];
-        int p ;
-        int c ;
-        Bmp.getPixels(pixels, 0, w, 0, 0, w, h);
-        for (int i = 0; i < pixels.length; i++) {
-            p = pixels[i];
-            switch(color){
-                case "red":
-                    c = ColorScale+Color.red(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(c,Color.green(p),Color.blue(p));
-                    break;
-                case "green":
-                    c = ColorScale+Color.green(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(Color.red(p),c,Color.blue(p));
-                    break;
-                case "blue":
-                    c = ColorScale+Color.blue(p);
-                    if(c > 255) c = 255;
-                    pixels[i] = Color.rgb(Color.red(p),Color.green(p),c);
-            }
+        int [] pixel = new int[Bmp.getWidth()*Bmp.getHeight()];
+        int [] color = new int[Bmp.getWidth()*Bmp.getHeight()];
+        Bmp.getPixels(pixel,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
+
+        for (int i =0; i < pixel.length ; i++){
+            int a = pixel[i];
+
+            /// Je convertis en HSV puis réinsert le pixel en "Color" ///
+
+            Color.RGBToHSV( Color.red(a),Color.green(a),Color.blue(a), HSV);
+            HSV[0] = (float) (ColorScale*360/100);
+            color[i] = Color.HSVToColor(HSV);
+            ///
         }
-        n.setPixels(pixels, 0, w, 0, 0, w, h);
-        MainActivity.colorEx.setImageBitmap(n);
+        n.setPixels(color,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
+        MainActivity.Img.setImageBitmap(n);
         return n;
     }
 }
