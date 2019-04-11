@@ -8,15 +8,22 @@ import android.support.v8.renderscript.RenderScript;
 
 import com.android.rssample.ScriptC_blur;
 
+/*La classe Blur contient 2 fonctions:
+    - GaussianBlur
+    - BlurRS
+ */
 
 public class Blur extends MainActivity {
 
-    /// Flou gaussien ////
+
+    /*GaussianBlur() permet d'appliquer le filtre flou sur une image à l'aide des matrices donner dans la fonction.
+    Cette fonction prend en paramètres un boolean "gaussian" qui permet de dire si on veut un flou "basique"
+    ou "gaussien"
+     */
 
     static protected Bitmap GaussianBlur(Bitmap bmp, boolean gaussian) {
         int[][] matrix;
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
-
+        Bitmap newbitmap = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
         if (gaussian) {
             matrix = new int[][]{
                     {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 1},
@@ -38,8 +45,6 @@ public class Blur extends MainActivity {
                     {1, 2, 3, 4, 5, 6, 7, 8, 9, 8, 7, 6, 5, 4, 3, 2, 1},
             };
         } else {
-
-
             matrix = new int[][]{
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
@@ -53,12 +58,10 @@ public class Blur extends MainActivity {
                     {1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
             };
         }
-
         int halfLength = matrix.length / 2;
         int div = 0;
 
-        // Parcours la matrice ///
-
+        /*parcours de la matrix choisie*/
 
         for (int e = 0; e < matrix.length; e++) {
             for (int f = 0; f < matrix.length; f++) {
@@ -71,11 +74,10 @@ public class Blur extends MainActivity {
         bmp.getPixels(pixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
 
 
-        for (int x = halfLength; x < n.getWidth() - halfLength; x++) {
-            for (int y = halfLength; y < n.getHeight() - halfLength; y++) {
+        for (int x = halfLength; x < newbitmap.getWidth() - halfLength; x++) {
+            for (int y = halfLength; y < newbitmap.getHeight() - halfLength; y++) {
 
-                /// Va chercher les valeurs r g b des pixels autours //
-
+                /* va chercher les valeurs rgb des pixels autours*/
 
                 int r = 0;
                 int g = 0;
@@ -90,26 +92,22 @@ public class Blur extends MainActivity {
                         alpha = Color.alpha(e);
                     }
                 }
-
-                newpixel[x + (y * n.getWidth())] = Color.argb(alpha, r / div, g / div, b / div);
-
-
+                newpixel[x + (y * newbitmap.getWidth())] = Color.argb(alpha, r / div, g / div, b / div);
             }
         }
-        n.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
-        MainActivity.Img.setImageBitmap(n);
-	return n;
+        newbitmap.setPixels(newpixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
+        MainActivity.Img.setImageBitmap(newbitmap);
+	return newbitmap;
 
     }
 
+    /*BlurRS() applique l'effet flou "basique" avec un matrice définie à l'interieur mais à l'aide d'un fichier renderscript */
+
     static protected Bitmap BlurRS(Bitmap image, Context context) {
         Bitmap resultBitmap = Bitmap.createBitmap(image.getWidth(),image.getHeight(), image.getConfig() );
-
         RenderScript rs = RenderScript.create(context);
-
         Allocation input = Allocation.createFromBitmap(rs, image);
         Allocation output = Allocation.createTyped(rs, input.getType());
-
         ScriptC_blur BlurScript = new ScriptC_blur(rs);
         int matrixLength = 10;
         float size = 100.0f;
@@ -136,45 +134,11 @@ public class Blur extends MainActivity {
 
         BlurScript.forEach_blur(output);
         output.copyTo(resultBitmap);
-
         input.destroy();
         output.destroy();
         BlurScript.destroy();
         rs.destroy();
-
         MainActivity.Img.setImageBitmap(resultBitmap);
 	    return resultBitmap;
     }
-
-/* le code suivant est inspiré de https://medium.com/@ssaurel/create-a-blur-effect-on-android-with-renderscript-aa05dae0bd7d
-
-    private static final float BITMAP_SCALE = 0.01f;
-    private static final float BLUR_RADIUS = 0.01f;
-
-    static protected Bitmap BlurRS(Bitmap image, Context context) {
-        int width = Math.round(image.getWidth() * BITMAP_SCALE);
-        int height = Math.round(image.getHeight() * BITMAP_SCALE);
-
-        Bitmap inputBitmap = Bitmap.createScaledBitmap(image, width, height, false);
-        Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
-        //Bitmap n = Bitmap.createBitmap(image.getWidth(), image.getHeight(), image.getConfig() );
-
-        RenderScript rs = RenderScript.create(context);
-
-        Allocation input = Allocation.createFromBitmap(rs, inputBitmap);
-        Allocation output = Allocation.createFromBitmap(rs, outputBitmap);
-
-        ScriptIntrinsicBlur intrinsicBlur = ScriptIntrinsicBlur.create(rs, Element.A_8(rs));
-
-        intrinsicBlur.setRadius(BLUR_RADIUS);
-        intrinsicBlur.setInput(input);
-        intrinsicBlur.forEach(output);
-        output.copyTo(outputBitmap);
-        input.destroy();
-        output.destroy();
-        rs.destroy();
-
-        MainActivity.Img.setImageBitmap(outputBitmap);
-        return outputBitmap;
-    }*/
 }

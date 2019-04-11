@@ -18,11 +18,11 @@ import com.android.rssample.ScriptC_grey;
 public class Grey extends MainActivity {
 
 
-    /*toGrey() va rendre les pixels du Bitmap en gris*/
+    /*toGrey() va appliquer un filtre qui grise les pixels du Bitmap*/
 
     static protected Bitmap toGrey(Bitmap bmp) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap newbitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
         int [] greytab = new int[bmp.getWidth()*bmp.getHeight()];
         bmp.getPixels(pixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
@@ -30,9 +30,9 @@ public class Grey extends MainActivity {
             int Grey = (int)( 0.3 * Color.red(pixel[i]) +0.59 *Color.green(pixel[i])+0.11* Color.blue(pixel[i]));
             greytab[i] = Color.argb(Color.alpha(pixel[i]),Grey,Grey,Grey);
         }
-        n.setPixels(greytab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        newbitmap.setPixels(greytab,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
+        MainActivity.Img.setImageBitmap(newbitmap);
+        return newbitmap;
     }
 
     /*toGreyRS() effectue la même opération mais en Renderscript*/
