@@ -15,6 +15,29 @@ import android.support.v8.renderscript.RenderScript;
 
 public class Colors extends MainActivity {
 
+    //Change la teinte d'une Bitmap passée en paramêtre et le renvoie dans MainActivity.Img
+    static protected Bitmap changerCouleur(Bitmap Bmp, double ColorScale) { //colorScale est la valeur de la seekBar au moment où elle est laché
+
+        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(), Bmp.getConfig() );
+        float HSV[] = {0, 0, 0};
+        int [] pixel = new int[Bmp.getWidth()*Bmp.getHeight()];
+        int [] color = new int[Bmp.getWidth()*Bmp.getHeight()];
+        Bmp.getPixels(pixel,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
+
+        for (int i =0; i < pixel.length ; i++){
+            int a = pixel[i];
+
+            /// Je convertis en HSV puis réinsert le pixel en "Color" ///
+            Color.RGBToHSV( Color.red(a),Color.green(a),Color.blue(a), HSV);
+            HSV[0] = (float) (ColorScale*360/100);
+            color[i] = Color.HSVToColor(HSV);
+        }
+        n.setPixels(color,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
+        MainActivity.Img.setImageBitmap(n);
+        return n;
+    }
+
+    //Réalise la même chose que la fonction précédante mais en RenderScript
     static protected Bitmap ColoriserRS(Bitmap bmp, Context context) {
 
         Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
@@ -44,9 +67,8 @@ public class Colors extends MainActivity {
         return n;
     }
 
-    /// CONSERVER UNE COULEUR ///
-
-    static  protected Bitmap Conserve(Bitmap bmp, double colorScale) {
+   //Conserve une couleur de la Bitmap passée en paramêtre et la renvoie dans MainActivity.Img
+    static  protected Bitmap Conserve(Bitmap bmp, double colorScale) { //colorScale est la valeur de la seekBar au moment où elle est laché
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
         double color=colorScale*2.8+40.0;
@@ -75,9 +97,7 @@ public class Colors extends MainActivity {
         return newimg;
     }
 
-    /// RENDERSCRIPT VERSION ///
-
-
+    //Réalise la même chose que la fonction précédante mais en RenderScript
     static  protected Bitmap ConserveRS(Bitmap bmp, Context context) {
 
         Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
@@ -101,6 +121,7 @@ public class Colors extends MainActivity {
         return resultBitmap;
     }
 
+    //Inverse les couleurs de la Bitmap en paramêtre pour donner un aspect négatif
     static protected Bitmap invert(Bitmap bmp) {
         Bitmap newBmp = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
         int h = newBmp.getHeight();
@@ -117,6 +138,7 @@ public class Colors extends MainActivity {
         return newBmp;
     }
 
+    //Réalise la même chose que la fonction précédante mais en RenderScript
     static  protected Bitmap invertRS(Bitmap bmp, Context context) {
 
         Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
@@ -138,25 +160,4 @@ public class Colors extends MainActivity {
         MainActivity.Img.setImageBitmap(resultBitmap);
         return resultBitmap;
       }
-
-    static protected Bitmap changerCouleur(Bitmap Bmp, double ColorScale) {
-
-        Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(), Bmp.getConfig() );
-        float HSV[] = {0, 0, 0};
-        int [] pixel = new int[Bmp.getWidth()*Bmp.getHeight()];
-        int [] color = new int[Bmp.getWidth()*Bmp.getHeight()];
-        Bmp.getPixels(pixel,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
-
-        for (int i =0; i < pixel.length ; i++){
-            int a = pixel[i];
-
-            /// Je convertis en HSV puis réinsert le pixel en "Color" ///
-            Color.RGBToHSV( Color.red(a),Color.green(a),Color.blue(a), HSV);
-            HSV[0] = (float) (ColorScale*360/100);
-            color[i] = Color.HSVToColor(HSV);
-        }
-        n.setPixels(color,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
-        MainActivity.Img.setImageBitmap(n);
-        return n;
-    }
 }

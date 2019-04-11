@@ -489,6 +489,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1];
         }
 
+        //Créer une barre de couleurs qui change la teinte lorsque l'on clique dessus
         public void Color(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
@@ -503,7 +504,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
-                            MonImg=Couleurs.changerCouleur(derniereImage(), LumiBar.getProgress());
+                            MonImg=Colors.changerCouleur(derniereImage(), LumiBar.getProgress());
                         }
                     }
                 );
@@ -541,6 +542,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             );
         }
 
+    //Créer une barre de couleur qui conserve une couleur lorsque l'on clique dessus
     public void Conserve(){
         LumiBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
@@ -555,7 +557,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        MonImg=Couleurs.Conserve(derniereImage(), LumiBar.getProgress());
+                        MonImg=Colors.Conserve(derniereImage(), LumiBar.getProgress());
                     }
                 }
         );
