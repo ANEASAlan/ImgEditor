@@ -460,7 +460,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             Bitmap Greyscale = Bitmap.createBitmap(Grey.toGreyRS(MonImg,MainActivity.this));
                             Bitmap InvertedGrey = Bitmap.createBitmap(Colors.invertRS(Greyscale,this));
                             Bitmap Blurred = Bitmap.createBitmap(Blur.BlurRS(InvertedGrey,this));
-                            MonImg=Bitmap.createBitmap(Pencil.blendRS(Blurred,Greyscale,this));
+                            MonImg=Bitmap.createBitmap(Pencil.BlendRS(Blurred,Greyscale,this));
                             break;
                         case 9:
                             MonImg = Bitmap.createBitmap(Edges.LaplaceEdges(Bitmap.createBitmap(Grey.toGreyRS(MonImg, this))));
@@ -502,7 +502,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
-                            MonImg=Couleurs.changerCouleur(derniereImage(), LumiBar.getProgress());
+                            MonImg=Colors.changerCouleur(derniereImage(), LumiBar.getProgress());
                         }
                     }
                 );
@@ -554,7 +554,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        MonImg=Couleurs.Conserve(derniereImage(), LumiBar.getProgress());
+                        MonImg=Colors.Conserve(derniereImage(), LumiBar.getProgress());
                     }
                 }
         );
