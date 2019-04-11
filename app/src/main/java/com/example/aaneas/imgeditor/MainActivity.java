@@ -137,14 +137,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
-<<<<<<< HEAD
-=======
-
         /*createButtonRS() va créer un bouton RS permettant de changer de menu deroulant,
           un menu déroulant contenant toutes les fonctions java */
 
-
->>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
         private void createButtonRS(){
             RS_Button.setChecked(false);
             RS_Button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -349,10 +344,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 savedImg[SAVED_LENGTH-1]=Bitmap.createBitmap(img);
             }
-<<<<<<< HEAD
-=======
-            colorEx.setImageBitmap(img);
->>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
         }
 
 
@@ -388,19 +379,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         LumiBar.setVisibility(View.VISIBLE);
                         Rainbow.setVisibility(View.VISIBLE);
                         Color();
-<<<<<<< HEAD
                         break;
                     case 3:
-                        //MonImg=Bitmap.createBitmap(Couleurs.Conserve(MonImg, 0.2));
                         LumiBar.setVisibility(View.VISIBLE);
                         Rainbow.setVisibility(View.VISIBLE);
                         Conserve();
-=======
-                        //MonImg=Bitmap.createBitmap(Colors.Colorize(MonImg));
-                        break;
-                    case 3:
-                        MonImg=Bitmap.createBitmap(Colors.Conserve(MonImg));
->>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
                         break;
                     case 4:
                         MonImg=Bitmap.createBitmap(Contrast.ContrastDynamic(MonImg));
@@ -479,7 +462,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             Bitmap InvertedGrey = Bitmap.createBitmap(Colors.invertRS(Greyscale,this));
                             Bitmap Blurred = Bitmap.createBitmap(Blur.BlurRS(InvertedGrey,this));
                             MonImg=Bitmap.createBitmap(Pencil.blendRS(Blurred,Greyscale,this));
-                            //MonImg=Bitmap.createBitmap(Pencil.BlendColorDodge(Blurred,Greyscale));
                             break;
                         case 9:
                             MonImg = Bitmap.createBitmap(Edges.LaplaceEdges(Bitmap.createBitmap(Grey.toGreyRS(MonImg, this))));
@@ -503,38 +485,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public void onNothingSelected(AdapterView<?> parent) {
         }
 
-<<<<<<< HEAD
-=======
-
-        public void buttonCLicked(View view){
-            saveImg(MonImg);
-            LumiBar.setProgress(0);
-
-            boolean checked = ((RadioButton) view).isChecked();
-            switch (view.getId()){
-                case R.id.radioR:
-                    if(checked){
-                        color="red";
-                    }
-                    break;
-                case R.id.radioG:
-                    if(checked){
-                        color="green";
-                    }
-                    break;
-                case R.id.radioB:
-                    if(checked){
-                        color="blue";
-                    }
-            }
-        }
-
-        public void Apply(View view){
-            MonImg=Bitmap.createBitmap(miniature);
-            Img.setImageBitmap(MonImg);
-        }
-
->>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
         public Bitmap derniereImage(){
             return savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1];
         }
@@ -553,13 +503,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
-<<<<<<< HEAD
                             MonImg=Couleurs.changerCouleur(derniereImage(), LumiBar.getProgress());
-=======
-                            if(color!=""){
-                                miniature= Colors.changerCouleur(derniereImage(),LumiBar.getProgress(), color);
-                            }
->>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
                         }
                     }
                 );
@@ -611,13 +555,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-<<<<<<< HEAD
                         MonImg=Couleurs.Conserve(derniereImage(), LumiBar.getProgress());
-=======
-                        n= Colors.changerCouleur(n,LumiBar.getProgress(), color);
-                        MonImg=Bitmap.createBitmap(n);
-
->>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
                     }
                 }
         );
