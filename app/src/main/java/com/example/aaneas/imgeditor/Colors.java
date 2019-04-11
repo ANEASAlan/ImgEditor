@@ -13,9 +13,7 @@ import android.widget.ImageView;
 import com.android.rssample.*;
 import android.support.v8.renderscript.RenderScript;
 
-public class Couleurs extends MainActivity {
-
-    /// RENDERSCRIPT COLORISER VERSION///
+public class Colors extends MainActivity {
 
     static protected Bitmap ColoriserRS(Bitmap bmp, Context context) {
 
@@ -26,16 +24,13 @@ public class Couleurs extends MainActivity {
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
 
-        ScriptC_teinte ColorScript = new ScriptC_teinte(rs);
+        ScriptC_hue ColorScript = new ScriptC_hue(rs);
 
         // J'envoie un nombre aléatoire en paramètre ///
 
 
         int rand1 =(int) (Math.random() * 360) ;
         ColorScript.set_rand1(rand1);
-
-
-        ///
 
         ColorScript.forEach_toColor(input, output);
         output.copyTo(n);
@@ -68,7 +63,7 @@ public class Couleurs extends MainActivity {
             Color.RGBToHSV( Color.red(a), Color.green(a),Color.blue(a), HSV);
 
             double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
-            if (HSV[0]>=color-40 && HSV[0]<=color+40){ //HSV[0]>color-20 && HSV[0]<color+20
+            if (HSV[0]>=color-40 && HSV[0]<=color+40){
                 colortab[y] = Color.HSVToColor(HSV);
             }else{
                 colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
@@ -85,25 +80,25 @@ public class Couleurs extends MainActivity {
 
     static  protected Bitmap ConserveRS(Bitmap bmp, Context context) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
         RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
 
-        ScriptC_conserve Conserve = new ScriptC_conserve(rs);
-        Conserve.set_rand(Math.random());
-        Conserve.forEach_toConserve(input, output);
-        output.copyTo(n);
+        ScriptC_colorkeep Colorkeep = new ScriptC_colorkeep(rs);
+        Colorkeep.set_rand(Math.random());
+        Colorkeep.forEach_colorKeep(input, output);
+        output.copyTo(resultBitmap);
 
         input.destroy();
         output.destroy();
-        Conserve.destroy();
+        Colorkeep.destroy();
         rs.destroy();
 
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
     }
 
     static protected Bitmap invert(Bitmap bmp) {
@@ -121,11 +116,33 @@ public class Couleurs extends MainActivity {
         MainActivity.Img.setImageBitmap(newBmp);
         return newBmp;
     }
+
+    static  protected Bitmap invertRS(Bitmap bmp, Context context) {
+
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
+
+        RenderScript rs = RenderScript.create(context);
+
+        Allocation input = Allocation.createFromBitmap(rs, bmp);
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptC_invert invert = new ScriptC_invert(rs);
+        invert.forEach_invert(input, output);
+        output.copyTo(resultBitmap);
+
+        input.destroy();
+        output.destroy();
+        invert.destroy();
+        rs.destroy();
+
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
+      }
+
     static protected Bitmap changerCouleur(Bitmap Bmp, double ColorScale) {
 
         Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(), Bmp.getConfig() );
         float HSV[] = {0, 0, 0};
-
         int [] pixel = new int[Bmp.getWidth()*Bmp.getHeight()];
         int [] color = new int[Bmp.getWidth()*Bmp.getHeight()];
         Bmp.getPixels(pixel,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
@@ -134,11 +151,9 @@ public class Couleurs extends MainActivity {
             int a = pixel[i];
 
             /// Je convertis en HSV puis réinsert le pixel en "Color" ///
-
             Color.RGBToHSV( Color.red(a),Color.green(a),Color.blue(a), HSV);
             HSV[0] = (float) (ColorScale*360/100);
             color[i] = Color.HSVToColor(HSV);
-            ///
         }
         n.setPixels(color,0,Bmp.getWidth(),0,0,Bmp.getWidth(),Bmp.getHeight());
         MainActivity.Img.setImageBitmap(n);

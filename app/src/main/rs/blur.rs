@@ -4,13 +4,10 @@
 rs_allocation in;
 float * matrix;
 int matrixLength;
-//int reds[];
-//int greens[];
-//int blues[];
 int width;
 int height;
 
-static float4 Value(int indexX, int indexY){
+static float4 blurCalculus(int indexX, int indexY){
     float4 value = {0, 0, 0, 255};
 
     indexX -= (int)(matrixLength / 2);
@@ -38,7 +35,7 @@ static float4 Value(int indexX, int indexY){
 }
 
 
-uchar4 RS_KERNEL floubasique(uint32_t x,uint32_t y){
-    float4 pixel = Value(x,y);
+uchar4 RS_KERNEL blur(uint32_t x,uint32_t y){
+    float4 pixel = blurCalculus(x,y);
     return rsPackColorTo8888(pixel.r , pixel.g , pixel.b , pixel.a);
 }

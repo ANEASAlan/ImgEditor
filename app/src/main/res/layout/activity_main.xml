@@ -15,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
-        android:text="OK"
+        android:text="SAVE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/Photo"
         app:layout_constraintStart_toEndOf="@+id/Galerie" />
@@ -47,9 +47,12 @@
 
         android:layout_width="348dp"
         android:layout_height="27dp"
+        android:layout_marginBottom="27dp"
+        android:layout_marginEnd="35dp"
         android:layout_marginStart="28dp"
-        android:layout_marginLeft="28dp"
         android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/photo_view"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,14 +60,14 @@
         android:id="@+id/spinner2"
         android:layout_width="348dp"
         android:layout_height="28dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/photo_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintHorizontal_bias="0.589"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <SeekBar
         android:id="@+id/ColorR"
@@ -78,6 +81,58 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
+<<<<<<< HEAD
+=======
+    <RadioGroup
+        android:id="@+id/RadioColor"
+        android:layout_width="410dp"
+        android:layout_height="68dp"
+        android:layout_marginBottom="164dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp">
+
+        <RadioButton
+            android:id="@+id/radioR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:onClick="buttonCLicked"
+            android:paddingLeft="15dp"
+            android:text="RED"
+            android:textColor="#FF0000"
+            android:textSize="15dp" />
+
+        <RadioButton
+            android:id="@+id/radioG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:onClick="buttonCLicked"
+            android:paddingLeft="15dp"
+            android:text="GREEN"
+            android:textColor="#00FF00"
+            android:textSize="15dp" />
+
+        <RadioButton
+            android:id="@+id/radioB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_weight="1"
+            android:onClick="buttonCLicked"
+            android:paddingLeft="15dp"
+            android:text="BLUE"
+            android:textColor="#0000FF"
+            android:textSize="15dp" />
+
+    </RadioGroup>
+>>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
 
     <ToggleButton
         android:id="@+id/RS"
@@ -107,13 +162,19 @@
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo_view"
+<<<<<<< HEAD
         android:layout_width="386dp"
         android:layout_height="371dp"
+=======
+        android:layout_width="239dp"
+        android:layout_height="297dp"
+        android:layout_marginTop="8dp"
+>>>>>>> 25d0c9b581b5beb544a3d93019c6d544aa061603
         app:layout_constraintBottom_toTopOf="@+id/RadioColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.652"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner1"
+        app:layout_constraintTop_toBottomOf="@+id/spinner2"
+        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@mipmap/ic_launcher" />
 
     <ImageView

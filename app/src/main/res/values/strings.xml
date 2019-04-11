@@ -2,36 +2,39 @@
 <resources>
     <string name="app_name">ImgEditor</string>
     <string-array name="spinner1">
-    /* 0*/    <item>Aucun filtre</item>
-    /* 1*/    <item>Gris</item>
-    /* 2*/    <item>teinte</item>
-    /* 3*/    <item>conserve</item>
-    /* 4*/    <item>contraste dynamique </item>
-    /* 5*/    <item>contraste egaliseur </item>
-    /* 6*/    <item>flou basique </item>
-    /* 7*/    <item>flou gaussien </item>
-    /* 8*/    <item>luminosité +</item>
-    /* 9*/    <item>contours Sobel</item>
-    /*10*/    <item>contours Laplace</item>
-    /*11*/    <item>crayon</item>
-    /*11*/    <item>feutre</item>
+    /* 0*/    <item>No filter</item>
+    /* 1*/    <item>Grey</item>
+    /* 2*/    <item>Hue change</item>
+    /* 3*/    <item>1-color keep</item>
+    /* 4*/    <item>Dynamic contrast</item>
+    /* 5*/    <item>Equalizing contrast</item>
+    /* 6*/    <item>Averaging blur</item>
+    /* 7*/    <item>Gaussian blur</item>
+    /* 8*/    <item>Lighting up</item>
+    /* 9*/    <item>Sobel edges</item>
+    /*10*/    <item>Laplace edges</item>
+    /*11*/    <item>Pencil</item>
+    /*12*/    <item>Chalk</item>
+    /*13*/    <item>Felt pen</item>
+    /*14*/    <item>Color inversion</item>
 
     </string-array>
     <string-array name="spinner2">
-    /* 0*/    <item>Aucun filtre</item>
-    /* 1*/    <item>Gris rs</item>
-    /* 2*/    <item>teinte rs</item>
-    /* 3*/    <item>conserve rs</item>
-    /* 4*/    <item>contraste dynamique rs </item>
-    /* 5*/    <item>contraste egaliseur rs </item>
-    /* 6*/    <item>flou RS</item>
-    /* 7*/    <item>luminosité + RS</item>
-    /* 8*/    <item>crayon</item>
-    /* 9*/    <item>feutre</item>
-              <item>contours</item>
+    /* 0*/    <item>No filter</item>
+    /* 1*/    <item>RS Grey</item>
+    /* 2*/    <item>RS Hue change</item>
+    /* 3*/    <item>RS 1-color keep</item>
+    /* 4*/    <item>RS Dynamic contrast</item>
+    /* 5*/    <item>RS Equalizing contrast</item>
+    /* 6*/    <item>RS Blur</item>
+    /* 7*/    <item>RS Lighting up</item>
+    /* 8*/    <item>RS Pencil</item>
+    /* 9*/    <item>RS Chalk</item>
+    /*10*/    <item>RS Felt pen</item>
+    /*11*/    <item>RS Color inversion</item>
+    /*12*/    <item>RS Sobel edges</item>
 
     </string-array>
-    <string name="title_activity_contraste">Contraste</string>
 
 
 </resources>

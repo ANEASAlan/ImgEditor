@@ -1,10 +1,14 @@
 package com.example.aaneas.imgeditor;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.support.v8.renderscript.Allocation;
+import android.support.v8.renderscript.RenderScript;
 
+import com.android.rssample.*;
 
-public class Crayon extends MainActivity{
+public class Pencil extends MainActivity{
 
     static private int DodgeIntermediary (int color1, int color2){
         if(color2 == 255){
@@ -47,5 +51,32 @@ public class Crayon extends MainActivity{
 
     }
 
+    static  protected Bitmap blendRS(Bitmap bmp1, Bitmap bmp2, Context context) {
+
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp1.getWidth(),bmp1.getHeight(), bmp1.getConfig() );
+
+        RenderScript rs = RenderScript.create(context);
+
+        Allocation input2 = Allocation.createFromBitmap(rs, bmp2);
+
+        Allocation input = Allocation.createFromBitmap(rs, bmp1);
+
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptC_blend blend = new ScriptC_blend(rs);
+
+        blend.set_inBitmap2(input2);
+        blend.forEach_blend(input, output);
+
+        output.copyTo(resultBitmap);
+
+        input.destroy();
+        output.destroy();
+        blend.destroy();
+        rs.destroy();
+
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
+    }
 
 }

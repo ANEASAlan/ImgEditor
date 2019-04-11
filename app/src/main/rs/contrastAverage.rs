@@ -20,8 +20,5 @@ else if(pixelf.g < 0.0) pixelf.g = 0.0;
 pixelf.b = (pixelf.b - bmin) / (bmax - bmin);
 if(pixelf.b > 1.0) pixelf.b = 1.0;
 else if(pixelf.b < 0.0) pixelf.b = 0.0;
-rsDebug("r",pixelf.r);
-rsDebug("g",pixelf.g);
-rsDebug("b",pixelf.b);
     return  rsPackColorTo8888(pixelf.r , pixelf.g , pixelf.b , pixelf.a);
 }

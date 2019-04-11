@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import com.android.rssample.*;
 
 
-public class Contours extends MainActivity{
+public class Edges extends MainActivity{
 
     /// Flou Lisse (n = taille du masque) ///
-    static protected Bitmap ContoursSobel(Bitmap bmp){
+    static protected Bitmap SobelEdges(Bitmap bmp){
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -57,9 +57,6 @@ public class Contours extends MainActivity{
 
                /// newpixel[x + (y*newimg.getWidth())] = Color.argb(255,r/div,g/div,b/div);
 
-
-
-
             }
         }
         newimg.setPixels(newpixel,0,bmp.getWidth(),0,0,bmp.getWidth(),bmp.getHeight());
@@ -68,7 +65,7 @@ public class Contours extends MainActivity{
 
     }
 
-    static protected Bitmap ContoursLaplace(Bitmap bmp){
+    static protected Bitmap LaplaceEdges(Bitmap bmp){
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
 
@@ -110,19 +107,12 @@ public class Contours extends MainActivity{
         Allocation output = Allocation.createTyped(rs, input.getType());
 
         ScriptC_contours BlurScript = new ScriptC_contours(rs);
-        int matrixLength = 10;
-        float size = 100.0f;
+        int matrixLength = 3;
+
         float[] matrix = new float[]{
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
-                1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,1/size,
+                -1/9.0f,0/9.0f,1/9.0f,
+                -2/9.0f,0/9.0f,2/9.0f,
+                -1/9.0f,0/9.0f,1/9.0f,
         };
 
         BlurScript.set_in(input);

@@ -5,71 +5,70 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.RenderScript;
-import android.widget.ImageView;
 
 import com.android.rssample.*;
 
 
 
-public class Contraste extends MainActivity {
+public class Contrast extends MainActivity {
 
-    static protected Bitmap ContrasteDynamiqueRS(Bitmap bmp, Context context) {
+    static protected Bitmap ContrastDynamicRS(Bitmap bmp, Context context) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
         RenderScript rs = RenderScript.create(context);
 
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
 
-        ScriptC_contrasteD contraste = new ScriptC_contrasteD(rs);
+        ScriptC_contrastDynamic contrast = new ScriptC_contrastDynamic(rs);
 
-        contraste.forEach_GetMinMaxColor(input);
-        contraste.invoke_createlutred();
-        contraste.invoke_createlutgreen();
-        contraste.invoke_createlutblue();
-        contraste.forEach_Final(input, output);
+        contrast.forEach_GetMinMaxColor(input);
+        contrast.invoke_createlutred();
+        contrast.invoke_createlutgreen();
+        contrast.invoke_createlutblue();
+        contrast.forEach_Final(input, output);
 
 
-        output.copyTo(n);
+        output.copyTo(resultBitmap);
 
         input.destroy();
         output.destroy();
-        contraste.destroy();
+        contrast.destroy();
         rs.destroy();
 
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
     }
 
 
     /// Fonction intermédiaire pour le contraste ///
 
-    static private int[] Couleurlevel(int[] pixels, int height, int width, char c) {
-        int[] Couleurlevel = new int[width * height];
+    static private int[] colorLevel(int[] pixels, int height, int width, char c) {
+        int[] colorLevelTab = new int[width * height];
         if (c == 'r') {
             for (int i = 0; i < pixels.length; i++) {
-                Couleurlevel[i] = Color.red(pixels[i]);
+                colorLevelTab[i] = Color.red(pixels[i]);
             }
         } else if (c == 'g') {
             for (int i = 0; i < pixels.length; i++) {
-                Couleurlevel[i] = Color.green(pixels[i]);
+                colorLevelTab[i] = Color.green(pixels[i]);
             }
         } else if (c == 'b') {
             for (int i = 0; i < pixels.length; i++) {
-                Couleurlevel[i] = Color.blue(pixels[i]);
+                colorLevelTab[i] = Color.blue(pixels[i]);
             }
         }
 
 
-        return Couleurlevel;
+        return colorLevelTab;
 
     }
 
 
     /// CONTRASTE DYNAMIQUE EN COULEUR ///
 
-    static protected Bitmap ContrasteCouleurDynamique(Bitmap bmp) {
+    static protected Bitmap ContrastDynamic(Bitmap bmp) {
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
@@ -77,9 +76,9 @@ public class Contraste extends MainActivity {
         int[] pixel = new int[bmp.getHeight() * bmp.getWidth()];
         bmp.getPixels(pixel, 0, bmp.getWidth(), 0, 0, bmp.getWidth(), bmp.getHeight());
 
-        int[] redtab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'r');
-        int[] greentab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'g');
-        int[] bluetab = Couleurlevel(pixel, bmp.getHeight(), bmp.getWidth(), 'b');
+        int[] redtab = colorLevel(pixel, bmp.getHeight(), bmp.getWidth(), 'r');
+        int[] greentab = colorLevel(pixel, bmp.getHeight(), bmp.getWidth(), 'g');
+        int[] bluetab = colorLevel(pixel, bmp.getHeight(), bmp.getWidth(), 'b');
 
 
         //// Méthode Dynamique ////
@@ -179,9 +178,9 @@ public class Contraste extends MainActivity {
     /// Faire fonction de contraste en egalisant l'histogramme /////
 
 
-    static protected Bitmap ContrasteCouleurEgaliseur(Bitmap bmp) {
+    static protected Bitmap ContrastAverage(Bitmap bmp) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
         int h = bmp.getHeight();
         int w = bmp.getWidth();
@@ -220,9 +219,6 @@ public class Contraste extends MainActivity {
         for (int i = 0; i < pixels.length; i++) {
             c = pixels[i];
             r = (int) (255.0 * ((float) (Color.red(c) - rmin)) / (rmax - rmin));
-                /*System.out.println("r\n");
-                System.out.println(Color.red(c));
-                System.out.println(r);*/
             if (r > 255) r = 255;
             else if (r < 0) r = 0;
             g = (int) (255.0 * ((float) (Color.green(c) - gmin)) / (gmax - gmin));
@@ -233,21 +229,21 @@ public class Contraste extends MainActivity {
             else if (b < 0) b = 0;
             pixels[i] = Color.rgb(r, g, b);
         }
-        n.setPixels(pixels, 0, w, 0, 0, w, h);
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        resultBitmap.setPixels(pixels, 0, w, 0, 0, w, h);
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
     }
 
 
     static protected Bitmap contrastEgaliseurRS(Bitmap bmp, Context context) {
 
-        Bitmap n = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
+        Bitmap resultBitmap = Bitmap.createBitmap(bmp.getWidth(), bmp.getHeight(), bmp.getConfig());
 
 
         RenderScript rs = RenderScript.create(context);
         Allocation input = Allocation.createFromBitmap(rs, bmp);
         Allocation output = Allocation.createTyped(rs, input.getType());
-        ScriptC_contrast contrastScript = new ScriptC_contrast(rs);
+        ScriptC_contrastAverage contrastScript = new ScriptC_contrastAverage(rs);
 
         int h = bmp.getHeight();
         int w = bmp.getWidth();
@@ -286,15 +282,14 @@ public class Contraste extends MainActivity {
         contrastScript.set_bmin(bmin / 255.0);
         contrastScript.set_bmax(bmax / 255.0);
         contrastScript.forEach_contrast(input, output);
-        //output.copyTo(bmp);
-        output.copyTo(n);
+        output.copyTo(resultBitmap);
         input.destroy();
         output.destroy();
         contrastScript.destroy();
         rs.destroy();
 
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(resultBitmap);
+        return resultBitmap;
     }
 
 }
