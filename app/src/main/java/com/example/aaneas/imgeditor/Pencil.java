@@ -27,14 +27,15 @@ public class Pencil extends MainActivity{
                 return 255;
             }else{
                 return ((color1 << 9) / (255 - color2));
+
                 // bien que la logique et les indications trouvables sur Internet nous diraient de marquer
-                // "return ((color1 << 8) / (255 - color2));"
-                // après quelques tests, nous trouvons que cette version donne un résultat plus joli.
+                // "return ((color1 << 8) / (255 - color2));
             }
         }
     }
 
     /*BlendColorDodge() prend les deux images et pour chaque pixel, demande à la fonction intermédiaire des les fusionner*/
+
     static protected Bitmap BlendColorDodge(Bitmap bmp1,Bitmap bmp2){
 
         Bitmap newbmp = Bitmap.createBitmap(bmp1.getWidth(),bmp1.getHeight(), bmp1.getConfig() );
@@ -57,6 +58,7 @@ public class Pencil extends MainActivity{
     }
 
     /*BlendRS() appelle la version renderscript blend.rs*/
+
     static  protected Bitmap BlendRS(Bitmap bmp1, Bitmap bmp2, Context context) {
 
         Bitmap resultBitmap = Bitmap.createBitmap(bmp1.getWidth(),bmp1.getHeight(), bmp1.getConfig() );
@@ -71,7 +73,6 @@ public class Pencil extends MainActivity{
         blend.forEach_blend(input, output);
 
         output.copyTo(resultBitmap);
-
         input.destroy();
         output.destroy();
         blend.destroy();

@@ -107,8 +107,9 @@ public class Edges extends MainActivity{
 
 
     /*La fonction en renderscript utilise la matrice de Sobel*/
-    static protected Bitmap contoursRS(Bitmap image, Context context) {
-        Bitmap n = Bitmap.createBitmap(image.getWidth(),image.getHeight(), image.getConfig() );
+
+    static protected Bitmap edgesRS(Bitmap image, Context context) {
+        Bitmap newbitmap = Bitmap.createBitmap(image.getWidth(),image.getHeight(), image.getConfig() );
 
         RenderScript rs = RenderScript.create(context);
 
