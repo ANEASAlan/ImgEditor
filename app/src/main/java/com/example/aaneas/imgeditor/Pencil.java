@@ -8,7 +8,7 @@ import android.support.v8.renderscript.RenderScript;
 
 import com.android.rssample.*;
 
-/*La class Pencil créer deux fonctions:
+/*La class Pencil contient deux fonctions :
     -BlendColorDodge
     -BlendRS
   Ces deux fonctions permettront de terminer le filtre crayon (l'effet crayon est un
@@ -17,7 +17,7 @@ import com.android.rssample.*;
 
 public class Pencil extends MainActivity{
 
-    /*DodgeIntermediary() est une fonction intérmdiaire pour la fonction BlendColorDodge*/
+    /*DodgeIntermediary() est une fonction intérmdiaire pour la fonction BlendColorDodge, elle permet de faire la fusion des deux couleurs de pixels envoyés si la fusion ne donne pas une valeur dépassant 255*/
 
     static private int DodgeIntermediary (int color1, int color2){
         if(color2 == 255){
@@ -34,7 +34,7 @@ public class Pencil extends MainActivity{
         }
     }
 
-
+    /*BlendColorDodge() prend les deux images et pour chaque pixel, demande à la fonction intermédiaire des les fusionner*/
     static protected Bitmap BlendColorDodge(Bitmap bmp1,Bitmap bmp2){
 
         Bitmap newbmp = Bitmap.createBitmap(bmp1.getWidth(),bmp1.getHeight(), bmp1.getConfig() );
@@ -44,14 +44,10 @@ public class Pencil extends MainActivity{
         bmp1.getPixels(pixel1,0,bmp1.getWidth(),0,0,bmp1.getWidth(),bmp1.getHeight());
         bmp2.getPixels(pixel2,0,bmp2.getWidth(),0,0,bmp2.getWidth(),bmp2.getHeight());
 
-        int r;
         int g;
-        int b;
-        for (int i = 0; i < pixel1.length; i++) { //penser à enlever le /3
-            r = DodgeIntermediary(Color.red(pixel1[i]), Color.red(pixel2[i]));
+        for (int i = 0; i < pixel1.length; i++) {
             g = DodgeIntermediary(Color.green(pixel1[i]), Color.green(pixel2[i]));
-            b = DodgeIntermediary(Color.blue(pixel1[i]), Color.blue(pixel2[i]));
-            pixel1[i] = Color.rgb(r, g, b);
+            pixel1[i] = Color.rgb(g, g, g);
         }
 
         newbmp.setPixels(pixel1,0,newbmp.getWidth(),0,0,newbmp.getWidth(),newbmp.getHeight());
@@ -60,6 +56,7 @@ public class Pencil extends MainActivity{
 
     }
 
+    /*BlendRS() appelle la version renderscript blend.rs*/
     static  protected Bitmap BlendRS(Bitmap bmp1, Bitmap bmp2, Context context) {
 
         Bitmap resultBitmap = Bitmap.createBitmap(bmp1.getWidth(),bmp1.getHeight(), bmp1.getConfig() );
