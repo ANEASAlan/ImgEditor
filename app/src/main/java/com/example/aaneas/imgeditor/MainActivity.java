@@ -288,6 +288,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         savedImgIndex--;
                         MonImg=Bitmap.createBitmap(derniereImage());
                         Img.setImageBitmap(MonImg);
+                    }else{
+                        Img.setImageBitmap(BasicImg);
                     }
                 }
             });
