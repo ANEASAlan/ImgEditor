@@ -7,6 +7,8 @@ int matrixLength;
 int width;
 int height;
 
+//Cette fonction prend un Bitmap en paramètre et une matrix
+
 static float4 blurCalculus(int indexX, int indexY){
     float4 value = {0, 0, 0, 255};
 

@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.support.v8.renderscript.Allocation;
 import android.support.v8.renderscript.Element;
 import android.support.v8.renderscript.RenderScript;
-import android.widget.ImageView;
 
 import com.android.rssample.*;
 
@@ -116,7 +115,7 @@ public class Edges extends MainActivity{
         Allocation input = Allocation.createFromBitmap(rs, image);
         Allocation output = Allocation.createTyped(rs, input.getType());
 
-        ScriptC_contours BlurScript = new ScriptC_contours(rs);
+        ScriptC_edges BlurScript = new ScriptC_edges(rs);
         int matrixLength = 3;
 
         float[] matrix = new float[]{
@@ -134,15 +133,15 @@ public class Edges extends MainActivity{
         BlurScript.set_height(image.getHeight());
 
         BlurScript.forEach_contours(output);
-        output.copyTo(n);
+        output.copyTo(newbitmap);
 
         input.destroy();
         output.destroy();
         BlurScript.destroy();
         rs.destroy();
 
-        MainActivity.Img.setImageBitmap(n);
-        return n;
+        MainActivity.Img.setImageBitmap(newbitmap);
+        return newbitmap;
     }
 
 

@@ -15,10 +15,9 @@ float Lutred[256];
 float Lutgreen[256];
 float Lutblue[256];
 
-/// Recupere le MIN et MAX de chaque Couleur R G B ////
-///
-// à  changer à cause des calculs en parallèles
-//s'assurer que pendant un calcul il n'y ait pas d'autre affectation
+// Contraste Dynamique
+// Recupere le MIN et MAX de chaque Couleur R G B
+
 void  RS_KERNEL  GetMinMaxColor(uchar4  in) {
 
 
@@ -45,18 +44,9 @@ void  RS_KERNEL  GetMinMaxColor(uchar4  in) {
     if (pixelf.b > maxblue){
             maxblue = pixelf.b;
         }
-
-
-
-
    }
 
-
-
-
-
-/// Create un LUT pour chaque couleur R G B ////
-
+// Create un LUT pour chaque couleur R G B
 void createlutred(){
     for(int nr = 0; nr < 256; nr++){
         Lutred[nr] = (float) ((nr - minred)*255)/(maxred-minred);
@@ -76,14 +66,13 @@ void createlutblue(){
 }
 
 
-
 uchar4  RS_KERNEL  Final(uchar4  in) {
 
     float4  pixelf = rsUnpackColor8888(in);
 
     float red = Lutred[(int) (pixelf.r*255)]/255;
     float green = Lutgreen[(int) (pixelf.g*255)]/255;
-    float blue= Lutblue[(int) (pixelf.b*255)]/255;
+    float blue = Lutblue[(int) (pixelf.b*255)]/255;
 
 
     return rsPackColorTo8888(red,green,blue,pixelf.a);

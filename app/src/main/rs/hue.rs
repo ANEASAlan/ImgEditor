@@ -4,12 +4,20 @@
 
 int rand1;
 
+//Cette fonction utilise la methode TSV (teinte,saturation,valeur) qui est sur le même
+//principe que HSV. Nous avons utilisé une formule trouvé sur wikipédia que nous avons appliqué
+//ici.
+
+//Nous utilisons une teinte aléatoire "rand1" pour changer la valeur
+
 uchar4  RS_KERNEL  toColor(uchar4  in) {
     float4  pixelf = rsUnpackColor8888(in);
 
     int T;
     float S;
     float V;
+
+
     T =rand1 ;
 
     if (pixelf.r ==0 && pixelf.g ==0 && pixelf.b ==0){

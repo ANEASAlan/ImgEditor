@@ -3,6 +3,7 @@
 
 static  const  float4  weight = {0.299f, 0.587f, 0.114f, 0.0f};
 
+// Fonction donnée dans le cours, elle permet de griser les pixels
 uchar4  RS_KERNEL  toGrey(uchar4  in) {
 
     const  float4  pixelf = rsUnpackColor8888(in);

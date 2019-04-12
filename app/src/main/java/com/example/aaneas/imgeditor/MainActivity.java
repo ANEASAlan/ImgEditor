@@ -158,7 +158,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     if(LumiBar.getVisibility()==View.VISIBLE){
                         LumiBar.setVisibility(View.INVISIBLE);
-                        //RadioColor.setVisibility(View.INVISIBLE);
                     }
                 }
             });
@@ -355,8 +354,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            LumiBar.setVisibility(View.INVISIBLE);
-            Rainbow.setVisibility(View.INVISIBLE);
+
             if(position!=0){
                 saveImg(MonImg);
             }
@@ -367,6 +365,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             /* switch JAVA */
 
             if (parent.getId() == R.id.spinner1) {
+                LumiBar.setVisibility(View.INVISIBLE);
+                Rainbow.setVisibility(View.INVISIBLE);
                 switch (position) {
                     case 0:
                         savedImgIndex=0;
@@ -429,7 +429,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         break;
                     }
                 /* switch RS */
-                }else if(parent.getId() == R.id.spinner2){ //RS
+                }else if(parent.getId() == R.id.spinner2){
+                    LumiBar.setVisibility(View.INVISIBLE);
+                    Rainbow.setVisibility(View.INVISIBLE);
                     switch (position){
                         case 0:
                             savedImgIndex=0;
@@ -442,10 +444,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             MonImg=Bitmap.createBitmap(Grey.toGreyRS(MonImg, this));
                             break;
                         case 2:
-                            MonImg=Bitmap.createBitmap(Colors.ColoriserRS(MonImg, this));
+                            MonImg=Bitmap.createBitmap(Colors.hueRS(MonImg, this));
                             break;
                         case 3:
-                            MonImg=Bitmap.createBitmap(Colors.ConserveRS(MonImg,this));
+                            MonImg=Bitmap.createBitmap(Colors.ColorkeepRS(MonImg,this));
                             break;
                         case 4:
                             MonImg=Bitmap.createBitmap(Contrast.ContrastDynamicRS(MonImg,this));
@@ -478,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                             MonImg = Bitmap.createBitmap(Colors.invertRS(MonImg,this));
                             break;
                         case 12:
-                            MonImg = Bitmap.createBitmap(Edges.contoursRS(Bitmap.createBitmap(Grey.toGreyRS(MonImg,this)),this));
+                            MonImg = Bitmap.createBitmap(Edges.edgesRS(Bitmap.createBitmap(Grey.toGreyRS(MonImg,this)),this));
                     }
                 }
             }
@@ -492,7 +494,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             return savedImgIndex==0?BasicImg:savedImg[savedImgIndex-1];
         }
 
-        //Créer une barre de couleurs qui change la teinte lorsque l'on clique dessus
+        /*Créer une barre de couleurs qui change la teinte lorsque l'on clique dessus*/
+
         public void Color(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
@@ -502,18 +505,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         @Override
                         public void onStartTrackingTouch(SeekBar seekBar) {
-
                         }
-
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
-                            MonImg=Colors.changeColor(derniereImage(), LumiBar.getProgress());
+                            MonImg=Colors.Hue(derniereImage(), LumiBar.getProgress());
                         }
                     }
                 );
         }
 
-        public void LumiColor(){
+    /*Créer une barre de luminosité*/
+
+    public void LumiColor(){
             LumiBar.setOnSeekBarChangeListener(
                     new SeekBar.OnSeekBarChangeListener() {
                         Bitmap n=Bitmap.createBitmap(derniereImage());
@@ -528,7 +531,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                 n= Lighting.changeBrightness(n,scale);
                             } else {
                                 n= Lighting.changeBrightnessRS(n,MainActivity.this,scale);
-
                             }
                         }
 
@@ -545,7 +547,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             );
         }
 
-    //Créer une barre de couleur qui conserve une couleur lorsque l'on clique dessus
+    /*Créer une barre de couleur qui conserve une couleur lorsque l'on clique dessus*/
+
     public void Conserve(){
         LumiBar.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
@@ -560,7 +563,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        MonImg=Colors.Conserve(derniereImage(), LumiBar.getProgress());
+                        MonImg=Colors.Colorkeep(derniereImage(), LumiBar.getProgress());
                     }
                 }
         );

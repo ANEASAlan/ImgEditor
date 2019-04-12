@@ -8,6 +8,9 @@ double gmin = 0.0;
 double gmax = 1.0;
 double bmin = 0.0;
 double bmax = 1.0;
+
+//Contraste d'egalisation d'histogramme
+
 uchar4 RS_KERNEL contrast(uchar4 in){
 
 float4  pixelf = rsUnpackColor8888(in);
