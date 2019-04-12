@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.android.support:transition:27.1.1@aar">
+    <CLASSES>
+      <root url="file:///tmp/android-mcapdordy001/.gradle/caches/transforms-1/files-1.1/transition-27.1.1.aar/abcbfcaa2b10735b9c61e220f58583ae/res" />
+      <root url="jar:///tmp/android-mcapdordy001/.gradle/caches/transforms-1/files-1.1/transition-27.1.1.aar/abcbfcaa2b10735b9c61e220f58583ae/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar:///tmp/android-mcapdordy001/.gradle/caches/modules-2/files-2.1/com.android.support/transition/27.1.1/88ebe6765790253d410e51a3952571565f2040e9/transition-27.1.1-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

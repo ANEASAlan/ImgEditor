@@ -312,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Save.setVisibility(View.VISIBLE);
                 Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
+                savedImgIndex=0;
             }else if (requestCode == GALERY_REQUEST && resultCode == RESULT_OK) {
                 Uri selectedImg = data.getData();
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
@@ -327,6 +328,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Save.setVisibility(View.VISIBLE);
                 Undo.setVisibility(View.VISIBLE);
                 RS_Button.setVisibility(View.VISIBLE);
+                savedImgIndex=0;
             }
         }
 
@@ -503,7 +505,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
                         @Override
                         public void onStopTrackingTouch(SeekBar seekBar) {
-                            MonImg=Colors.changerCouleur(derniereImage(), LumiBar.getProgress());
+                            MonImg=Colors.changeColor(derniereImage(), LumiBar.getProgress());
                         }
                     }
                 );

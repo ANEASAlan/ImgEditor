@@ -16,7 +16,7 @@ import android.support.v8.renderscript.RenderScript;
 public class Colors extends MainActivity {
 
     //Change la teinte d'une Bitmap passée en paramêtre et le renvoie dans MainActivity.Img
-    static protected Bitmap changerCouleur(Bitmap Bmp, double ColorScale) { //colorScale est la valeur de la seekBar au moment où elle est laché
+    static protected Bitmap changeColor(Bitmap Bmp, double ColorScale) { //colorScale est la valeur de la seekBar au moment où elle est laché
 
         Bitmap n = Bitmap.createBitmap(Bmp.getWidth(),Bmp.getHeight(), Bmp.getConfig() );
         float HSV[] = {0, 0, 0};
@@ -69,9 +69,10 @@ public class Colors extends MainActivity {
 
    //Conserve une couleur de la Bitmap passée en paramêtre et la renvoie dans MainActivity.Img
     static  protected Bitmap Conserve(Bitmap bmp, double colorScale) { //colorScale est la valeur de la seekBar au moment où elle est laché
+        double sensibility=40.0;
 
         Bitmap newimg = Bitmap.createBitmap(bmp.getWidth(),bmp.getHeight(), bmp.getConfig() );
-        double color=colorScale*2.8+40.0;
+        double color=colorScale * (360-2*sensibility)/100 + sensibility;
         float HSV[] = {0, 0, 0};
 
         int [] pixel = new int[bmp.getWidth()*bmp.getHeight()];
@@ -85,7 +86,7 @@ public class Colors extends MainActivity {
             Color.RGBToHSV( Color.red(a), Color.green(a),Color.blue(a), HSV);
 
             double Grey = 0.3 * Color.red(a) + 0.59 * Color.green(a) + 0.11 * Color.blue(a);
-            if (HSV[0]>=color-40 && HSV[0]<=color+40){
+            if (HSV[0]>=color-sensibility && HSV[0]<=color+sensibility){
                 colortab[y] = Color.HSVToColor(HSV);
             }else{
                 colortab[y] = Color.argb(Color.alpha(a),(int) Grey, (int) Grey, (int) Grey);
