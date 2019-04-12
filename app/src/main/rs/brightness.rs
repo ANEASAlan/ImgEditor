@@ -3,8 +3,11 @@
 
 
 float BrightnessScale;
-uchar4 RS_KERNEL changeBrightness(uchar4 in){
 
+//Cette fonction changeBrightness() change la luminosité.
+//Il prend un paramètre BrightnessScale qui permet de changer la luminosité
+
+uchar4 RS_KERNEL changeBrightness(uchar4 in){
 float4  pixelf = rsUnpackColor8888(in);
 pixelf.r += BrightnessScale;
 if(pixelf.r > 1.0) pixelf.r = 1.0;

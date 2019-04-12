@@ -8,10 +8,9 @@ int height;
 float *matrix;
 int matrixLength;
 
-//float4 value[2];// = malloc(sizeof(float4) * 2);
 
 static float4 *getValue(int indexX, int indexY){
-    float4 value[2] = {{0, 0, 0, 255},{0, 0, 0, 255}};//(float4 *) malloc(sizeof(float4) * 2);
+    float4 value[2] = {{0, 0, 0, 255},{0, 0, 0, 255}};
 
 
     indexX -= (int)(matrixLength / 2);
